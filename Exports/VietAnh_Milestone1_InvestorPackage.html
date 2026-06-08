@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VietAnh_Milestone1_InvestorPackage.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="milestone-1-investor-package">MILESTONE 1: INVESTOR PACKAGE</h1>
+<p><strong>Dự án:</strong> YourSpace
+<strong>Founder:</strong> Phạm Việt Anh
+<strong>Ngày:</strong> 2026-05-06</p>
+<br>
+<h2 id="executive-summary">EXECUTIVE SUMMARY</h2>
+<p>Thị trường nội thất Việt Nam ($9.76B) có một nghịch lý: Dư thừa cảm hứng nhưng bế tắc giao dịch.</p>
+<p>Người trẻ lưu hàng trăm ảnh phòng đẹp trên mạng, nhưng tê liệt 2–4 tuần khi chọn mua từng món đồ vì &quot;sợ mua về kê không hợp&quot;. Nhãn hàng mất 30% doanh thu vì khách bỏ giỏ hàng.</p>
+<p>YourSpace là &quot;Visual Sales Channel&quot; giúp người dùng chuyển từ việc bơi trong biển &quot;Product Catalog&quot; sang &quot;Style Palette&quot; — kéo thả 3D đồ đạc thẳng vào ảnh chụp phòng thật. Không cần app AR nặng nề, chỉ cần web/mobile với AI on-device (Zero latency).</p>
+<p>Triệt tiêu đắn đo. Tự tin chốt đơn.</p>
+<div style="page-break-after: always;"></div>
+<h2 id="pitch-memo--yourspace">PITCH MEMO — YourSpace</h2>
+<p><strong>Audience:</strong> Seed VC | <strong>Format:</strong> Sequoia/YC 1-pager</p>
+<p><strong>1. THE PROBLEM</strong>
+Thị trường nội thất Việt Nam ($9.76 tỷ USD) đang đối mặt với một nghịch lý: <strong>Dư thừa cảm hứng nhưng bế tắc giao dịch.</strong></p>
+<ul>
+<li><strong>Transaction Friction:</strong> Người trẻ lưu hàng trăm video/ảnh, biết phong cách mình thích nhưng lại &quot;tê liệt&quot; khi phải chọn mua giữa hàng nghìn sản phẩm đơn lẻ, mất 2–4 tuần đắn đo.</li>
+<li><strong>The Cost of Doubt:</strong> Các nhãn hàng mất đến 30% doanh thu tiềm năng do khách bỏ giỏ hàng, và phải gánh chịu tỉ lệ hoàn hàng cao.</li>
+</ul>
+<p><strong>2. THE INSIGHT</strong>
+Bằng cách chuyển từ &quot;Product Catalog&quot; sang &quot;Style Palette&quot;, YourSpace thu hẹp lựa chọn xuống vài chục món đã được curate sẵn theo phong cách. Curation tạo ra sự tự tin thẩm mỹ — và sự tự tin là nút thắt kích hoạt chốt đơn.</p>
+<p><strong>3. THE SOLUTION</strong>
+YourSpace mang đến trải nghiệm <strong>&quot;Zero-friction Visualization&quot;</strong>: chụp ảnh phòng thật, chọn phong cách, tự kéo thả đồ 3D vào ảnh — không cần đăng nhập hay quét không gian 3D.
+Việc kết nối thẳng đến catalog của nhà cung cấp Việt Nam biến YourSpace thành <strong>Visual Sales Channel</strong> cho nhãn hàng: triệt tiêu đắn đo, tối ưu Sales Cycle, giảm hoàn hàng.
+AI on-device tự scale đồ đúng phối cảnh — zero server cost, zero latency.</p>
+<p><strong>4. WHY NOW</strong></p>
+<ul>
+<li><strong>Tech Inflection:</strong> Các mô hình AI nhỏ gọn giờ có thể chạy on-device trên thiết bị di động.</li>
+<li><strong>Behavioral Shift:</strong> TikTok định hình cảm hứng không gian của giới trẻ, nhưng họ đâm sầm vào rào cản từ những catalog 2D tĩnh lỗi thời.</li>
+<li><strong>Market Momentum:</strong> Nội thất B2C online tại VN là kênh tăng trưởng nhanh nhất.</li>
+</ul>
+<p><strong>5. THE ASK: $150,000 USD</strong>
+Vốn Seed cho 18 tháng runway để chứng minh YourSpace là &quot;điểm chạm&quot; tạo ra sự tự tin giao dịch.</p>
+<ul>
+<li><strong>Validation:</strong> Đạt Click-to-Buy Rate ≥ 15%.</li>
+<li><strong>Technology:</strong> Ship mobile MVP (Tháng 3-4).</li>
+<li><strong>Partnership:</strong> Onboard 10 nhà cung cấp nội thất mid-range.</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="market-analysis">MARKET ANALYSIS</h2>
+<p><strong>1. Market Sizing</strong></p>
+<ul>
+<li><strong>TAM:</strong> $9.76 tỷ USD/năm (Tổng thị trường nội thất VN)</li>
+<li><strong>SAM:</strong> ~$2.5 tỷ USD/năm (Phân khúc nội thất cho người trẻ đô thị online)</li>
+<li><strong>SOM:</strong> $150 triệu USD (Mục tiêu doanh thu giao dịch qua platform)</li>
+</ul>
+<p><strong>2. Target User (Young Aesthetes)</strong>
+Người trẻ 25–35 tuổi, đang sở hữu nhà đầu tiên tại các đô thị lớn. Coi không gian sống là sự kéo dài bản sắc cá nhân.
+Rào cản: Có gu thẩm mỹ nhưng không biết tên phong cách, không hình dung được đồ nội thất trong phòng thật và không biết mua ở đâu cho đúng giá.</p>
+<div style="page-break-after: always;"></div>
+<h2 id="product-requirements-document-prd-summary">PRODUCT REQUIREMENTS DOCUMENT (PRD) SUMMARY</h2>
+<p><strong>1. Pain Point &amp; Solution Scope (MVP)</strong></p>
+<ul>
+<li><strong>Vấn đề 1:</strong> &quot;Nghịch lý sự lựa chọn&quot; khiến tê liệt.
+→ <strong>Giải pháp:</strong> Khám phá &quot;Style Palette&quot; (Curated catalog thay vì hàng trăm ngàn món đồ hỗn tạp).</li>
+<li><strong>Vấn đề 2:</strong> Thiếu tự tin vì không thể hình dung không gian thật.
+→ <strong>Giải pháp:</strong> Tương tác 3D cốt lõi (Upload ảnh chụp, tự kéo thả đồ).</li>
+<li><strong>Vấn đề 3:</strong> Đứt gãy lúc mua sắm.
+→ <strong>Giải pháp:</strong> Bảng dự toán chi phí &amp; Link mua Affiliate trực tiếp.</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="product-market-fit-metrics">PRODUCT-MARKET FIT METRICS</h2>
+<p><strong>PMF Metrics (Mục tiêu Validation)</strong></p>
+<ul>
+<li><strong>Activation Rate:</strong> ≥ 30% user hoàn thành luồng upload ảnh và đặt đồ.</li>
+<li><strong>Save/Share Rate:</strong> ≥ 30% user lưu lại bản thiết kế.</li>
+<li><strong>Click-to-Buy Rate:</strong> ≥ 15% user nhấn &quot;Mua&quot; trên ít nhất 1 sản phẩm.</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="financial-model">FINANCIAL MODEL</h2>
+<h3 id="1-revenue-model--pricing-base-case">1. Revenue Model &amp; Pricing (Base Case)</h3>
+<ul>
+<li><strong>Mô hình Doanh thu:</strong> Affiliate Commission (Không lưu kho, không bán hàng trực tiếp).</li>
+<li><strong>ARPU:</strong> 800,000 VNĐ / đơn (Dựa trên GMV 10 triệu x 8% Commission Rate).</li>
+<li><strong>Khách hàng mới / tháng:</strong> ~300 đơn (Dựa trên mô hình Organic marketing của Founder qua cộng đồng 500K+ mem).</li>
+<li><strong>Thâm nhập thị trường:</strong> TAM 65,000 khách mua/tháng. Adoption Rate năm đầu chỉ ở mức 0.46%.</li>
+</ul>
+<h3 id="2-chi-ph%C3%AD--break-even">2. Chi phí &amp; Break-Even</h3>
+<ul>
+<li><strong>COGS (Chi phí biến đổi):</strong> ~0 VNĐ (Sử dụng On-device AI hoàn toàn, không gọi API. Hosting Free tier).</li>
+<li><strong>Fixed Costs:</strong> ~11,700,000 VNĐ/tháng (SaaS Tools, Bootstrap).</li>
+<li><strong>Break-Even Point:</strong> Chỉ cần ~15 đơn/tháng là hòa vốn (Cực kỳ dễ đạt).</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="unit-economics">UNIT ECONOMICS</h2>
+<h3 id="1-ch%E1%BB%89-s%E1%BB%91-c%E1%BB%91t-l%C3%B5i">1. Chỉ số cốt lõi</h3>
+<ul>
+<li><strong>LTV (Lifetime Value):</strong> 1,250,000 VNĐ (Dựa trên giả định khách mua 1.5 lần/năm, duy trì trong vòng 12.5 tháng).</li>
+<li><strong>CAC (Customer Acquisition Cost):</strong> ~100,000 VNĐ (Quy đổi công sức organic marketing, viral content nội thất 3D trên Tiktok).</li>
+<li><strong>LTV / CAC:</strong> 12.5x (Ngưỡng lý tưởng để chứng minh business có lãi cao).</li>
+<li><strong>Payback Period:</strong> &lt; 1 tháng.</li>
+</ul>
+<h3 id="2-defensibility-moat--l%E1%BB%A3i-th%E1%BA%BF-c%E1%BA%A5u-tr%C3%BAc">2. Defensibility (Moat &amp; Lợi thế cấu trúc)</h3>
+<ul>
+<li><strong>Identity-Linked Premium:</strong> Tăng ARPU nhờ bán &quot;Không gian Wabi-sabi&quot; (15 triệu) thay vì bán &quot;cái ghế&quot; (2 triệu) — khao khát khẳng định bản sắc dẫn dắt kích cỡ giỏ hàng.</li>
+<li><strong>Margin Protection:</strong> Hiệu ứng sở hữu (IKEA effect) kết hợp AR trực quan giúp giảm dự kiến 40% tỉ lệ hoàn hàng.</li>
+<li><strong>Supplier Lock-in:</strong> Nắm giữ độc quyền catalog 3D từ các xưởng nội địa (Data mà OpenAI không có và các sàn e-commerce khó đập đi xây lại).</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="roadmap--okrs">ROADMAP &amp; OKRs</h2>
+<h3 id="1-roadmap-gi%E1%BA%A3i-quy%E1%BA%BFt-problem-kh%C3%B4ng-ch%E1%BB%91t-date">1. ROADMAP (Giải quyết Problem, Không chốt Date)</h3>
+<p><strong>🟢 NOW (Ưu tiên hiện tại - Validation Model)</strong></p>
+<ul>
+<li><strong>Vấn đề 1:</strong> &quot;Nghịch lý sự lựa chọn&quot; khiến người dùng tê liệt.
+→ <em>Sẽ làm:</em> Khám phá Style Palette (Thay vì tìm từng sản phẩm).</li>
+<li><strong>Vấn đề 2:</strong> Thiếu tự tin vì không thể ướm thử vào không gian thật.
+→ <em>Sẽ làm:</em> Trải nghiệm Tương tác Kéo thả 3D trên ảnh 2D tĩnh.</li>
+<li><strong>Vấn đề 3:</strong> Rớt đơn ở bước thanh toán / ngân sách.
+→ <em>Sẽ làm:</em> Bảng dự toán tổng quát &amp; Link Mua Affiliate redirect.</li>
+</ul>
+<p><strong>🟡 NEXT (Trọng tâm tiếp theo - Xây Moat)</strong></p>
+<ul>
+<li><strong>Vấn đề:</strong> Trải nghiệm ướm thử vẫn còn ma sát (chỉnh tỉ lệ thủ công) và thiếu 3D assets Việt.
+→ <em>Sẽ làm:</em> Tích hợp AI Spatial Placement (Depth Map on-device) &amp; Đẩy mạnh Onboard B2B Supplier.</li>
+</ul>
+<p><strong>🔴 LATER (Tầm nhìn dài hạn - Tự động hóa)</strong></p>
+<ul>
+<li><strong>Vấn đề:</strong> Khách hàng lười suy nghĩ, muốn hệ thống tự hiểu gu.
+→ <em>Sẽ làm:</em> Style Quiz AI &amp; Gen-AI Agent cá nhân hóa, tự phối đồ từ số 0.</li>
+</ul>
+<h3 id="2-okr-qu%C3%BD-1-focus-cho-giai-%C4%91o%E1%BA%A1n-now">2. OKR QUÝ 1 (Focus cho giai đoạn NOW)</h3>
+<p><strong>🎯 OBJECTIVE:</strong> Chứng minh YourSpace triệt tiêu hoàn toàn sự đắn đo khi mua sắm nội thất.</p>
+<ul>
+<li><strong>KR1 (Leading - Ý định mua):</strong> Tỷ lệ user lưu thiết kế (Save/Share Rate) đạt <strong>30%</strong>.</li>
+<li><strong>KR2 (Lagging - Doanh thu):</strong> Tỷ lệ user click &quot;Mua hàng&quot; (Click-to-Buy Rate) đạt <strong>15%</strong>.</li>
+<li><strong>KR3 (Quality - Giá trị cốt lõi):</strong> Tỷ lệ user quay lại app trong 7 ngày (D7 Retention) đạt <strong>25%</strong>.</li>
+</ul>
+<div style="page-break-after: always;"></div>
+<h2 id="dependency-map--critical-path">DEPENDENCY MAP &amp; CRITICAL PATH</h2>
+<h3 id="1-3-external-dependencies-nguy-c%C6%A1-l%E1%BB%9Bn-trong-30-ng%C3%A0y">1. 3 External Dependencies (Nguy cơ lớn trong 30 ngày)</h3>
+<table>
+<thead>
+<tr>
+<th>Dependency / Vendor</th>
+<th>Worst-case Scenario</th>
+<th>Plan B (Sẵn sàng trong 24h)</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Apple/Google App Review</strong></td>
+<td>App bị reject sát ngày ra mắt do UI hoặc lỗi 3D crash.</td>
+<td>Deploy khẩn cấp PWA qua Vercel, trải nghiệm trên web mobile.</td>
+<td>$0 + 3 ngày</td>
+</tr>
+<tr>
+<td><strong>Bản quyền 3D Catalog</strong></td>
+<td>Bị report vi phạm bản quyền từ nền tảng 3D.</td>
+<td>Mua đứt license &quot;Royalty Free&quot; cho 20 mô hình 3D thiết yếu.</td>
+<td>~$200 + 2 ngày</td>
+</tr>
+<tr>
+<td><strong>Giới hạn Băng thông Cloud</strong></td>
+<td>App viral làm tràn băng thông file 3D, sập Vercel.</td>
+<td>Ép file .glb bằng Draco (&lt;1MB) và cache qua Cloudflare CDN.</td>
+<td>$20/th + 1 ngày</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-critical-path-chu%E1%BB%97i-ti%E1%BA%BFn-tr%C3%ACnh-r%E1%BB%A7i-ro-cao-nh%E1%BA%A5t">2. Critical Path (Chuỗi tiến trình rủi ro cao nhất)</h3>
+<p>Để ra mắt MVP trong giai đoạn NOW, tiến trình chặn đường (Blocking) nằm ở các đầu mục kỹ thuật:</p>
+<p><strong>Tuyển chọn 3D Data → Kéo thả 3D → Test Memory Leak → Submit App</strong></p>
+<ul>
+<li><code>Task 1: Chuẩn bị 50 mô hình 3D</code>: Không có 3D Data thì không thể code trải nghiệm core.</li>
+<li><code>Task 3: Build tương tác Kéo thả 3D</code>: Task cốt lõi có độ khó lập trình cao (Three.js/React Native).</li>
+<li><code>Task 5: Test Memory Leak thiết bị thật</code>: Rendering 3D mobile dễ vỡ bộ nhớ, bắt buộc test diện rộng.</li>
+<li><code>Task 6: Submit App Store</code>: Gate cuối cùng ra thị trường.</li>
+</ul>
+<p><em>(Các tính năng UI như Chọn Style Palette hay Bảng giá Affiliate không nằm trên đường cản trở chính, có thể build song song).</em></p>
+<hr>
+<h2 id="ph%E1%BB%A5-l%E1%BB%A5c">PHỤ LỤC</h2>
+<ul>
+<li><a href="Day18-AI-Product-Finance-Model.xlsx">Bảng tính Tài chính chi tiết (Excel)</a></li>
+<li><a href="day17_submission.md">Bản PRD đầy đủ</a></li>
+</ul>
+
+</body>
+</html>

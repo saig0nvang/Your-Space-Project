@@ -1,0 +1,35 @@
+Bước 1: Chụp ảnh căn phòng
+Bước 2: Chọn đồ theo phong cách mình muốn
+Bước 3: Thêm vào ảnh 
+Bước 4: Xem giá và chi phí liên quan
+Bước 5: Tư vấn hoặc mua ngay
+
+
+3d: Chụp ảnh không gian theo hướng dẫn của ứng dụng, mô hình hóa căn phòng theo dạng 3d, cho phép người dùng chọn phần nào của không gian cần giữ nguyên
+
+Context: Thế hệ trẻ: 25 tới 35 tuổi. Là thế hệ sẽ bắt đầu xây dựng không gian sống, hay nói cách khác là mua nhà, thay vì thế hệ cũ. Quốc gia đã hoàn toàn hồi phục sau chiến tranh, chuyển dịch từ việc có chỗ ăn chỗ ở đàng hoàng là được, tới việc không gian cần phải có "gu". Và trong thế kỉ hội nhập, các phong cách kiến trúc trên thế giới đang bắt đầu len lỏi nhiều hơn vào các thiết kế của người Việt Nam.
+
+Persona: Thế hệ trẻ, hoặc những người có tư tưởng cấp tiến, cần tiếp cận những tiến bộ của thế giới trong thiết kế không gian sống.
+
+Pain point: Người dùng biết mình thích cái đẹp, nhưng không biết gọi tên phong cách này là gì. Đôi khi bị ngợp giữa các câu hỏi và thuật ngữ, ví dụ thế nào là Wabi Sabi, cái ghế thì tôi biết, nhưng cái đèn trong phong cách này trông như thế nào
+	    Nỗi sợ mua nhầm, kê không hợp: Người ta rất thích bộ sofa Mid Century, nhưng rất phân vân, nếu đặt vào không gian sống hiện tại, có phù hợp không
+	    Vì những concept kiến trúc này vẫn còn mới so với đối tượng khách hàng mình nhắm tới, là giới trẻ. Vậy nên chắc chắn sẽ có sự mù mờ về giá và nguồn hàng, mua ở đâu thì giá đẹp, của hãng nào thì chất lượng hoàn thiện tốt
+	    Khao khát tìm thấy, thể hiện được phong cách cá nhân, người trẻ rất sợ không gian cá nhân trông đại trà, hay giống "người già"
+	    Nỗi đau về tính xã hội, dân trí: Người dùng có những căn nhà, căn hộ chung cư với phong cách thiết kế quá phổ thông, không phải vì họ không biết thế nào là đẹp, mà là vì xung quanh, các căn hộ khác đều như thế, nên họ chưa biết các phong cách thiết kế khác, từ đó không thể đưa ra lựa chọn khác thay vì các thiết kế phổ thông 
+
+Validation metrics: - Lợi nhuận kiếm được từ ứng dụng/chi phí xây dựng, vận hành ứng dụng 
+		    - Rating ứng dụng 
+Core outcomes: 
+	*Với người dùng:
+		Phổ cập hóa cái nhìn cơ bản về phong cách thiết kế
+		Giảm thiểu rủi ro mua sắm, rằng món đồ này có hợp hay không với không gian sống
+		Sở hữu "hàng hiệu" với mức giá tối ưu
+		Tìm được chuyên gia thiết kế về phong cách mình mong muốn
+	*Với doanh nghiệp:
+		Rút ngắn chu kì bán hàng: người dùng sẽ tốn ít thời gian cân nhắc hơn, hàng hóa đến tay người dùng nhanh hơn
+		Tạo sự tiện lợi cho khách hàng, giống như shoppe, như thế người dùng có thể thử hàng hóa dễ dàng, từ đó kích thích người dùng mua hàng nhiều hơn
+		Ứng dụng có thể đóng vai trò như một showroom online, từ đó giảm chi phí cửa hàng, nhân sự tư vấn v.v...
+MVP Feature: kéo thả đồ nội thất theo category phong cách vào ảnh chụp không gian cụ thể	 của người dùng theo ý muốn về vị trí, góc độ, có thể chọn vật thể gốc trong ảnh để xóa hoặc giữ
+
+
+

@@ -1,0 +1,38 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Local agent/config artifacts
+.agents/
+.codex/
+
+# Python cache and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Logs
+*.log
+
+# Generated technical outputs
+Technical/Segmentation/outputs/*
+!Technical/Segmentation/outputs/.gitkeep
+
+# Heavy model checkpoints
+Technical/Segmentation/checkpoints/*.pt
+Technical/Inpainting/**/*.ckpt
+Technical/Inpainting/**/*.pth
+Technical/Inpainting/**/*.zip
+
+# Vendored / embedded external repositories
+Technical/Segmentation/vendor/
+Technical/Inpainting/lama-with-refiner/
+

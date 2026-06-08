@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YourSpace - 3D Interior Preview</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="ui-container">
+        <div class="glass-panel">
+            <h1>YourSpace</h1>
+            <p>Customize your space in 3D</p>
+
+            <div class="control-group">
+                <label for="bg-upload" class="btn primary-btn">
+                    1. Tai anh khong gian phong
+                </label>
+                <input type="file" id="bg-upload" accept="image/*" hidden>
+            </div>
+
+            <div class="control-group segmentation-controls">
+                <button id="segmentation-toggle" class="btn secondary-btn" disabled>
+                    2. Segmentation / Remove object
+                </button>
+                <button id="segmentation-export" class="btn ghost-btn" disabled>
+                    Export mask cho Inpainting
+                </button>
+                <p id="segmentation-status" class="status-text">Upload anh phong de bat dau.</p>
+            </div>
+
+            <div class="control-group">
+                <p>3. Chon noi that mau keo tha:</p>
+                <div class="asset-grid">
+                    <button class="asset-btn" data-model="../Assets/Models/duck.glb">Duck</button>
+                    <button class="asset-btn" data-model="../Assets/Models/box.glb">Box</button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <p><b>Dieu khien vat the 3D:</b></p>
+                <p>- Keo tren canvas de di chuyen vat the.</p>
+                <p>- Phim <b>r</b>: rotate, <b>t</b>: translate, <b>s</b>: scale.</p>
+                <p>- Bat segmentation, sau do tap len object trong anh de tao mask.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="object-ui" class="hidden">
+        <label id="rotation-val">0 deg</label>
+        <div class="slider-container">
+            <input type="range" id="rotation-slider" min="-180" max="180" value="0">
+        </div>
+        <div class="ui-tools">
+            <div class="tool-btn active">
+                <span class="icon">R</span>
+                <span>Xoay</span>
+            </div>
+            <div class="tool-btn">
+                <span class="icon">X</span>
+                <span>Xoa</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+    <div id="segmentation-stage" class="hidden">
+        <div id="segmentation-frame">
+            <img id="segmentation-image" alt="Room segmentation target">
+            <img id="segmentation-overlay" class="hidden" alt="SAM2 mask overlay">
+            <div id="segmentation-marker" class="hidden"></div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <div id="ai-loading" class="hidden">
+        <div class="spinner"></div>
+        <div class="loading-content">
+            <h3>AI dang quet phong...</h3>
+            <p>Dang dung ban do 3D tu anh phong.</p>
+            <p class="loading-note">Qua trinh nay co the mat vai giay.</p>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+
+</html>
