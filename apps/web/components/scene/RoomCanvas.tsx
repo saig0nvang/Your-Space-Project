@@ -27,15 +27,17 @@ export function RoomCanvas({
   glbUrl,
   calibration,
   transform,
+  aspect = 4 / 3,
 }: {
   photoUrl: string;
   glbUrl: string;
   calibration: Calibration;
   transform: Transform;
+  aspect?: number;
 }) {
   const cam = cameraToThree(calibration.camera);
   return (
-    <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#111" }}>
+    <div style={{ position: "relative", width: "100%", aspectRatio: `${aspect}`, background: "#111" }}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={photoUrl}
