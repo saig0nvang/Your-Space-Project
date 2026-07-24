@@ -1,60 +1,59 @@
 "use client";
 
-import { useState } from "react";
-import { calibrate, placeOnFloor, type Calibration, type Transform } from "@yourspace/core";
-import { browserDepth } from "@/lib/depth/browserDepth";
+import { useState, type MouseEvent } from "react";
+import {
+  placeOnFloor,
+  solveCameraFromHorizon,
+  type Calibration,
+} from "@yourspace/core";
 import { GOLDEN_ROOMS, SPIKE_SOFA } from "@/lib/rooms";
 import { RoomCanvas } from "@/components/scene/RoomCanvas";
 
-// SPIKE (decision-gate D4): đặt 1 sofa vào ảnh phòng thật, đánh giá bằng MẮT.
-// Chạy: `pnpm dev` → /spike
+// SPIKE (decision-gate D4) — hiệu chỉnh CÓ TRỢ GIÚP.
+// Depth tương đối KHÔNG đủ để suy scale+camera (đã chứng minh ở vòng trước):
+// nên lấy đường chân trời từ user → pitch chính xác; chiều cao camera → scale.
+// (Relative depth sẽ dùng lại cho OCCLUSION ở bước sau.)
+
+const ASPECT = 4 / 3;
 
 export default function SpikePage() {
   const [room, setRoom] = useState<string>(GOLDEN_ROOMS[0] ?? "");
-  const [asDisparity, setAsDisparity] = useState(true);
-  const [ndcY, setNdcY] = useState(-0.4);
-  const [pitchOverride, setPitchOverride] = useState<number | null>(null);
-  const [status, setStatus] = useState("Chọn ảnh rồi bấm Chạy depth.");
-  const [baseCalib, setBaseCalib] = useState<Calibration | null>(null);
+  const [horizonNdcY, setHorizonNdcY] = useState(0.15);
+  const [heightM, setHeightM] = useState(1.4);
+  const [placeNdc, setPlaceNdc] = useState<{ x: number; y: number }>({ x: 0, y: -0.45 });
+  const [rotDeg, setRotDeg] = useState(0);
 
-  // Áp override pitch (nếu bật) lên calibration gốc.
-  const calib: Calibration | null =
-    baseCalib && pitchOverride !== null
-      ? { ...baseCalib, camera: { ...baseCalib.camera, pitchRad: (pitchOverride * Math.PI) / 180 } }
-      : baseCalib;
+  const camera = solveCameraFromHorizon({ horizonNdcY, aspect: ASPECT, heightM });
+  const calib: Calibration = {
+    camera,
+    floor: { normal: { x: 0, y: 1, z: 0 }, d: 0 },
+    confidence: 1,
+  };
+  const base = placeOnFloor(placeNdc, calib, SPIKE_SOFA.dims);
+  const transform = { ...base, rotationYRad: (rotDeg * Math.PI) / 180 };
 
-  const transform: Transform | null = calib
-    ? placeOnFloor({ x: 0, y: ndcY }, calib, SPIKE_SOFA.dims)
-    : null;
+  const dist = Math.hypot(transform.position.x, transform.position.z, heightM);
+  const belowHorizon = placeNdc.y < horizonNdcY;
 
-  const dist = transform
-    ? Math.hypot(transform.position.x, transform.position.z, (calib?.camera.heightM ?? 1.4))
-    : 0;
-
-  async function run() {
-    setBaseCalib(null);
-    setStatus("Đang chạy Depth Anything V2 trong trình duyệt (lần đầu tải model)...");
-    try {
-      const depth = await browserDepth(room, asDisparity);
-      const c = calibrate(depth, { assumedCameraHeightM: 1.4 });
-      setBaseCalib(c);
-      setStatus(
-        `Depth OK (${depth.width}×${depth.height}). confidence=${c.confidence.toFixed(2)}, ` +
-          `pitch tự động=${((c.camera.pitchRad * 180) / Math.PI).toFixed(1)}°`,
-      );
-    } catch (e) {
-      setStatus("Lỗi: " + (e instanceof Error ? e.message : String(e)));
-    }
+  function onPhotoClick(e: MouseEvent<HTMLDivElement>) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    const ny = 1 - ((e.clientY - rect.top) / rect.height) * 2;
+    setPlaceNdc({ x: nx, y: ny });
   }
+
+  // vị trí CSS của đường chân trời
+  const horizonTopPct = ((1 - horizonNdcY) / 2) * 100;
 
   return (
     <main style={{ maxWidth: 980, margin: "0 auto", padding: 24, fontFamily: "system-ui" }}>
       <h1 style={{ fontSize: 24, marginBottom: 4 }}>YourSpace — Spike depth-placement</h1>
-      <p style={{ color: "#666", marginBottom: 16 }}>
-        Decision-gate D4: đặt sofa vào ảnh phòng thật → chấm believability trên {GOLDEN_ROOMS.length} ảnh.
+      <p style={{ color: "#666", marginBottom: 16, fontSize: 14 }}>
+        Decision-gate D4 · <b>hiệu chỉnh có trợ giúp</b>: kéo đường chân trời cho khớp ảnh (thường ngang tầm
+        mắt), rồi <b>bấm vào sàn</b> để đặt sofa.
       </p>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
+      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
         <select value={room} onChange={(e) => setRoom(e.target.value)}>
           {GOLDEN_ROOMS.map((r, i) => (
             <option key={r} value={r}>
@@ -62,49 +61,49 @@ export default function SpikePage() {
             </option>
           ))}
         </select>
-        <label title="Depth Anything trả disparity (gần=lớn); bật để đổi sang khoảng cách">
-          <input type="checkbox" checked={asDisparity} onChange={(e) => setAsDisparity(e.target.checked)} />{" "}
-          disparity→distance
-        </label>
-        <button onClick={run}>Chạy depth</button>
-      </div>
-
-      <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
         <label>
-          đặt Y:{" "}
-          <input type="range" min={-0.9} max={0.2} step={0.05} value={ndcY}
-            onChange={(e) => setNdcY(parseFloat(e.target.value))} /> {ndcY.toFixed(2)}
+          chân trời:{" "}
+          <input type="range" min={-0.5} max={0.9} step={0.01} value={horizonNdcY}
+            onChange={(e) => setHorizonNdcY(parseFloat(e.target.value))} />{" "}
+          {horizonNdcY.toFixed(2)}
         </label>
         <label>
-          <input type="checkbox" checked={pitchOverride !== null}
-            onChange={(e) => setPitchOverride(e.target.checked ? 15 : null)} /> override pitch
+          cao camera:{" "}
+          <input type="range" min={0.8} max={2.0} step={0.05} value={heightM}
+            onChange={(e) => setHeightM(parseFloat(e.target.value))} /> {heightM.toFixed(2)}m
         </label>
-        {pitchOverride !== null && (
-          <label>
-            pitch:{" "}
-            <input type="range" min={-10} max={45} step={1} value={pitchOverride}
-              onChange={(e) => setPitchOverride(parseFloat(e.target.value))} /> {pitchOverride}°
-          </label>
-        )}
+        <label>
+          xoay Y:{" "}
+          <input type="range" min={-180} max={180} step={5} value={rotDeg}
+            onChange={(e) => setRotDeg(parseFloat(e.target.value))} /> {rotDeg}°
+        </label>
       </div>
 
-      <p style={{ fontSize: 13, color: "#444", marginBottom: 4 }}>{status}</p>
-      {transform && (
-        <p style={{ fontSize: 12, color: dist > 15 ? "#b00" : "#060", marginBottom: 12, fontFamily: "monospace" }}>
-          sofa @ x={transform.position.x.toFixed(2)} y={transform.position.y.toFixed(2)}{" "}
-          z={transform.position.z.toFixed(2)} · cách camera ≈ {dist.toFixed(1)}m
-          {dist > 15 && " ⚠️ QUÁ XA → sẽ thấy tí xíu/không thấy. Chỉnh pitch hoặc đặt-Y."}
-        </p>
-      )}
+      <p style={{ fontSize: 12, fontFamily: "monospace", color: dist > 15 || !belowHorizon ? "#b00" : "#060", marginBottom: 10 }}>
+        pitch={((camera.pitchRad * 180) / Math.PI).toFixed(1)}° · sofa @ x={transform.position.x.toFixed(2)}{" "}
+        z={transform.position.z.toFixed(2)} · cách camera ≈ {dist.toFixed(1)}m
+        {!belowHorizon && " ⚠️ bấm DƯỚI đường chân trời mới ra điểm trên sàn"}
+        {belowHorizon && dist > 15 && " ⚠️ quá xa — bấm thấp hơn hoặc hạ chân trời"}
+      </p>
 
-      {calib && transform ? (
+      <div style={{ position: "relative", cursor: "crosshair" }} onClick={onPhotoClick}>
         <RoomCanvas photoUrl={room} glbUrl={SPIKE_SOFA.url} calibration={calib} transform={transform} />
-      ) : (
-        <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#f2ede6" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={room} alt="room preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {/* đường chân trời */}
+        <div
+          style={{
+            position: "absolute", left: 0, right: 0, top: `${horizonTopPct}%`,
+            borderTop: "2px dashed rgba(176,101,74,0.9)", pointerEvents: "none",
+          }}
+        >
+          <span style={{ position: "absolute", right: 6, top: -20, fontSize: 11, color: "#B0654A", background: "rgba(255,255,255,.75)", padding: "1px 6px", borderRadius: 4 }}>
+            chân trời
+          </span>
         </div>
-      )}
+      </div>
+
+      <p style={{ fontSize: 12, color: "#666", marginTop: 10 }}>
+        Chấm cho ảnh này: <b>scale đúng?</b> · <b>chạm sàn?</b> · <b>phối cảnh khớp?</b> — (occlusion là bước sau)
+      </p>
     </main>
   );
 }

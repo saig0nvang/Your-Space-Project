@@ -5,6 +5,7 @@ export * from "./scene/ray";
 export * from "./scene/calibration";
 export * from "./scene/placement";
 export * from "./scene/to-three";
+export * from "./scene/horizon";
 export { syntheticFloor } from "./scene/fixtures/synthetic-floor";
 export * from "./ai/types";
 export * from "./ai/gateway";
