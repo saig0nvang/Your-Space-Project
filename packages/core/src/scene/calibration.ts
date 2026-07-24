@@ -4,12 +4,21 @@ import { pixelRayDir } from "./ray";
 
 const DEFAULT_FOV_Y = (60 * Math.PI) / 180;
 
+/** Mặt phẳng qua 3 điểm → normal (chưa chuẩn hoá). */
+function planeNormal(a: Vec3, b: Vec3, c: Vec3): Vec3 {
+  return cross(sub(b, a), sub(c, a));
+}
+
 /**
- * Ước lượng camera + mặt sàn từ depth map (relative).
- * - Back-project các pixel nửa dưới ảnh → point cloud (không gian camera).
- * - Khớp mặt phẳng bằng 3 điểm trải rộng (TẤT ĐỊNH, không Math.random) → normal.
+ * Ước lượng camera + mặt sàn từ depth map (relative, quy ước: giá trị LỚN = XA).
+ *
+ * - Back-project pixel nửa dưới ảnh → point cloud (không gian camera).
+ * - RANSAC TẤT ĐỊNH (bộ ba chỉ số theo bước nguyên tố, không Math.random):
+ *   thử nhiều mặt phẳng ứng viên, chỉ nhận mặt "giống sàn" (|normal.y| lớn),
+ *   chọn mặt nhiều inlier nhất → bền với nhiễu/tường/đồ đạc.
  * - Ép scale metric bằng chiều cao camera giả định (không tin depth tuyệt đối).
- * Trả về khung THẾ GIỚI: sàn = mặt phẳng y=0, camera cao heightM, nghiêng pitchRad.
+ *
+ * Trả khung THẾ GIỚI: sàn = y=0, camera cao heightM, nghiêng pitchRad.
  */
 export function calibrate(
   depth: DepthMap,
@@ -20,9 +29,12 @@ export function calibrate(
   const { width: w, height: h, data } = depth;
   const aspect = w / h;
 
+  // Lấy mẫu thưa nửa dưới ảnh (đủ dày để bền, đủ thưa để nhanh).
+  const stepX = Math.max(1, Math.floor(w / 64));
+  const stepY = Math.max(1, Math.floor(h / 48));
   const pts: Vec3[] = [];
-  for (let j = Math.floor(h * 0.4); j < h; j++) {
-    for (let i = 0; i < w; i++) {
+  for (let j = Math.floor(h * 0.45); j < h; j += stepY) {
+    for (let i = 0; i < w; i += stepX) {
       const dv = data[j * w + i] ?? 0;
       if (dv <= 1e-5) continue;
       const nx = ((i + 0.5) / w) * 2 - 1;
@@ -32,47 +44,53 @@ export function calibrate(
   }
 
   const worldFloor = { normal: { x: 0, y: 1, z: 0 }, d: 0 };
-  if (pts.length < 3) {
+  const n = pts.length;
+  if (n < 8) {
     return { camera: { fovYRad, aspect, heightM, pitchRad: 0 }, floor: worldFloor, confidence: 0 };
   }
 
-  // Khớp mặt phẳng tất định: 3 điểm trải rộng, không cộng tuyến.
-  const p1 = pts[0]!;
-  const p2 = pts[pts.length - 1]!;
-  const p3 = pts[Math.floor(pts.length / 2)]!;
-  let nrm = cross(sub(p2, p1), sub(p3, p1));
-  if (dot(nrm, nrm) < 1e-9) {
-    for (const p of pts) {
-      const c = cross(sub(p2, p1), sub(p, p1));
-      if (dot(c, c) > 1e-9) {
-        nrm = c;
-        break;
+  // Ngưỡng inlier theo quy mô đám mây điểm.
+  let maxAbs = 0;
+  for (const p of pts) maxAbs = Math.max(maxAbs, Math.abs(p.x), Math.abs(p.y), Math.abs(p.z));
+  const thresh = Math.max(1e-5, maxAbs * 0.02);
+
+  // RANSAC tất định: bộ ba chỉ số theo bước nguyên tố.
+  const STRIDES = [1, 7, 13, 31, 61, 127];
+  let bestNormal: Vec3 | null = null;
+  let bestOffset = 0;
+  let bestInliers = 0;
+
+  for (const s1 of STRIDES) {
+    for (const s2 of STRIDES) {
+      for (let start = 0; start < n; start += Math.max(1, Math.floor(n / 24))) {
+        const a = pts[start]!;
+        const b = pts[(start + s1 * 3) % n]!;
+        const c = pts[(start + s2 * 7 + 5) % n]!;
+        const raw = planeNormal(a, b, c);
+        if (dot(raw, raw) < 1e-12) continue;
+        let nm = normalize(raw);
+        if (nm.y < 0) nm = scale(nm, -1);
+        if (Math.abs(nm.y) < 0.55) continue; // chỉ nhận mặt phẳng "giống sàn"
+        const off = -dot(nm, a);
+        let inliers = 0;
+        for (const p of pts) if (Math.abs(dot(nm, p) + off) <= thresh) inliers++;
+        if (inliers > bestInliers) {
+          bestInliers = inliers;
+          bestNormal = nm;
+          bestOffset = off;
+        }
       }
     }
   }
-  let n = normalize(nrm);
-  if (n.y < 0) n = scale(n, -1); // hướng lên (camera ở trên sàn)
 
-  // Tỉ lệ inlier quanh mặt phẳng qua centroid → confidence.
-  let cx = 0,
-    cy = 0,
-    cz = 0;
-  for (const p of pts) {
-    cx += p.x;
-    cy += p.y;
-    cz += p.z;
+  if (!bestNormal) {
+    return { camera: { fovYRad, aspect, heightM, pitchRad: 0 }, floor: worldFloor, confidence: 0 };
   }
-  const centroid: Vec3 = { x: cx / pts.length, y: cy / pts.length, z: cz / pts.length };
-  const dPlane = -dot(n, centroid);
-  let spread = 0;
-  for (const p of pts) spread = Math.max(spread, Math.abs(dot(n, p) + dPlane));
-  const thresh = Math.max(1e-4, spread * 0.05);
-  let inliers = 0;
-  for (const p of pts) if (Math.abs(dot(n, p) + dPlane) <= thresh) inliers++;
-  const confidence = inliers / pts.length;
 
-  // pitch từ normal (camera nhìn -Z): normal sàn ≈ (0, cosθ, sinθ).
-  const pitchRad = Math.atan2(n.z, n.y);
+  const confidence = bestInliers / n;
+
+  // pitch từ normal sàn trong không gian camera (camera nhìn -Z): ≈ (0, cosθ, sinθ).
+  const pitchRad = Math.atan2(bestNormal.z, bestNormal.y);
 
   return { camera: { fovYRad, aspect, heightM, pitchRad }, floor: worldFloor, confidence };
 }
