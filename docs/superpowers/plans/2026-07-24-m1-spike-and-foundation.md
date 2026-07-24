@@ -20,6 +20,8 @@
 - UI theo **`DESIGN.md`** (Fraunces + Instrument Sans; warm-neutral; clay `#B0654A` chỉ ở CTA).
 - Nguồn chân lý: `docs/superpowers/specs/2026-07-24-m1-web-validation-design.md`.
 
+> **Amendment 2026-07-24 (spike depth):** Founder chọn chạy depth **IN-BROWSER** cho spike (transformers.js + Depth Anything V2 Small ONNX, WebGPU/WASM) → **KHÔNG cần Replicate token**. Kiến trúc dùng interface `DepthService` với 2 adapter: `browserDepth` (transformers.js — dùng cho spike; cũng là POC cho tầm nhìn on-device D3) và `serverDepth` (/api/depth → Replicate — kiến trúc M1 chính thức, build ở Task 4 nhưng KHÔNG chặn spike). Task 7 dùng `browserDepth`.
+
 ---
 
 ### Task 0: Monorepo + tooling scaffold
