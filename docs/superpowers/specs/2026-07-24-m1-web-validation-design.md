@@ -25,7 +25,7 @@
 |---|---|
 | Ai code | Claude viết phần lớn, founder review/định hướng → tối ưu stack cho độ tin cậy + dễ bảo trì |
 | Persistence | **Stateless, không login.** Save/Share = export PNG (+ optional state trong URL) |
-| Catalog | **Model 3D free** (Sketchfab/CGTrader/Poly) + **giá tham khảo thật + link affiliate** tới sản phẩm có sẵn. 16–24 model, **2–3 phong cách** (phong cách cụ thể: founder chốt lúc dựng catalog) |
+| Catalog | **Model 3D free** (Sketchfab/CGTrader/Poly) + **giá tham khảo thật + link affiliate** tới sản phẩm có sẵn. 16–24 model, **3 phong cách: Japandi · Mid-Century · Bauhaus** (chốt 2026-07-24) |
 | Xóa đồ cũ | **CÓ, bản gọn trong M1**: chọn đồ cũ → SAM (cloud) mask → LaMa (cloud) inpaint. Fallback: reveal pixel gốc |
 | Depth | **Server-side/cloud cho M1** (1 lần/ảnh, cache theo hash). ⚠️ *Lệch PRD §10.7 "on-device" — xem §15.* On-device = M2/tầm nhìn |
 | Platform | Web-first (deploy web/PWA, không App Store ở M1). Mobile native = M2 |
@@ -247,7 +247,7 @@ Vercel + Supabase + Upstash + Replicate + Vercel Blob/R2. Tất cả managed, pa
 - **Depth = server-side cho M1-web** (PRD §10.7 ghi "depth on-device"). Lý do: depth chỉ **1 lần/ảnh** (không real-time mỗi frame như PRD giả định), web không có NPU, in-browser cần WebGPU (chưa phổ cập) + tải ~25MB. **On-device = M2-mobile / tầm nhìn dài hạn**, đã đặt sau interface `AIGateway.depth()` để swap. → *Cần cập nhật 1 dòng ở PRD §10.7 + Decisions_Log D3 cho khớp.*
 
 **Bỏ ngỏ cần founder chốt (không chặn khởi động spike):**
-1. **2–3 phong cách cụ thể** cho catalog (vd Japandi / Mid-Century / Scandinavian).
+1. ✅ **3 phong cách:** Japandi · Mid-Century · Bauhaus (chốt 2026-07-24).
 2. **Đích thực của lead + link affiliate** (Shopee affiliate account? site nhà cung cấp nào? lead về Supabase/email?).
 3. **Ngưỡng pass spike** (đề xuất ≥70% ảnh "tin được").
 4. Xác nhận đơn giá Replicate thực tế khi có volume (để chốt COGS).

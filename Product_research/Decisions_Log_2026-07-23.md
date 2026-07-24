@@ -31,6 +31,8 @@
 
 **Quyết định:** **MVP = cloud inpainting qua API hosted trả-theo-lượt** (Replicate hoặc tương đương), KHÔNG tự nuôi GPU server. Giữ được trải nghiệm "xóa đồ cũ trong phòng thật" (non-negotiable gốc).
 
+> **[Cập nhật M1 — 2026-07-24]** Depth estimation tính **1 lần/ảnh** (không per-frame) → cho **M1-web depth cũng chạy server-side/cloud** (cache theo hash), đặt sau interface `AIGateway.depth()` để M2-mobile swap on-device. Điều này sửa lại tiền đề cũ "depth on-device vì real-time". Chi tiết ở spec M1.
+
 **Nuance quan trọng (founder nhấn mạnh):**
 - **"100% on-device" vẫn là killer decision / tầm nhìn dài hạn** — mục tiêu privacy khác biệt hóa (moat Shopee khó copy). Chỉ dùng cloud vì HIỆN chưa khả thi kỹ thuật (LaMa 200MB không chạy nổi máy tầm trung). **Revisit khi công nghệ cho phép** (model inpainting nhẹ hơn, NPU mobile mạnh hơn).
 

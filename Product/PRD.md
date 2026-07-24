@@ -147,7 +147,7 @@
 
 **Tính năng AI trong M1:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D (**depth on-device**) để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ (**cloud inpainting qua API hosted, trả theo lượt**).
 
-> **Ranh giới on-device vs cloud (D3):** Depth estimation chạy **on-device** (real-time, mỗi lần drag). Inpainting chạy **cloud** (API hosted, chỉ gọi khi user xóa đồ). **"100% on-device" là tầm nhìn dài hạn, KHÔNG phải M1.** Privacy được đảm bảo bằng **consent thật**: "ảnh gửi lên xử lý và xóa ngay" — KHÔNG dùng câu "không upload ảnh".
+> **Ranh giới on-device vs cloud (D3 — cập nhật cho M1-web 2026-07-24):** Depth estimation tính **1 LẦN/ảnh lúc upload** (KHÔNG per-frame — sửa lại tiền đề cũ). Cho **M1-web: depth chạy server-side/cloud** (cache theo hash ảnh) vì web không có NPU và in-browser cần WebGPU chưa phổ cập; đặt sau interface để **M2-mobile swap sang on-device**. Inpainting chạy **cloud** (chỉ khi xóa đồ). **"100% on-device" là tầm nhìn dài hạn.** Privacy = **consent thật** ("ảnh gửi lên xử lý và xóa ngay") — KHÔNG dùng câu "không upload ảnh". Chi tiết: `docs/superpowers/specs/2026-07-24-m1-web-validation-design.md`.
 
 | Tiêu chí | Lựa chọn | Lý do |
 |---|---|---|
