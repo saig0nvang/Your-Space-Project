@@ -36,3 +36,10 @@ Technical/Inpainting/**/*.zip
 Technical/Segmentation/vendor/
 Technical/Inpainting/lama-with-refiner/
 
+.gstack/
+
+# Node / monorepo
+node_modules/
+.next/
+.env*
+*.local

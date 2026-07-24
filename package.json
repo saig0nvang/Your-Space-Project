@@ -1,0 +1,11 @@
+{
+  "name": "yourspace",
+  "private": true,
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint"
+  }
+}
