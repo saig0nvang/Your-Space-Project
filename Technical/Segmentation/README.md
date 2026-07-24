@@ -1,5 +1,11 @@
 # YourSpace Segmentation MVP
 
+> **[TRANG THAI 2026-07-23 — theo Decisions_Log]** Module segmentation (SAM2) phuc vu
+> tinh nang **inpainting / erase** (tap chon do -> tao mask -> gui sang pipeline
+> Inpainting de xoa do cu). Theo thang bac moc D5, tinh nang nay thuoc **M2 (MVP that)**,
+> khong nam trong M1 validation. Ghi chu nay chi cap nhat trang thai — **khong doi code**.
+> Nguon chot: `Product_research/Decisions_Log_2026-07-23.md`.
+
 Module nay chua toan bo backend, config, tai lieu setup va output cho tinh nang
 SAM2 interactive segmentation. App chinh chi goi API local de user tap object,
 xem mask overlay va export `image.png + mask.png` cho pipeline Inpainting.

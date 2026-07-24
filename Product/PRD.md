@@ -4,6 +4,18 @@
 
 ---
 
+### 10.0. Milestone Map
+
+> **Quy ước quan trọng:** Trừ khi nói rõ khác, **PRD này mô tả scope của M1** (web validation). Các tính năng thuộc M2 được đánh dấu rõ.
+
+| Milestone | Tên | Thời lượng | Phạm vi cốt lõi |
+|---|---|---|---|
+| **M0** | PoC (đã có) | — | WebApp prototype đã dựng. **KHÔNG gọi là "MVP"** — chỉ để kiểm chứng kỹ thuật đặt đồ + depth. |
+| **M1** | Web Validation | 4–6 tuần | Style Palette + ướm thử trong ảnh phòng (AI Spatial Placement kiểu Kreativ-lite) + dự toán. **Mua = link affiliate / thu-lead**, CHƯA có escrow/thanh toán trong app. |
+| **M2** | Mobile | 3–4 tháng | App mobile đầy đủ + **escrow qua cổng thanh toán được cấp phép** (supplier chịu bồi hoàn) + kết nối chuyên gia đầy đủ. |
+
+---
+
 ### 10.1. Problem Statement
 
 > Người trẻ Việt Nam (25–35 tuổi) coi không gian sống là biểu hiện bản sắc cá nhân, nhưng không có công cụ nào giúp họ khám phá gu thẩm mỹ, hình dung phong cách đó trong căn phòng thật, và biết mua gì ở đâu — dẫn đến 2–4 tuần đắn đo cho mỗi quyết định mua nội thất 5–30 triệu VNĐ, tỉ lệ mua nhầm/hối hận cao, hoặc bỏ cuộc hoàn toàn và sống với không gian không ưng ý.
@@ -36,7 +48,7 @@
 > **so that** tôi có thể gọi tên được gu thẩm mỹ của mình và biết hướng đi cụ thể thay vì mơ hồ lưu ảnh trên Pinterest.
 
 **Acceptance criteria:**
-- Ứng dụng tư duy "Style Palette": Hiển thị tối thiểu 5 phong cách nội thất thay vì hiển thị sản phẩm lẻ. Mỗi phong cách có ảnh minh họa + mô tả đặc trưng (màu sắc, chất liệu, cảm xúc).
+- Ứng dụng tư duy "Style Palette": M1 hiển thị **2–3 phong cách** nội thất (5 phong cách là mục tiêu sau) thay vì hiển thị sản phẩm lẻ. Mỗi phong cách có ảnh minh họa + mô tả đặc trưng (màu sắc, chất liệu, cảm xúc).
 - User có thể chọn 1 phong cách để xem các món đồ đã được curate sẵn theo phong cách đó (triệt tiêu sự đắn đo so với việc bơi trong Product Catalog).
 - Thời gian từ lúc mở app đến lúc chọn được phong cách ≤ 60 giây.
 
@@ -59,7 +71,8 @@
 **Acceptance criteria:**
 - Hiển thị danh sách tất cả món đồ đã đặt vào phòng, kèm: tên sản phẩm, ảnh thumbnail, giá tham khảo (VNĐ).
 - Tổng chi phí ước tính tự động cập nhật khi thêm/xóa đồ.
-- Mỗi sản phẩm có nút "Xem chi tiết / Mua" redirect ra website hoặc sàn TMĐT của nhà cung cấp.
+- Mỗi sản phẩm có nút "Xem chi tiết / Mua" redirect ra website hoặc sàn TMĐT của nhà cung cấp (M1: link affiliate; thanh toán/escrow trong app thuộc M2).
+- **Nhánh thu-lead tư vấn (M1):** user có thể để lại SĐT/thông tin liên hệ để được tư vấn follow-up (kết nối chuyên gia). M1 chỉ thu lead; kết nối chuyên gia đầy đủ (chat/booking) triển khai ở M2+.
 
 #### User Story #4 — AI hỗ trợ đặt đồ thông minh (In-scope MVP)
 > **As a** người đang kéo thả đồ nội thất vào ảnh chụp phòng thật,
@@ -72,7 +85,7 @@
 - Khi user upload ảnh phòng, AI phân tích ảnh để tạo depth map (bản đồ độ sâu) cơ bản.
 - Khi user kéo thả 1 món đồ vào vị trí trong ảnh, hệ thống tự động scale đồ theo depth tại điểm đó (đồ ở xa nhỏ hơn, đồ ở gần to hơn).
 - User có thể **override** (chỉnh tay) kích thước/vị trí nếu AI ước lượng sai (Human-in-the-loop).
-- User có thể xoay item 360 độ
+- User có thể xoay item quanh trục Y (xoay ngang để đổi hướng đồ); MVP không hỗ trợ xoay tự do 360° đa trục
 - Khi xóa đồ, ảnh nền phía sau được khôi phục hợp lý (inpainting cơ bản hoặc hiển thị lại ảnh gốc).
 - Thời gian xử lý depth map ≤ 5 giây cho ảnh độ phân giải điện thoại thông thường.
 
@@ -84,12 +97,14 @@
 
 | Phân loại | Nội dung |
 |---|---|
-| **In-Scope (NOW)** | (1) Khám phá theo "Style Palette", (2) Tương tác 3D cốt lõi (kéo thả, xoay, xóa, manual resize), (3) **AI Spatial Placement** để ước lượng depth/scale ban đầu, (4) Bảng dự toán + Link mua Affiliate |
-| **Out-of-Scope (NEXT/LATER)** | Cộng đồng/mạng xã hội, Thanh toán In-app, Quét AR/LiDAR (LATER), **Style Quiz AI** (LATER), AI tự phối toàn bộ phòng thay user (LATER) |
+| **In-Scope (M1)** | (1) Khám phá theo "Style Palette", (2) Tương tác 3D cốt lõi (kéo thả, xoay trục Y, xóa, manual resize), (3) **AI Spatial Placement kiểu "Kreativ-lite"** (1 ảnh + Depth Anything V2) để ước lượng depth/scale ban đầu, **có fallback đặt đồ thủ công**, (4) Bảng dự toán + Link mua Affiliate + **thu-lead tư vấn** |
+| **M2 (NEXT)** | **Thanh toán/escrow qua cổng thanh toán được cấp phép** (supplier chịu bồi hoàn), Kết nối chuyên gia đầy đủ, App mobile native |
+| **Out-of-Scope (LATER)** | Cộng đồng/mạng xã hội, Quét AR/LiDAR, **Style Quiz AI**, AI tự phối toàn bộ phòng thay user |
 | **Non-Goals** | KHÔNG làm phần mềm kỹ thuật (AutoCAD), KHÔNG làm sàn TMĐT nặng (logistics/kho), KHÔNG tự sản xuất nội thất |
 
-**Scope decision:** *AI Spatial Placement có nằm trong MVP không?*
-→ **CÓ.** Đây là điểm khác biệt cốt lõi giúp trải nghiệm "ướm thử" đủ thật và đủ nhanh. Rủi ro kỹ thuật được kiểm soát bằng human-in-the-loop: user luôn có thể manual resize/drag nếu depth estimation sai, và hệ thống tự chuyển sang manual mode khi confidence thấp.
+**Scope decision:** *AI Spatial Placement có nằm trong M1 không?*
+→ **CÓ — must-have, nhưng làm kiểu "Kreativ-lite":** chỉ cần **1 ảnh + Depth Anything V2** (không dựng 3D toàn phòng), luôn kèm **fallback đặt đồ thủ công**. Đây là điểm khác biệt cốt lõi giúp trải nghiệm "ướm thử" đủ thật và đủ nhanh. Rủi ro kỹ thuật được kiểm soát bằng human-in-the-loop: user luôn có thể manual resize/drag nếu depth estimation sai, và hệ thống tự chuyển sang manual mode khi confidence thấp.
+→ **Decision gate:** chạy **spike ngay tuần đầu M1** để xác nhận chất lượng depth/scale đủ dùng; nếu spike thất bại, hạ AI xuống nhánh phụ và ship trước luồng đặt đồ thủ công.
 
 ---
 
@@ -100,7 +115,7 @@
 | **Activation Rate** | % user hoàn thành luồng: Chọn phong cách → Upload ảnh → Đặt ≥ 1 món đồ | ≥ 30% | Đo lường ý định thực sự của user. |
 | **Save/Share Rate** | % user lưu lại bản thiết kế sau khi phối đồ | ≥ 30% | Proxy cho "intent to buy" (Theo KR1 - OKR Quý 1). |
 | **Click-to-Buy Rate** | % user nhấn "Xem chi tiết / Mua" trên ít nhất 1 sản phẩm | ≥ 15% | Metric cốt lõi sinh doanh thu Affiliate (Theo KR2 - OKR Quý 1). |
-| **Average Order Value (AOV)** | Giá trị trung bình của giỏ hàng khi user click Mua | 10–15 tr VNĐ | Đo lường hiệu ứng "Identity-Linked Premium" (mua cả không gian). |
+| **Average Order Value (AOV)** | Giá trị trung bình của giỏ hàng khi user click Mua | Base ~10 tr VNĐ (mục tiêu M1) | 15 tr VNĐ ("mua cả không gian" — hiệu ứng Identity-Linked Premium) là **upside**, không phải con số cam kết. |
 | **Return Rate (D7)** | % user quay lại app trong vòng 7 ngày | ≥ 25% | Đo retention (Theo KR3 - OKR Quý 1). |
 
 ---
@@ -111,7 +126,7 @@
 
 | Dependency | Mô tả | Rủi ro | Mitigation |
 |---|---|---|---|
-| **Catalog 3D** | Cần tối thiểu 50–80 mô hình 3D nội thất chất lượng khá, phân bổ đều cho 5 phong cách (10–16 models/phong cách) | Tự tạo 3D tốn thời gian + chi phí | MVP: dùng 3D assets từ Sketchfab/CGTrader. Scale: Onboard 10 nhà cung cấp VN để số hóa 3D, tạo ra hào nước phòng thủ "Supplier Lock-in" |
+| **Catalog 3D** | M1 cần **16–24 mô hình 3D** nội thất chất lượng khá, phân bổ cho **2–3 phong cách** (5 phong cách là mục tiêu sau) | Tự tạo 3D tốn thời gian + chi phí | M1: dùng 3D assets từ Sketchfab/CGTrader. Scale: Onboard nhà cung cấp VN để số hóa 3D, tạo ra hào nước phòng thủ "Supplier Lock-in" |
 | **Dữ liệu giá + nguồn mua** | Cần giá tham khảo và link mua thật cho mỗi sản phẩm 3D | Giá biến động, link hết hạn | MVP dùng giá tham khảo (khoảng giá), cập nhật thủ công hàng tháng. Scale: API tự động crawl giá từ đối tác |
 | **3D Rendering Engine** | Rendering 3D trên mobile (React Native + Three.js/Expo GL, hoặc native SceneKit/ARCore) phụ thuộc vào GPU thiết bị | Điện thoại cũ render chậm/lag | Set minimum requirement (iPhone 8+ / Android mid-range 2020+), cung cấp fallback 2D preview cho thiết bị yếu |
 | **AI Depth Estimation** | Model ước lượng độ sâu từ ảnh 2D (MiDaS / Depth Anything) để đặt đồ khớp phối cảnh | Độ chính xác depth map phụ thuộc chất lượng ảnh, góc chụp | Cho phép user override thủ công (pinch-to-resize), cung cấp hướng dẫn chụp ảnh tối ưu |
@@ -121,22 +136,24 @@
 | Constraint | Chi tiết |
 |---|---|
 | **Team size** | Solo founder — 1 người phụ trách cả product, design, development |
-| **Timeline** | MVP cần ship trong 4–6 tuần để kịp validate giả thuyết |
-| **Budget** | MVP: Bootstrap dưới 10 triệu VNĐ. Post-MVP: Dùng traction từ RAT để gọi vốn Seed $150K USD duy trì 18 tháng runway |
-| **Platform** | App-first (iOS + Android qua React Native / Flutter) — ưu tiên trải nghiệm mobile vì user chụp ảnh phòng bằng điện thoại, tương tác kéo thả trên touchscreen tự nhiên hơn web |
-| **Catalog limit** | MVP chỉ cần 5 phong cách × ~15 sản phẩm = ~75 models. Không cần cover tất cả phong cách và sản phẩm |
+| **Timeline** | **M1** cần ship trong 4–6 tuần để kịp validate giả thuyết (M2 mobile: 3–4 tháng sau đó) |
+| **Budget** | **Bootstrap-first**: burn ~11.7 triệu VNĐ/tháng. Sau khi M1 pass, cân nhắc gọi vốn để mở rộng M2 (không phụ thuộc vào việc gọi được seed ngay) |
+| **Platform** | **M1 = Web-first** (tái dùng PoC `WebApp/`, deploy web/PWA, không qua App Store) để solo iterate nhanh. **Mobile native (iOS+Android) = M2** — trải nghiệm chụp ảnh/kéo thả touchscreen tự nhiên hơn, làm sau khi M1 validate |
+| **Catalog limit** | M1 chỉ cần **2–3 phong cách × 8 sản phẩm ≈ 16–24 models**. Không cần cover tất cả phong cách và sản phẩm (5 phong cách là mục tiêu sau) |
 
 ---
 
 ### 10.7. Model Selection Rationale (AI-Specific #1)
 
-**Tính năng AI trong MVP:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ.
+**Tính năng AI trong M1:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D (**depth on-device**) để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ (**cloud inpainting qua API hosted, trả theo lượt**).
+
+> **Ranh giới on-device vs cloud (D3):** Depth estimation chạy **on-device** (real-time, mỗi lần drag). Inpainting chạy **cloud** (API hosted, chỉ gọi khi user xóa đồ). **"100% on-device" là tầm nhìn dài hạn, KHÔNG phải M1.** Privacy được đảm bảo bằng **consent thật**: "ảnh gửi lên xử lý và xóa ngay" — KHÔNG dùng câu "không upload ảnh".
 
 | Tiêu chí | Lựa chọn | Lý do |
 |---|---|---|
-| **Depth Estimation** | **Depth Anything V2** (open-source, chạy on-device) hoặc **MiDaS** (Intel) | Chạy local trên điện thoại (không cần API call) → zero latency, zero cost/request. Depth Anything V2 small (~25MB) đủ chính xác cho use case "scale đồ theo phối cảnh" |
-| **Inpainting (xóa đồ)** | **LaMa** (open-source) hoặc fallback đơn giản (hiện lại ảnh gốc tại vùng bị che) | LaMa nhẹ, chạy on-device được. MVP có thể dùng fallback đơn giản: lưu ảnh gốc → khi xóa item → reveal lại pixel gốc phía dưới |
-| **Tại sao không dùng cloud API (GPT-4o Vision, Gemini)?** | Depth estimation cần real-time (mỗi lần drag đồ), gửi API mỗi frame là không khả thi về latency và chi phí | On-device inference là bắt buộc cho UX mượt |
+| **Depth Estimation** | **Depth Anything V2** (open-source, chạy **on-device**) hoặc **MiDaS** (Intel) | Chạy local trên điện thoại (không cần API call) → zero latency cho thao tác drag. Depth Anything V2 small (~25MB) đủ chính xác cho use case "scale đồ theo phối cảnh" |
+| **Inpainting (xóa đồ)** | **Cloud inpainting** (API hosted, ví dụ LaMa/Replicate/AWS), trả theo lượt. Kèm **fallback đơn giản** (reveal lại pixel gốc tại vùng bị che) | **LaMa ~200MB cần GPU → KHÔNG chạy on-device được**, nên inpainting chất lượng cao đặt trên cloud. Inpainting chỉ gọi khi user **xóa đồ** (không phải mỗi frame) nên độ trễ/chi phí API chấp nhận được. Fallback không cần AI: lưu ảnh gốc → khi xóa item → reveal lại pixel gốc phía dưới |
+| **Depth on-device vs inpainting cloud?** | Depth cần real-time (mỗi lần drag) → **on-device** bắt buộc cho UX mượt. Inpainting chỉ chạy khi xóa đồ, tần suất thấp → **cloud** hợp lý, không phá vỡ trải nghiệm | Tách đúng ranh giới: cái gì cần real-time thì on-device, cái gì nặng & thưa thì cloud |
 | **Tại sao không dùng ARKit/ARCore full?** | Yêu cầu camera live + quét không gian → phức tạp, Out-of-scope MVP. Depth from single image đủ tốt cho "ướm thử" | Giảm ma sát: user chỉ cần 1 ảnh chụp, không cần quét phòng |
 | **Trade-off chấp nhận được** | Depth từ ảnh 2D kém chính xác hơn LiDAR/ARKit (~±15-20% sai số) nhưng đủ cho trải nghiệm trực quan. User có thể chỉnh tay (pinch-to-resize) | Human-in-the-loop bù đắp sai số |
 
@@ -146,15 +163,16 @@
 
 | Nguồn dữ liệu | Mục đích | Chủ sở hữu | Cập nhật |
 |---|---|---|---|
-| **3D Furniture Catalog** | Metadata cho ~75 mô hình 3D (tên, phong cách, kích thước thật, giá tham khảo, link mua, file .glb/.gltf) | YourSpace curate từ Sketchfab/CGTrader + đối tác tương lai | Founder thêm thủ công trong MVP |
+| **3D Furniture Catalog** | Metadata cho **16–24 mô hình 3D** (tên, phong cách, kích thước thật, giá tham khảo, link mua, file .glb/.gltf) | YourSpace curate từ Sketchfab/CGTrader + đối tác tương lai | Founder thêm thủ công trong M1 |
 | **Depth Estimation Model** | Model weights cho Depth Anything V2 Small (~25MB), bundle cùng app | Open-source (MIT license) | Cập nhật khi có version mới cải thiện accuracy |
-| **Style Knowledge Base** | Mô tả chi tiết 5 phong cách nội thất (đặc trưng, palette, chất liệu). Dùng cho UI hiển thị, không cho AI | YourSpace tự biên soạn | Founder cập nhật khi thêm phong cách mới |
+| **Style Knowledge Base** | Mô tả chi tiết **2–3 phong cách** nội thất (đặc trưng, palette, chất liệu) cho M1; 5 phong cách là mục tiêu sau. Dùng cho UI hiển thị, không cho AI | YourSpace tự biên soạn | Founder cập nhật khi thêm phong cách mới |
 | **User Interaction Logs** | Phong cách nào được chọn, đồ nào hay kéo vào, đồ nào hay bị xóa, tần suất override AI scale → training data tương lai | YourSpace (auto-collected) | Real-time logging |
-| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth estimation | User sở hữu | Xử lý on-device, không upload lên server trong MVP — tránh vấn đề privacy |
+| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth (on-device) và inpainting (cloud) | User sở hữu | Depth xử lý on-device; khi user xóa đồ, vùng ảnh liên quan **gửi lên server cloud để inpainting rồi xóa ngay** (zero-retention). Có **consent thật** trước khi gửi: "ảnh được gửi lên xử lý và xóa ngay" |
 
 **Lưu ý quan trọng về dữ liệu:**
-- AI trong MVP chạy **hoàn toàn on-device** (depth estimation + inpainting) → không cần server AI, không có chi phí API per-request.
-- **Không dùng RAG, không fine-tune** ở giai đoạn MVP.
+- AI trong M1 **tách ranh giới**: depth estimation chạy **on-device**; inpainting (xóa đồ) chạy **cloud** (API hosted) → có **chi phí API theo lượt** cho mỗi lần inpainting. **"100% on-device" là tầm nhìn dài hạn, không phải M1** (LaMa ~200MB cần GPU nên chưa chạy on-device được).
+- Privacy: dùng **consent thật** ("ảnh gửi lên xử lý và xóa ngay", zero-retention) — KHÔNG dùng câu "không upload ảnh".
+- **Không dùng RAG, không fine-tune** ở giai đoạn M1.
 - Chiến lược dài hạn: Tích lũy interaction logs (đồ nào user hay override scale?) → cải thiện heuristic đặt đồ + data cho Style Quiz AI ở phase sau.
 
 ---
@@ -200,6 +218,6 @@ Kiểm tra cuối cùng để đảm bảo PRD đủ rõ ràng:
 |---|---|---|
 | User Stories mô tả **hành vi**, không mô tả giao diện UI? | ✅ | Các story mô tả "tôi muốn kéo thả đồ", "AI tự động scale" (hành vi), không mô tả UI cụ thể |
 | Fallback UX chỉ rõ **trigger** và **hành động cụ thể**? | ✅ | 6 kịch bản bao phủ: scale sai, depth sai, inpainting lỗi, ảnh kém, device yếu, undo — mỗi cái có trigger + action rõ ràng |
-| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao on-device (Depth Anything V2), tại sao không cloud API, tại sao không ARKit full, trade-off sai số chấp nhận được |
-| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT), Sketchfab/CGTrader cho 3D, LaMa cho inpainting |
+| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao depth on-device (Depth Anything V2) còn inpainting cloud (LaMa ~200MB cần GPU), tại sao không ARKit full, trade-off sai số chấp nhận được |
+| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT) on-device, Sketchfab/CGTrader cho 3D, cloud inpainting (LaMa/API hosted) cho xóa đồ |
 | **Kill question:** Engineer đọc User Story + Fallback UX, cần hỏi lại > 3 câu? | ✅ Không | Acceptance criteria có số cụ thể (≤ 5s depth, ≥ 30fps, ±15-20% sai số), Fallback có bảng trigger-action cho cả 6 tình huống |

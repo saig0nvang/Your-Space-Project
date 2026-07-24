@@ -11,7 +11,7 @@
 | **ARPU — Doanh thu bình quân / đơn hàng** | `2,000,000` | `800,000` | `150,000` | VND | = GMV/đơn × Commission rate. Tự động tính — không điền tay |
 | **GMV trung bình / đơn hàng** | `20,000,000` | `10,000,000` | `5,000,000` | VND | Giá 1 món đồ: Pessimistic = đồ nhỏ/phụ kiện, Base = sofa/giường trung cấp, Optimistic = combo phòng cao cấp. Nguồn: Day16 "5–10tr/giao dịch" |
 | **Commission rate (tỷ lệ hoa hồng)** | `10%` | `8%` | `3%` | % | Pessimistic: Shopee affiliate 3–5%. Base: đối tác trực tiếp 8%. Optimistic: exclusive partner deal 10%+ |
-| **TAM (số người mua tiềm năng/tháng)** | `32,500` | `65,000` | `130,000` | người/tháng | = Thị trường online HCM+HN segment trung cấp ~650 tỷ/tháng ÷ GMV/đơn. TAM lớn hơn khi GMV thấp hơn (nhiều người mua được hơn) |
+| **TAM (số người mua tiềm năng/tháng)** | `32,500` | `65,000` | `130,000` | người/tháng | = Thị trường online HCM+HN segment trung cấp ~650 tỷ/tháng ÷ GMV/đơn. **Lưu ý: "TAM" ở bảng vận hành này = số người mua/tháng của segment phục vụ — KHÁC với TAM giá trị $9.76B ở tài liệu Pitch (đừng nhầm hai con số).** |
 | **SOM — Đơn hàng mới / tháng** | `700` | `300` | `160` | đơn/tháng | Giới hạn bởi capacity founder (marketing organic). Từ Day16: 5,000–10,000 đơn/24 tháng → base ~300/tháng |
 | **→ Adoption rate** | `2.15%` | `0.46%` | `0.12%` | %/tháng | = SOM ÷ TAM. Thấp vì TAM lớn — phản ánh đúng thực tế startup mới |
 
@@ -19,15 +19,15 @@
 
 ## 2. COGS / Chi phí biến đổi trên mỗi khách hàng
 
-> ⚠️ **Lưu ý quan trọng:** YourSpace dùng **on-device AI** (Depth Anything V2, chạy trên điện thoại user) — không có chi phí API per-request. Hosting dùng Vercel/Netlify free tier. Mô hình asset-light.
+> ⚠️ **Lưu ý quan trọng:** YourSpace dùng **depth on-device** (Depth Anything V2) NHƯNG **inpainting chạy trên cloud qua API hosted trả-theo-lượt** (Replicate/tương đương — D3) để xóa đồ cũ trong ảnh phòng thật → **có chi phí API per-request, KHÔNG còn zero-cost**. Hosting dùng Vercel/Netlify free tier. Mô hình vẫn tương đối asset-light nhưng phải tính chi phí API inpainting vào COGS.
 
 | Chi phí | Optimistic | Base | Pessimistic | Đơn vị | Ghi chú / Note |
 |---|---|---|---|---|---|
-| **API cost / tháng** | `0` | `0` | `0` | VND/tháng | On-device inference (Depth Anything V2). Zero API call — không gọi OpenAI/Gemini |
+| **API inpainting / tháng** | `100,000` | `500,000` | `1,500,000` | VND/tháng | Cloud inpainting trả-theo-lượt (Replicate/tương đương) để xóa đồ cũ. Depth vẫn on-device. Ước tính = số lượt inpaint × đơn giá/lượt; tăng theo lượng user |
 | **Domain và email service / tháng** | `0` | `300,000` | `700,000` | VND/tháng | Vercel/Netlify free tier cho MVP. Tăng khi vượt giới hạn free |
 | **Hidden costs (3D asset curation, QA) / tháng** | `0` | `100,000` | `500,000` | VND/tháng | Đừng quên! Curate + QA metadata 3D (kích thước thật, origin point) tốn công |
 | **Infrastructure (server/cloud) / tháng** | `200,000` | `300,000` | `500,000` | VND/tháng | Domain, CDN, analytics. Vercel free = $0; con số này là dự phòng khi scale |
-| **→ Tổng COGS / tháng** | `200,000` | `700,000` | `1,700,000` | VND/tháng | Tổng chi phí vận hành kỹ thuật cố định hàng tháng |
+| **→ Tổng COGS / tháng** | `300,000` | `1,200,000` | `3,200,000` | VND/tháng | Tổng chi phí vận hành kỹ thuật hàng tháng (đã gồm API inpainting cloud) |
 
 > **📐 Công thức COGS / khách / tháng:**
 >
@@ -43,15 +43,15 @@
 >
 > COGS / khách / tháng = Tổng COGS/tháng ÷ (TAM × Adoption Rate)
 >
->   Optimistic:    200,000 ÷ 700 =    286 VND/khách
->   Base:          700,000 ÷ 300 =  2,333 VND/khách
->   Pessimistic: 1,700,000 ÷ 160 = 10,625 VND/khách
+>   Optimistic:    300,000 ÷ 700 =    429 VND/khách
+>   Base:        1,200,000 ÷ 300 =  4,000 VND/khách
+>   Pessimistic: 3,200,000 ÷ 160 = 20,000 VND/khách
 > ```
 
 | Chỉ số | Optimistic | Base | Pessimistic | Đơn vị | Ghi chú |
 |---|---|---|---|---|---|
 | **Số khách/tháng** (= TAM × Adoption Rate) | `700` | `300` | `160` | đơn/tháng | Tham chiếu Mục 1 — không điền tay |
-| **→ Tổng COGS / khách / tháng** | `286` | `2,333` | `10,625` | VND/khách | = Tổng COGS/tháng ÷ Số khách/tháng |
+| **→ Tổng COGS / khách / tháng** | `429` | `4,000` | `20,000` | VND/khách | = Tổng COGS/tháng ÷ Số khách/tháng |
 
 
 ---
@@ -145,7 +145,7 @@
 
 ### Tại sao chọn các con số trên?
 
-**YourSpace là nền tảng marketplace/aggregator** kết nối người trẻ Việt (25–35 tuổi) với nhà cung cấp nội thất thông qua trải nghiệm "sống thử phong cách" bằng AI 3D. Doanh thu đến từ **hoa hồng affiliate** (không phải subscription), do đó:
+**YourSpace là nền tảng marketplace/aggregator** kết nối người trẻ Việt (25–35 tuổi) với nhà cung cấp nội thất thông qua trải nghiệm "sống thử phong cách" bằng AI 3D. Doanh thu đến từ **take-rate 8% trên GMV giao dịch thật qua escrow** (không phải affiliate click-out thuần); **subscription/showcase cho nhãn hàng = phase B2B sau**, chưa tính vào base. Do đó:
 
 ```
 ARPU = GMV/đơn × Commission Rate
@@ -162,14 +162,14 @@ ARPU = GMV/đơn × Commission Rate
 | TAM 65,000/tháng | Thị trường online HCM+HN segment trung cấp ~650 tỷ/tháng ÷ 10tr/đơn | Tính từ market size + GMV/đơn |
 | SOM 300 đơn/tháng | Giới hạn bởi capacity founder — organic marketing 1 người. Từ Day16: 5,000–10,000 đơn/24 tháng | Day16 Submission — SOM estimate |
 | Adoption 0.46%/tháng | = SOM (300) ÷ TAM (65,000). Thấp là đúng — startup mới chiếm phần nhỏ thị trường lớn | Day16 Submission — SOM estimate |
-| COGS ~0 | On-device AI (Depth Anything V2) — zero API cost | Day16 PRD — Model Selection Rationale |
+| COGS thấp nhưng ≠ 0 | Depth on-device (Depth Anything V2) + inpainting cloud trả-theo-lượt (D3) → có chi phí API inpainting/lượt | Day16 PRD — Model Selection Rationale |
 
 **Break-even analysis (Base case):**
 ```
 Doanh thu / tháng = 300 đơn × 800,000 VND    = 240,000,000 VND
 Fixed Cost / tháng                            =  11,700,000 VND
-COGS / tháng                                 =     700,000 VND
-→ Lợi nhuận gộp                              = 227,600,000 VND/tháng
+COGS / tháng (đã gồm API inpainting)         =   1,200,000 VND
+→ Lợi nhuận gộp                              = 227,100,000 VND/tháng
 
 Break-even cần: 11,700,000 ÷ 800,000 ≈ 15 đơn/tháng
 → Cực kỳ dễ đạt — ngay tuần đầu launch nếu có 15 đơn
@@ -188,4 +188,4 @@ LTV/CAC = 1,250,000 ÷ 100,000 = 12.5x ✅ (Benchmark tốt: > 3x)
 Payback period = 100,000 ÷ 800,000 = 0.125 tháng (~4 ngày) ✅
 ```
 
-> **Rủi ro lớn nhất (RAT):** User chỉ "chơi" kéo thả cho vui, không click mua → Click-to-Buy Rate ≈ 0% → không có doanh thu affiliate. Cần validate bằng experiment Photoshop (5 ảnh × 20 người) TRƯỚC khi code. *(Day16 Submission, mục 11.1)*
+> **Rủi ro lớn nhất (RAT):** User chỉ "chơi" kéo thả cho vui, không click mua → Click-to-Buy Rate ≈ 0% → không có GMV giao dịch → không có doanh thu take-rate. Cần validate bằng experiment Photoshop (5 ảnh × 20 người) TRƯỚC khi code. *(Day16 Submission, mục 11.1)*

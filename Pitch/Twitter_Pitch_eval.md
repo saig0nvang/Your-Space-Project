@@ -5,7 +5,7 @@
 
 ## 📝 Twitter Pitch (Final)
 
-> **YourSpace**: người trẻ VN lưu trăm ảnh Pinterest — **họ biết mình thích gì, nhưng không biết phải mua gì** để tạo ra nó. App kéo thả đồ 3D vào ảnh phòng thật, style-first, không đăng nhập. Thị trường $9.76B, CAGR 7.26%. LTV/CAC 12.5×. Gọi $150K seed, 6 tháng.
+> **YourSpace**: người trẻ VN lưu trăm ảnh Pinterest — **họ biết mình thích gì, nhưng không biết phải mua gì** để tạo ra nó. App kéo thả đồ 3D vào ảnh phòng thật, style-first, không đăng nhập. Thị trường $9.76B, CAGR 7.26%. LTV/CAC 12.5×. Bootstrap M1 validation, gọi vốn sau traction.
 
 ---
 
@@ -13,14 +13,14 @@
 
 | Tiêu chí | Kết quả |
 |---|---|
-| **Ký tự** | ~278 ký tự ✅ |
+| **Ký tự** | ~275 ký tự ✅ |
 | **Đọc to** | ~45 giây ✅ |
 | **Có tên startup** | ✅ YourSpace |
 | **Có segment** | ✅ người trẻ VN 25–35 mua nhà lần đầu |
 | **Có pain** | ✅ “họ biết mình thích gì, nhưng không biết phải mua gì” |
 | **Có differentiator** | ✅ style-first + no-login + user-controlled |
-| **Có traction/signal** | ✅ thị trường $9.76B, CAGR 10.39%, LTV/CAC 12.5× |
-| **Có ask** | ✅ $150K seed, 6 tháng milestone |
+| **Có traction/signal** | ✅ thị trường $9.76B (tổng ngành nội thất VN, CAGR 7.26%); phân khúc B2C online CAGR 10.39% (khớp SAM); LTV/CAC 12.5× |
+| **Có ask** | ✅ bootstrap-first: đang build M1 validation, gọi vốn sau khi có traction |
 | **Seed VC angle** | ✅ TAM lớn + vision (không phải metrics tăng trưởng) |
 
 ---
@@ -31,13 +31,13 @@
 >
 > YourSpace giải quyết bằng app kéo thả đồ 3D vào ảnh phòng thật, bắt đầu từ phong cách sống chứ không phải từ catalog sản phẩm — không cần đăng nhập để thử.
 >
-> Thị trường $9.76B, CAGR 7.26%/năm. LTV/CAC 12.5×. Gọi $150K seed, ship mobile MVP trong 6 tháng.”
+> Thị trường $9.76B, CAGR 7.26%/năm (tổng ngành nội thất VN) — riêng phân khúc B2C online tăng 10.39%/năm. LTV/CAC 12.5×. Hiện đang bootstrap build M1 — bản validation web-first — và gọi vốn sau khi có traction thật.”
 
 ---
 
 ## 🔁 Phiên bản thay thế — nếu bị hỏi rút gọn hơn nữa
 
-> **YourSpace** — người trẻ VN biết mình thích gì, nhưng không biết phải mua gì. App đặt đồ 3D vào ảnh phòng thật, style-first, không đăng nhập. $9.76B market. LTV/CAC 12.5×. $150K seed.
+> **YourSpace** — người trẻ VN biết mình thích gì, nhưng không biết phải mua gì. App đặt đồ 3D vào ảnh phòng thật, style-first, không đăng nhập. $9.76B market. LTV/CAC 12.5×. Bootstrap M1, gọi vốn sau traction.
 
 *(~180 ký tự — dùng cho DM hoặc email subject line)*
 
@@ -49,9 +49,9 @@ Theo §2.11 handbook: Seed VC care về **TAM, vision, founder-market fit** — 
 
 Pitch này ưu tiên:
 - **TAM cụ thể** ($9.76B với nguồn Mordor Intelligence) thay vì chỉ nói "thị trường lớn"
-- **CAGR 10.39%** = momentum, không phải static number
+- **CAGR 10.39%** (phân khúc B2C online — khớp SAM) = momentum, không phải static number; tổng ngành nội thất VN tăng 7.26%/năm
 - **LTV/CAC 12.5×** = unit economics healthy ngay từ model, không cần traction thật để thuyết phục
-- **Milestone rõ** (validate RAT + mobile MVP, 6 tháng) = founder biết mình đang làm gì
+- **Milestone rõ** (bootstrap build M1 validation web-first + RAT, gọi vốn sau traction) = founder biết mình đang làm gì
 
 ---
 

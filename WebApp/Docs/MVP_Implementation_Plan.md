@@ -1,6 +1,8 @@
-# Dự án YourSpace - Bắt đầu Prototype MVP (Local PC)
+# Dự án YourSpace — Kế hoạch xây PoC (M0) → nền cho M1 Web (Local PC)
 
-Mục tiêu giai đoạn này là xây dựng ngay lập tức lõi tính năng quan trọng nhất: **Tải ảnh, chèn đồ vật 3D, và kéo thả/xoay/phóng to đồ vật** ngay trên Local PC của anh/chị.
+> **Nhãn mốc (theo Decisions Log 2026-07-23):** Tài liệu này là kế hoạch dựng **M0 — PoC** (proof of concept, KHÔNG gọi là "MVP"). PoC này là nền tái sử dụng cho **M1 — Validation web-first (~4-6 tuần)**. "MVP thật" chỉ đến ở **M2 (~3-4 tháng)**. Tránh gọi chung mọi mốc là "MVP".
+
+Mục tiêu giai đoạn này (M0 PoC) là xây dựng ngay lập tức lõi tính năng quan trọng nhất: **Tải ảnh, chèn đồ vật 3D, và kéo thả/xoay/phóng to đồ vật** ngay trên Local PC của anh/chị.
 
 Tài nguyên hệ thống hiện tại của máy anh/chị **chưa được cài đặt Node.js**, nhưng đã có sẵn **Python 3.10**. Theo tinh thần "Khởi nghiệp tinh gọn" - thử nghiệm nhanh, em sẽ hạn chế yêu cầu anh/chị phải cài đặt phức tạp.
 

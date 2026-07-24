@@ -1,5 +1,10 @@
 # 🏗️ Kiến trúc tích hợp Inpainting — YourSpace
 
+> **🟢 TRẠNG THÁI (2026-07-23 — theo Decisions_Log D3): HƯỚNG MVP CHÍNH THỨC.**
+> Đây là kiến trúc được chốt cho MVP: **cloud inpainting qua API hosted** (ảnh gửi lên xử lý và xóa ngay). Founder đã chốt cloud là hướng chính thức vì on-device hiện chưa khả thi kỹ thuật (LaMa ~200MB cần GPU). Xem `Product_research/Decisions_Log_2026-07-23.md` (D3).
+> Hướng on-device 100% là *tầm nhìn dài hạn* (nghiên cứu cho sau) — xem `on_device_strategy.md`.
+> *Ghi chú chỉ cập nhật trạng thái; phần phân tích kỹ thuật bên dưới giữ nguyên.*
+
 > Tài liệu này mô tả cách tích hợp LaMa with Refiner vào hệ thống YourSpace, từ luồng người dùng đến kiến trúc kỹ thuật.
 
 ---
@@ -168,13 +173,16 @@ Kiểm tra chất lượng ── Artifact rõ rệt? ───→ Fallback Leve
 
 ## 4. Chi phí vận hành ước tính
 
-### 4.1 Self-hosted (Khuyến nghị cho MVP)
+### 4.1 Lựa chọn triển khai
+
+> **Khuyến nghị cho MVP (theo D3): dùng API hosted trả-theo-lượt (Replicate hoặc tương đương), KHÔNG tự nuôi GPU server.** Solo founder bootstrap không nên ôm việc vận hành GPU/Docker cho MVP — gọi API trả theo lượt cho chất lượng tốt, chi phí biến-thiên-theo-dùng và không tốn công ops. **Self-host GPU (bảng dưới) là phương án cho phase sau / khi scale** (đủ traffic để tự host rẻ hơn), giữ lại đây làm tham khảo kỹ thuật.
 
 | Hạng mục | Chi phí | Ghi chú |
 |---|---|---|
-| **GPU Server** (AWS g4dn.xlarge) | ~$0.526/giờ (~$380/tháng nếu chạy 24/7) | NVIDIA T4, 16GB VRAM |
-| **Spot Instance** | ~$0.16/giờ (~$115/tháng) | Giảm 70% nhưng có thể bị gián đoạn |
-| **Serverless GPU** (RunPod / Modal) | ~$0.0002/request | Chỉ trả khi dùng — tối ưu cho MVP traffic thấp |
+| **API hosted trả-theo-lượt** (Replicate / tương đương) | ~theo lượt gọi | **Khuyến nghị MVP** — không cần ops GPU, trả đúng lượng dùng |
+| **GPU Server** (AWS g4dn.xlarge) | ~$0.526/giờ (~$380/tháng nếu chạy 24/7) | NVIDIA T4, 16GB VRAM — *self-host, phase sau/khi scale* |
+| **Spot Instance** | ~$0.16/giờ (~$115/tháng) | Giảm 70% nhưng có thể bị gián đoạn — *self-host, phase sau* |
+| **Serverless GPU** (RunPod / Modal) | ~$0.0002/request | Chỉ trả khi dùng — *self-host lite, cân nhắc khi scale* |
 
 ### 4.2 Ước tính cho MVP (1000 MAU)
 
@@ -191,6 +199,8 @@ Kiểm tra chất lượng ── Artifact rõ rệt? ───→ Fallback Leve
 ## 5. Deployment Plan
 
 ### Phase 1: MVP (Tuần 1-2)
+
+> **Lưu ý (D3):** Cho MVP, khuyến nghị **gọi API hosted trả-theo-lượt** (Replicate hoặc tương đương) thay vì tự clone/dockerize LaMa. Các bước clone/download model/dockerize dưới đây là **đường self-host GPU — để phase sau / khi scale**, giữ làm tham khảo.
 
 ```bash
 # 1. Clone repo

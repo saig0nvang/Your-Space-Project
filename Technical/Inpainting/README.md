@@ -1,5 +1,11 @@
 # 🦙 Inpainting Module — YourSpace
 
+> **📌 TRẠNG THÁI HƯỚNG ĐI (2026-07-23 — theo Decisions_Log D3):**
+> - **MVP = CLOUD inpainting** (API hosted, ảnh xử lý & xóa ngay) → hướng chính thức, xem `integration_architecture.md`.
+> - **On-device 100% = TẦM NHÌN DÀI HẠN** (nghiên cứu cho sau, KHÔNG build trong MVP) → xem `on_device_strategy.md`.
+> - `lama_refiner_analysis.md` = phân tích kỹ thuật LaMa (model ~200MB, cần GPU) làm nền cho cả hai hướng.
+> - Nguồn chốt: `Product_research/Decisions_Log_2026-07-23.md` (D3).
+
 > Tất cả tài liệu thiết kế, nghiên cứu, và kế hoạch triển khai liên quan đến tính năng **Inpainting (Xóa đồ nội thất cũ)** của YourSpace được quản lý tại folder này.
 
 ---

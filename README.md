@@ -24,7 +24,7 @@ Người dùng bắt đầu bằng ảnh phòng thật, chọn một phong cách
 
 Sản phẩm hướng tới trải nghiệm:
 
-- Style-first: bắt đầu từ gu thẩm mỹ, không bắt đầu từ danh sách hàng nghìn SKU.
+- Style-first (nhu cầu số 1): bắt đầu từ gu thẩm mỹ và khám phá phong cách, không bắt đầu từ danh sách hàng nghìn SKU.
 - User-controlled: người dùng trực tiếp kéo thả, xoay, chỉnh và quyết định bố cục.
 - Purchase-oriented: mỗi phối cảnh đều có thể dẫn tới danh sách sản phẩm, chi phí và bước mua hàng tiếp theo.
 - AI-assisted: AI hỗ trợ scale và placement để đồ trông tự nhiên hơn trong ảnh phòng thật.
@@ -37,21 +37,27 @@ Sản phẩm hướng tới trải nghiệm:
 - Xoay, phóng to, thu nhỏ, di chuyển và xóa từng món đồ.
 - Xem tổng thể căn phòng trước khi mua.
 - Ước tính tổng chi phí dựa trên các món đã chọn.
-- AI Spatial Placement hỗ trợ ước lượng chiều sâu và tỷ lệ để đặt đồ đúng phối cảnh hơn.
-- Manual override để người dùng luôn giữ quyền kiểm soát cuối cùng.
+- AI Spatial Placement kiểu "Kreativ-lite": từ 1 ảnh phòng, dùng Depth Anything V2 để ước lượng chiều sâu và tự động scale/đặt đồ đúng phối cảnh hơn (xoay chỉ theo trục Y).
+- Manual override để người dùng luôn giữ quyền kiểm soát cuối cùng; nếu độ chính xác của AI chưa đạt, luồng degrade mượt về đặt đồ thủ công.
 
-## MVP Scope
+## Phạm Vi M1 (Web Validation)
 
-MVP tập trung vào một luồng trải nghiệm cốt lõi:
+Sản phẩm được chia theo thang bậc mốc rõ ràng, không gọi chung tất cả là "MVP":
+
+- **M0 — PoC (đã có):** web prototype hiện tại trong `WebApp/`, tập trung kéo thả đồ 3D thủ công. Đây là proof of concept, không phải MVP.
+- **M1 — Validation (web-first, ~4-6 tuần):** vòng lõi trải nghiệm người dùng mô tả dưới đây; chưa có escrow, bước mua chỉ đo ý định (link/thu-lead).
+- **M2 — MVP thật (~3-4 tháng):** bổ sung escrow/thanh toán, onboard supplier, nâng cao chất lượng inpainting (polish) và mobile native. (Xóa đồ cũ cơ bản đã có ở M1.)
+
+M1 tập trung vào một luồng trải nghiệm cốt lõi:
 
 1. Người dùng upload ảnh phòng.
-2. Chọn phong cách nội thất.
-3. Thử đặt đồ 3D vào ảnh.
+2. Chọn phong cách nội thất (style-first).
+3. Thử đặt đồ 3D vào ảnh, có AI Spatial Placement hỗ trợ; có thể **xóa/giữ đồ có sẵn trong ảnh** (xóa đồ cũ qua cloud inpainting).
 4. Chỉnh bố cục thủ công nếu cần.
 5. Xem chi phí ước tính.
-6. Ra quyết định tiếp tục mua, lưu thiết kế hoặc tìm hiểu sản phẩm.
+6. Ra quyết định cuối: mua / lưu thiết kế, hoặc rẽ nhánh để lại thông tin nhận tư vấn từ chuyên gia thiết kế (thu-lead).
 
-AI Spatial Placement nằm trong MVP như một lớp hỗ trợ thông minh. AI không thay người dùng thiết kế toàn bộ căn phòng, mà giúp món đồ được đặt vào ảnh với tỷ lệ và phối cảnh hợp lý hơn.
+AI Spatial Placement nằm trong M1 như một lớp hỗ trợ thông minh kiểu "Kreativ-lite" (1 ảnh + Depth Anything V2). AI không thay người dùng thiết kế toàn bộ căn phòng, mà giúp món đồ được đặt vào ảnh với tỷ lệ và phối cảnh hợp lý hơn; nếu chất lượng depth chưa đạt ngưỡng, luồng degrade mượt về đặt đồ thủ công.
 
 ## Prototype
 
@@ -102,7 +108,7 @@ Ghi chú:
 
 ## Trạng Thái Hiện Tại
 
-YourSpace đang ở giai đoạn pre-launch / MVP validation.
+YourSpace đã hoàn tất M0 (PoC) và đang chuẩn bị bước vào M1 (web validation).
 
 Đã hoàn thành:
 
@@ -121,4 +127,4 @@ Trọng tâm tiếp theo:
 
 ## Định Vị
 
-YourSpace không chỉ là một công cụ trang trí phòng. Đây là một visual sales channel cho ngành nội thất, giúp giảm sự đắn đo ở thời điểm người dùng cần chuyển từ cảm hứng sang quyết định mua hàng.
+YourSpace trước hết là công cụ giúp người dùng tự tin chuyển từ cảm hứng sang quyết định mua đúng — giảm sự đắn đo ngay tại thời điểm cần ra quyết định. Lớp visual sales channel cho ngành nội thất (kết nối brand/supplier) là hướng monetization bật sau, khi đã chứng minh được nhu cầu người dùng.

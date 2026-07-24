@@ -1,5 +1,9 @@
 # 📱 Chiến lược On-device vs Cloud — Inpainting
 
+> **🔵 TRẠNG THÁI (2026-07-23 — theo Decisions_Log D3): NGHIÊN CỨU cho TẦM NHÌN on-device tương lai — KHÔNG build trong MVP.**
+> Founder đã chốt: MVP dùng **cloud inpainting** (xem `integration_architecture.md`). "100% on-device" là **tầm nhìn dài hạn / killer decision** để khác biệt hóa privacy, revisit khi công nghệ cho phép (model nhẹ hơn, NPU mobile mạnh hơn). Tài liệu này là phân tích nền cho hướng đó, không phải hạng mục build MVP. Xem `Product_research/Decisions_Log_2026-07-23.md` (D3).
+> *Ghi chú chỉ cập nhật trạng thái; phần phân tích kỹ thuật bên dưới giữ nguyên (bao gồm cả câu trích PRD cũ "AI chạy hoàn toàn on-device" — được giữ nguyên làm bối cảnh lịch sử).*
+
 > Tài liệu này phân tích trade-off giữa việc chạy LaMa Inpainting trực tiếp trên thiết bị (on-device) và trên cloud, trong bối cảnh PRD yêu cầu **"AI chạy hoàn toàn on-device"**.
 
 ---

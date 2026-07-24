@@ -2,12 +2,16 @@
 **Ngày lập:** 07/05/2026 | **Người lập:** Phạm Việt Anh (Founder)
 
 ### 0. Cơ sở tính toán Runway (Burn Rate)
-- **Vốn mục tiêu (Seed):** $150,000 cho 18 tháng
-- **Burn rate trung bình:** ~$8,333/tháng
-- **Quy đổi:**
-  - Mất $8,333 = 1 tháng runway
-  - Mất $25,000 = 3 tháng runway (Impact 3)
-  - Mất $33,000+ = 4 tháng runway (Impact 4)
+> **Cập nhật 2026-07-23 (D6):** Chuyển sang mô hình **BOOTSTRAP** — tính runway theo burn thật, KHÔNG dùng $8,333/tháng.
+
+- **Tiền mặt hiện có:** ~50tr VND
+- **Burn rate thật (bootstrap):** ~11.7tr VND/tháng → runway ~4.3 tháng
+- **Thang Impact (theo số tháng runway ở burn 11.7tr VND/tháng):**
+  - Impact 1: < 11.7tr VND (< 1 tháng runway)
+  - Impact 2: 11.7tr – 23tr VND (1-2 tháng runway)
+  - Impact 3: 23tr – 35tr VND (2-3 tháng runway)
+  - Impact 4: > 35tr VND (>3 tháng runway — đe dọa cạn sạch 50tr tiền mặt)
+- **Lưu ý:** Kịch bản Seed $150,000 / burn ~$8,333/tháng là **kịch bản M2 sau gọi vốn**, KHÔNG dùng để chấm điểm rủi ro ở giai đoạn bootstrap hiện tại. Các con số tổn thất bằng USD nêu dưới đây phản ánh kịch bản seed/M2; ở giai đoạn bootstrap cần đọc lại theo thang VND ở trên.
 
 ---
 
@@ -15,13 +19,13 @@
 *Rủi ro lõi của trải nghiệm Visual Commerce*
 
 - **If** mô hình Depth Anything V2 ước lượng sai độ sâu phòng 15-20% trong một chiến dịch marketing lớn (đẩy traffic cao), khiến đồ nội thất trên app hiển thị nhỏ hơn thực tế.
-- **Then** 100 khách hàng mua nhầm các món đồ lớn (giường, sofa) không nhét vừa phòng. Nhãn hàng từ chối chịu trách nhiệm và ép YourSpace đền bù phí hoàn hàng (trung bình 30% x đơn 20 triệu = 6 triệu VNĐ/đơn). Khách hàng lên TikTok bóc phốt.
-- **Leading to** $24,000 bồi thường (600 triệu VNĐ) + $10,000 chi phí xử lý khủng hoảng PR = **4 tháng runway**.
+- **Then** 100 khách hàng mua nhầm các món đồ lớn (giường, sofa) không nhét vừa phòng. Theo mô hình đã chốt (D2), **phí hoàn hàng do SUPPLIER chịu** — khấu trừ qua escrow + phạt SLA 8%, KHÔNG phải YourSpace móc túi đền 600tr. Tuy vậy YourSpace vẫn hứng khủng hoảng truyền thông khi khách lên TikTok bóc phốt và có thể mất đà traction M1. *(Lưu ý: luồng hoàn hàng qua escrow thuộc M2; ở M1 web-first bước "mua" là link affiliate/thu lead nên chưa phát sinh nghĩa vụ bồi hoàn.)*
+- **Leading to** Không còn khoản đền 600tr về YourSpace (đã chuyển sang supplier). Tổn thất trực tiếp còn lại chủ yếu là chi phí xử lý khủng hoảng PR + tổn hại uy tín/traction ≈ **~25-30tr VND ≈ 2-3 tháng runway** (ở burn 11.7tr).
 
 **Chấm điểm:**
 - Likelihood: 4 (Rất dễ xảy ra với AI tính toán chiều sâu từ ảnh 2D)
-- Impact: 4 (Mất 4 tháng runway)
-- **Score: 16 → [KILL ZONE]** 🚨 (Phải mitigate ngay tuần này bằng tính năng Manual Fallback và cảnh báo rủi ro trên UI).
+- Impact: 3 (Tài chính giảm mạnh vì supplier chịu bồi hoàn, nhưng ở bootstrap runway mỏng nên đòn reputational/traction vẫn nghiêm trọng ~2-3 tháng)
+- **Score: 12 → [Ưu tiên cao]** 🚨 (Bồi hoàn đã chuyển sang supplier nên rớt khỏi KILL ZONE tài chính, nhưng đây vẫn là rủi ro REPUTATIONAL số 1 cần mitigate ngay: Manual Fallback + cảnh báo rủi ro trên UI — xem Incident Playbook).
 
 ---
 
@@ -42,7 +46,7 @@
 ### 3. Risk 3: Founder-bandwidth Risk (Single Point of Failure)
 *Rủi ro nhân sự của Solo Founder*
 
-- **If** Founder (Việt Anh) ốm nặng, tai nạn hoặc burnout phải nghỉ phép 2 tuần đúng đợt launch bản cập nhật Mobile MVP (React Native + Expo GL) và dính lỗi crash ở màn hình thanh toán.
+- **If** Founder (Việt Anh) ốm nặng, tai nạn hoặc burnout phải nghỉ phép 2 tuần đúng đợt launch bản cập nhật Mobile MVP (React Native + Expo GL) và dính lỗi crash ở màn hình thanh toán. *(Lưu ý: màn hình thanh toán in-app/escrow thuộc M2 (D5) — M1 web-first chưa có bước thanh toán này, nên đây là kịch bản rủi ro của giai đoạn M2.)*
 - **Then** Không có lập trình viên nào khác trong team có đủ thẩm quyền và hiểu biết kiến trúc để hotfix. Tiền marketing đổ vào tải app bị lãng phí do app crash.
 - **Leading to** Lãng phí $5,000 tiền Ads + 1 tháng gián đoạn tiến độ = **1.5 tháng runway**.
 
@@ -58,8 +62,8 @@
 ```text
 
         ┌──────────────┬──────────────┐
-   High │ Risk 2 (12)  │ Risk 1 (16)  │
-   (>3mo) Watch          KILL ZONE    │
+   High │ Risk 2 (12)  │ Risk 1 (12)  │
+   (>3mo) Watch          Ưu tiên cao  │
         │              │              │
    Imp. ├──────────────┼──────────────┤
    Low  │ Risk 3 (4)   │              │
@@ -70,4 +74,4 @@
                Likelihood
 ```
 
-**Action ưu tiên (Incident Playbook):** Tập trung giải quyết **Risk 1 (Customer-facing AI Risk)** vì nằm trong vùng KILL ZONE.
+**Action ưu tiên (Incident Playbook):** Tập trung giải quyết **Risk 1 (Customer-facing AI Risk)**. Sau khi chốt D2 (supplier chịu bồi hoàn qua escrow), Risk 1 giảm từ Score 16 (KILL ZONE) xuống 12 vì tổn thất TÀI CHÍNH không còn dồn vào YourSpace — nhưng vẫn là rủi ro REPUTATIONAL số 1 (ảo giác tỷ lệ phá uy tín "AI hiểu không gian"), nên vẫn ưu tiên diễn tập & mitigate.

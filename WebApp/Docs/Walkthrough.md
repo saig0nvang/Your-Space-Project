@@ -1,4 +1,4 @@
-# 🚀 Hướng Dẫn Bản MVP: YourSpace (Local PC)
+# 🚀 Hướng Dẫn Bản PoC (M0): YourSpace (Local PC)
 
 Em đã lập trình xong toàn bộ lõi tính năng cho bảng chạy thử (Prototype) của tính năng thiết kế không gian theo chuẩn **Zero Setup** trên thư mục Local của anh/chị.
 
@@ -34,6 +34,8 @@ Em đã bật sẵn **Server Python** chạy ngầm giúp anh/chị. Để trả
 3. Dùng Chuột nhấn đè vào các trục Mũi tên (Đỏ, Xanh, Lá) để kéo con Vịt chạy loanh quanh sàn.
 4. **Test Phím Tắt Cực Đẹp:**
    - Bấm phím **R**: Từ mũi tên đổi qua Vòng tròn -> Dùng chuột cầm vòng tròn kéo vặn để xoay cổ xoay mình món đồ.
+     > [!NOTE]
+     > Bản PoC hiện cho xoay tự do quanh mọi trục để thử nghiệm. Ở bản MVP/M1, thao tác xoay sẽ giới hạn **CHỈ theo trục Y** để đồ luôn đứng đúng phối cảnh trong phòng.
    - Bấm phím **S**: Từ vòng tròn đổi qua Giao diện điểm chấm (Cube) -> Kéo để con Vịt to ra như quái vật hoăc nhỏ xíu lại cho hợp với tỷ lệ phòng của anh/chị.
    - Bấm phím **T**: Quay về dạng di chuyển lúc nãy.
 

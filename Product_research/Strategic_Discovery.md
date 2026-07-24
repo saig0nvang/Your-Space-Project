@@ -11,7 +11,7 @@ Original idea:
 > Ứng dụng cho phép người dùng chụp ảnh không gian phòng, sau đó kéo thả đồ nội thất 3D theo các phong cách thiết kế vào ảnh thực tế, xem chi phí ước tính và mua hàng hoặc nhận tư vấn chuyên gia.
 
 Reframed as a product opportunity:
-> Thị trường nội thất Việt Nam đang bị nghẽn ở khâu chuyển đổi do "The Cost of Doubt" (Phí tổn của sự đắn đo). Khách hàng mất 2–4 tuần suy nghĩ trước mỗi món đồ 5–30 triệu vì họ phải "đánh cược" xem nó có hợp không gian không, dẫn đến tỷ lệ bỏ giỏ hàng 30%. **Observed gap:** Thị trường đang vận hành bằng các "Product Catalog" rời rạc thay vì "Style Palette" (trải nghiệm trọn gói theo phong cách). **Founding belief:** Nếu cung cấp một Visual Sales Channel cho phép người dùng "ướm thử" toàn bộ phong cách lên ảnh chụp phòng thật, chúng ta sẽ triệt tiêu hoàn toàn sự đắn đo, biến khao khát thẩm mỹ thành hành vi tự tin chốt đơn.
+> Thị trường nội thất Việt Nam đang bị nghẽn ở khâu chuyển đổi do "The Cost of Doubt" (Phí tổn của sự đắn đo). Khách hàng mất 2–4 tuần suy nghĩ trước mỗi món đồ 5–30 triệu vì họ phải "đánh cược" xem nó có hợp không gian không, dẫn đến tỷ lệ bỏ giỏ hàng 30%. **Observed gap:** Thị trường đang vận hành bằng các "Product Catalog" rời rạc thay vì "Style Palette" (trải nghiệm trọn gói theo phong cách). **Founding belief:** Nếu cung cấp cho NGƯỜI DÙNG một công cụ style-first để "ướm thử" toàn bộ phong cách lên ảnh chụp căn phòng thật của chính họ — xóa đồ cũ, đặt đồ mới đúng phối cảnh — chúng ta sẽ triệt tiêu sự đắn đo, biến khao khát thẩm mỹ thành quyết định mua tự tin. Lớp "Visual Sales Channel" cho nhãn hàng là **lớp monetization bật SAU** khi đã chứng minh nhu cầu người dùng (định vị lõi = công cụ cho người dùng, không phải kênh bán cho brand — xem Decisions Log D1).
 
 ---
 
@@ -49,7 +49,7 @@ One-sentence description:
 - **Statement (JTBD):** When tôi đã chọn được phong cách Japandi nhưng hoàn toàn mù mờ về chi phí tổng và không biết mua ở đâu cho đúng hàng, I want xem ngay bảng giá tham khảo và nguồn hàng uy tín ngay trong lúc thiết kế, so I can lên ngân sách chính xác và mua đúng chất lượng mà không bị hớ giá.
 - **Current workaround:** Nhắn tin hỏi giá từng shop trên Shopee/Facebook → so sánh thủ công → không biết đâu là hàng chính hãng, đâu là hàng nhái → quyết định dựa trên cảm tính hoặc bỏ cuộc vì quá mất thời gian.
 - **Pain signal:** "Cùng một kiểu bàn mà shop A bán 3 triệu, shop B bán 12 triệu, không biết chất lượng khác gì." Nhiều người mua phải hàng kém chất lượng vì không có nguồn tham chiếu đáng tin cậy theo phong cách.
-- **Evidence / proxy evidence:** Thị trường nội thất VN ước tính ~$5 tỷ USD nhưng cực kỳ phân mảnh, không có nền tảng aggregator phân loại theo phong cách thiết kế. Khảo sát Q&Me (2024): người tiêu dùng trẻ VN sẵn sàng chi thêm 15–20% nếu được đảm bảo nguồn gốc + chất lượng rõ ràng.
+- **Evidence / proxy evidence:** Thị trường nội thất VN ước tính ~$9.76 tỷ USD/năm nhưng cực kỳ phân mảnh, không có nền tảng aggregator phân loại theo phong cách thiết kế. Khảo sát Q&Me (2024): người tiêu dùng trẻ VN sẵn sàng chi thêm 15–20% nếu được đảm bảo nguồn gốc + chất lượng rõ ràng.
 - **Why underserved:** Shopee/Lazada phân loại sản phẩm theo công năng (ghế, bàn, tủ) — không theo phong cách thiết kế. Showroom cao cấp có chuyên gia tư vấn nhưng chi phí cao, không tiếp cận được đại chúng. Không có nền tảng nào kết hợp "thử → xem giá → mua" trong một luồng liền mạch.
 
 ---
@@ -59,7 +59,7 @@ One-sentence description:
 For **người trẻ Việt 25–35 tuổi đang tìm kiếm bản sắc thẩm mỹ riêng cho không gian sống**
 who struggle with **không gọi tên được phong cách mình thích, không có cách "sống thử" với một phong cách trước khi cam kết, và cảm thấy lạc lõng giữa hàng ngàn lựa chọn rời rạc**,
 our product helps them **khám phá phong cách sống phù hợp với bản thân, trải nghiệm trực quan phong cách đó trong chính căn phòng thật, và tự tin hiện thực hóa nó**
-through **một Visual Sales Channel (Kênh bán hàng trực quan) — chuyển đổi từ "Product Catalog" (danh mục sản phẩm đơn lẻ) sang "Style Palette" (trải nghiệm trọn gói theo phong cách), cho phép "sống thử" mô hình 3D trong ảnh chụp phòng thật kèm dự toán ngân sách chi tiết**,
+through **một công cụ style-first cho người dùng — chuyển từ "Product Catalog" (danh mục sản phẩm đơn lẻ) sang "Style Palette" (trải nghiệm trọn gói theo phong cách), cho phép người dùng "sống thử" mô hình 3D ngay trong ảnh chụp căn phòng thật của họ (xóa đồ cũ + đặt đồ mới đúng phối cảnh) kèm dự toán ngân sách chi tiết**. (Góc nhìn "Visual Sales Channel" cho nhãn hàng là lớp phụ, bật ở phase monetization B2B sau — xem D1.)
 unlike **IKEA Place/Houzz (product-first), Shopee/Lazada (quá nhiều lựa chọn gây tê liệt), và Pinterest (chỉ là cảm hứng, không thể chốt đơn)**,
 because we can leverage **Dữ liệu gu thẩm mỹ bản địa (Aesthetic Identity Graph) + Độc quyền phân phối catalog 3D từ các nhà cung cấp nội thất Việt (Supplier Lock-in)**.
 
@@ -82,9 +82,9 @@ Why competitors cannot easily replicate this:
 
 | Layer | Estimate | Key assumptions | Confidence |
 |---|---|---|---|
-| TAM | $9.76 tỷ USD/năm | Tổng thị trường nội thất Việt Nam (CAGR ổn định). Nguồn: Ước tính ngành & Statista. | high |
-| SAM | ~$2.5 tỷ USD/năm | Phân khúc nội thất cho người trẻ đô thị (Urban Millennials) mua sắm online, có AOV từ 10-15 triệu VNĐ. | medium |
-| SOM | $150 triệu USD (Mục tiêu dài hạn) | Xây dựng Visual Sales Channel, thu phí Affiliate 8% trên giao dịch + Subscription từ nhãn hàng. LTV/CAC dự kiến đạt 12.5x. | low |
+| TAM | $9.76 tỷ USD/năm | Tổng thị trường nội thất Việt Nam (Mordor, CAGR ổn định). | high |
+| SAM | $300–500 triệu USD/năm | Phân khúc B2C nội thất online tầm trung (mid-range) cho người trẻ đô thị, AOV 10–15 triệu VNĐ. | medium |
+| SOM | GMV giao dịch qua platform **~$2–4 triệu USD / 24 tháng** (từ 5.000–10.000 đơn × ~10tr VNĐ) → **commission thực nhận ~$230–320K** (take-rate 8%) | Doanh thu gần hạn = take-rate 8% trên GMV giao dịch thật. **$150 triệu = GMV mục tiêu dài hạn**, KHÔNG phải SOM 24 tháng. Subscription/showcase nhãn hàng = doanh thu B2B phase sau, KHÔNG tính vào SOM gần hạn. LTV/CAC ~12.5x. | low |
 
 **Top 3 unknowns requiring further research:**
 1. **Willingness to transact through platform:** Liệu người dùng có sẵn sàng mua nội thất trực tiếp qua YourSpace hay chỉ dùng để "thử" rồi mua ngoài? Cần validate bằng landing page + survey.
@@ -101,10 +101,10 @@ Why competitors cannot easily replicate this:
 ## 7. Positioning Note (2 sentences)
 
 **What we are:**
-> YourSpace là nền tảng **phong cách sống** (lifestyle platform) đầu tiên tại Việt Nam giúp người trẻ khám phá gu thẩm mỹ cá nhân và "sống thử" với phong cách đó trong chính căn phòng thật — không chỉ thử đồ nội thất, mà tìm thấy **bạn là ai qua không gian sống của bạn**.
+> YourSpace là **công cụ style-first cho người dùng** giúp người trẻ Việt thử-đồ-ngay-trong-căn-phòng-thật của mình: chọn phong cách, xóa đồ cũ, đặt đồ mới đúng phối cảnh, xem chi phí và quyết định mua tự tin. Điểm khác biệt so với các app thử-đồ đơn thuần là chúng tôi bắt đầu từ **phong cách sống** (style-first) chứ không từ catalog sản phẩm rời rạc — giúp bạn tìm thấy **bạn là ai qua không gian sống của bạn**.
 
 **What we are not / not yet:**
-> YourSpace không phải app thử nội thất (chúng tôi bắt đầu từ phong cách sống, không phải từ catalog sản phẩm), không phải sàn thương mại điện tử (chưa giữ hàng, chưa logistics), cũng không phải phần mềm thiết kế cho kiến trúc sư — chúng tôi là **người bạn đồng hành giúp bạn biến gu thẩm mỹ thành không gian sống thật**.
+> YourSpace **là** công cụ thử-đồ-trong-phòng-thật, nhưng KHÔNG phải sàn thương mại điện tử (chưa giữ hàng, chưa logistics ở giai đoạn đầu), cũng KHÔNG phải phần mềm thiết kế kỹ thuật cho kiến trúc sư (không thay thế AutoCAD/SketchUp). "Visual Sales Channel cho nhãn hàng" là lớp monetization B2B bật SAU, không phải danh từ lõi định vị. Cốt lõi: **người bạn đồng hành giúp NGƯỜI DÙNG biến gu thẩm mỹ thành không gian sống thật**.
 
 ---
 
@@ -133,8 +133,8 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 **Out-of-Scope (Tính năng tốt nhưng không cần cho MVP):**
 - **Cộng đồng / Mạng xã hội:** Tính năng chia sẻ bản thiết kế để user khác vào xem, bình luận, hoặc "clone" lại (sẽ phát triển ở giai đoạn scale để tạo network effect).
-- **Liên hệ / Chat với tư vấn viên:** Nhắn tin trực tiếp với chuyên gia thiết kế trên app.
-- **Thanh toán trực tiếp (In-app Checkout):** MVP chưa cần xử lý cổng thanh toán, chỉ cần redirect (chuyển hướng) người dùng sang sàn hoặc website của đối tác.
+- **Kết nối chuyên gia tư vấn (M1 = thu-lead):** M1 chỉ **thu lead** — nút "Tôi muốn tư vấn" thu thập SĐT/Zalo để đội offline gọi lại follow-up. **Chat in-app / matching chuyên gia thiết kế đầy đủ = M2+** (theo D — "3 mục bỏ ngỏ"). Giữ core outcome "nhận tư vấn chuyên gia" nhưng nhẹ cho M1.
+- **Thanh toán / Escrow trong app (M2 — KHÔNG phải Out-of-scope vĩnh viễn):** **M1** chỉ redirect user sang website/sàn đối tác (link affiliate / thu-lead), chưa xử lý cổng thanh toán. **Thanh toán + escrow qua cổng thanh toán được cấp phép** (giữ tiền hộ, supplier chịu bồi hoàn — D2/D5) triển khai ở **M2**, không bỏ vĩnh viễn.
 - **Quét không gian AR/LiDAR:** Thay vì dùng camera quét map 3D không gian thực tế (tốn nguồn lực dev), MVP chỉ cần dùng ảnh 2D tĩnh làm background.
 - **Style Quiz AI:** Gợi ý phong cách bằng câu hỏi trắc nghiệm (cần tích lũy đủ dữ liệu interaction của khách hàng trước, sẽ triển khai ở phase sau).
 
@@ -147,7 +147,21 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 ## 10. PRD Skeleton — Workshop 2
 
+> 🔗 **Đồng bộ:** `Product/PRD.md` là **nguồn chuẩn (source of truth)** cho PRD Skeleton. Phần §10 dưới đây là bản nhúng đã **đồng bộ 2026-07-23** theo Decisions Log D1–D6 — nếu có khác biệt, lấy `Product/PRD.md` làm chuẩn.
+
 > **Mục tiêu:** Xác định quyết định sản phẩm (Product Decision) ở Tầng 5 (UX & Prototype) — thống nhất **"Cái gì"** và **"Tại sao"**, không đi sâu vào kỹ thuật "Làm thế nào".
+
+---
+
+### 10.0. Milestone Map
+
+> **Quy ước quan trọng:** Trừ khi nói rõ khác, **PRD này mô tả scope của M1** (web validation). Các tính năng thuộc M2 được đánh dấu rõ.
+
+| Milestone | Tên | Thời lượng | Phạm vi cốt lõi |
+|---|---|---|---|
+| **M0** | PoC (đã có) | — | WebApp prototype đã dựng. **KHÔNG gọi là "MVP"** — chỉ để kiểm chứng kỹ thuật đặt đồ + depth. |
+| **M1** | Web Validation | 4–6 tuần | Style Palette + ướm thử trong ảnh phòng (AI Spatial Placement kiểu Kreativ-lite) + dự toán. **Mua = link affiliate / thu-lead**, CHƯA có escrow/thanh toán trong app. |
+| **M2** | Mobile | 3–4 tháng | App mobile đầy đủ + **escrow qua cổng thanh toán được cấp phép** (supplier chịu bồi hoàn) + kết nối chuyên gia đầy đủ. |
 
 ---
 
@@ -156,8 +170,8 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 > Người trẻ Việt Nam (25–35 tuổi) coi không gian sống là biểu hiện bản sắc cá nhân, nhưng không có công cụ nào giúp họ khám phá gu thẩm mỹ, hình dung phong cách đó trong căn phòng thật, và biết mua gì ở đâu — dẫn đến 2–4 tuần đắn đo cho mỗi quyết định mua nội thất 5–30 triệu VNĐ, tỉ lệ mua nhầm/hối hận cao, hoặc bỏ cuộc hoàn toàn và sống với không gian không ưng ý.
 
 **Tác động kinh tế:**
-- Người dùng: Lãng phí trung bình 5–15 triệu VNĐ/lần mua nhầm nội thất + chi phí cơ hội 2–4 tuần research thủ công.
-- Thị trường: Ngành nội thất VN ~$5 tỷ USD nhưng cực kỳ phân mảnh, tỷ lệ chuyển đổi online thấp vì thiếu trải nghiệm trực quan.
+- Người dùng: Lãng phí 5–15 triệu VNĐ/lần mua nhầm nội thất + chi phí cơ hội 2–4 tuần research thủ công. Dư thừa cảm hứng nhưng bế tắc giao dịch.
+- Thị trường: Ngành nội thất VN đạt $9.76 tỷ USD, nhưng các nhãn hàng đang gánh chịu "The Cost of Doubt" — mất đến 30% doanh thu tiềm năng do khách bỏ giỏ hàng nửa chừng và chi phí cực lớn từ tỉ lệ hoàn hàng cao.
 
 ---
 
@@ -183,8 +197,8 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 > **so that** tôi có thể gọi tên được gu thẩm mỹ của mình và biết hướng đi cụ thể thay vì mơ hồ lưu ảnh trên Pinterest.
 
 **Acceptance criteria:**
-- Hiển thị tối thiểu 5 phong cách nội thất phổ biến, mỗi phong cách có ảnh minh họa + mô tả đặc trưng (màu sắc, chất liệu, cảm xúc).
-- User có thể chọn 1 phong cách để xem toàn bộ catalog đồ nội thất thuộc phong cách đó.
+- Ứng dụng tư duy "Style Palette": M1 hiển thị **2–3 phong cách** nội thất (5 phong cách là mục tiêu sau) thay vì hiển thị sản phẩm lẻ. Mỗi phong cách có ảnh minh họa + mô tả đặc trưng (màu sắc, chất liệu, cảm xúc).
+- User có thể chọn 1 phong cách để xem các món đồ đã được curate sẵn theo phong cách đó (triệt tiêu sự đắn đo so với việc bơi trong Product Catalog).
 - Thời gian từ lúc mở app đến lúc chọn được phong cách ≤ 60 giây.
 
 #### User Story #2 — Ướm thử trong phòng thật (Need #2)
@@ -206,18 +220,21 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 **Acceptance criteria:**
 - Hiển thị danh sách tất cả món đồ đã đặt vào phòng, kèm: tên sản phẩm, ảnh thumbnail, giá tham khảo (VNĐ).
 - Tổng chi phí ước tính tự động cập nhật khi thêm/xóa đồ.
-- Mỗi sản phẩm có nút "Xem chi tiết / Mua" redirect ra website hoặc sàn TMĐT của nhà cung cấp.
+- Mỗi sản phẩm có nút "Xem chi tiết / Mua" redirect ra website hoặc sàn TMĐT của nhà cung cấp (M1: link affiliate; thanh toán/escrow trong app thuộc M2).
+- **Nhánh thu-lead tư vấn (M1):** user có thể để lại SĐT/thông tin liên hệ để được tư vấn follow-up (kết nối chuyên gia). M1 chỉ thu lead; kết nối chuyên gia đầy đủ (chat/booking) triển khai ở M2+.
 
-#### User Story #4 — AI hỗ trợ đặt đồ thông minh trong không gian (In-scope MVP)
+#### User Story #4 — AI hỗ trợ đặt đồ thông minh (In-scope MVP)
 > **As a** người đang kéo thả đồ nội thất vào ảnh chụp phòng thật,
-> **I want** AI tự động ước lượng độ sâu (depth) và tỉ lệ (scale) của căn phòng từ ảnh, rồi điều chỉnh kích thước và vị trí món đồ cho khớp với phối cảnh thật, phải trông rất thật để tôi có thể ướm không gian của mình
-> **so that** đồ nội thất trông tự nhiên và đúng tỉ lệ trong ảnh, thay vì bị lơ lửng, to quá hoặc nhỏ quá so với không gian thật.
+> **I want** AI tự động ước lượng độ sâu (depth) và tỉ lệ (scale) của căn phòng từ ảnh, rồi điều chỉnh kích thước và vị trí món đồ cho khớp với phối cảnh thật,
+> **so that** đồ nội thất trông tự nhiên và đúng tỉ lệ trong ảnh mà tôi không phải tự thu phóng thủ công bằng tay.
+
+*(Lưu ý: Đây là tính năng MVP cốt lõi nhưng phải có manual override rõ ràng. AI hỗ trợ scale/vị trí ban đầu; user luôn là người quyết định cuối cùng).*
 
 **Acceptance criteria:**
 - Khi user upload ảnh phòng, AI phân tích ảnh để tạo depth map (bản đồ độ sâu) cơ bản.
 - Khi user kéo thả 1 món đồ vào vị trí trong ảnh, hệ thống tự động scale đồ theo depth tại điểm đó (đồ ở xa nhỏ hơn, đồ ở gần to hơn).
 - User có thể **override** (chỉnh tay) kích thước/vị trí nếu AI ước lượng sai (Human-in-the-loop).
-- User có thể xoay item 360 độ
+- User có thể xoay item quanh trục Y (xoay ngang để đổi hướng đồ); MVP không hỗ trợ xoay tự do 360° đa trục
 - Khi xóa đồ, ảnh nền phía sau được khôi phục hợp lý (inpainting cơ bản hoặc hiển thị lại ảnh gốc).
 - Thời gian xử lý depth map ≤ 5 giây cho ảnh độ phân giải điện thoại thông thường.
 
@@ -229,12 +246,14 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 | Phân loại | Nội dung |
 |---|---|
-| **In-Scope** | (1) Khám phá theo phong cách (category-based browsing), (2) Tương tác 3D cốt lõi (kéo thả, thêm, xóa, xoay trên nền ảnh 2D), (3) AI Spatial Placement — đặt đồ khớp depth/scale tự động, (4) Roadmap hiện thực hóa (giỏ hàng + dự toán + link mua) |
-| **Out-of-Scope** | Cộng đồng/mạng xã hội, Chat tư vấn viên, Thanh toán In-app, Quét AR/LiDAR, **Style Quiz AI** (cần tích lũy data khách hàng trước — sẽ triển khai sau khi có ≥ 1,000 user interactions) |
+| **In-Scope (M1)** | (1) Khám phá theo "Style Palette", (2) Tương tác 3D cốt lõi (kéo thả, xoay trục Y, xóa, manual resize), (3) **AI Spatial Placement kiểu "Kreativ-lite"** (1 ảnh + Depth Anything V2) để ước lượng depth/scale ban đầu, **có fallback đặt đồ thủ công**, (4) Bảng dự toán + Link mua Affiliate + **thu-lead tư vấn** |
+| **M2 (NEXT)** | **Thanh toán/escrow qua cổng thanh toán được cấp phép** (supplier chịu bồi hoàn), Kết nối chuyên gia đầy đủ, App mobile native |
+| **Out-of-Scope (LATER)** | Cộng đồng/mạng xã hội, Quét AR/LiDAR, **Style Quiz AI**, AI tự phối toàn bộ phòng thay user |
 | **Non-Goals** | KHÔNG làm phần mềm kỹ thuật (AutoCAD), KHÔNG làm sàn TMĐT nặng (logistics/kho), KHÔNG tự sản xuất nội thất |
 
-**Scope decision:** *AI Spatial Placement có nằm trong MVP không?*
-→ **CÓ.** User vẫn cần quyền chỉnh tay, nhưng nếu thiếu auto depth/scale thì đồ dễ lơ lửng, sai tỉ lệ, trông giả và phá vỡ cảm giác "sống thử thật". → **Giữ trong In-scope** vì đây là yếu tố khiến YourSpace khác biệt với các ứng dụng tự generate full không gian và việc user tự ghép ảnh trên Canva/Photoshop.
+**Scope decision:** *AI Spatial Placement có nằm trong M1 không?*
+→ **CÓ — must-have, nhưng làm kiểu "Kreativ-lite":** chỉ cần **1 ảnh + Depth Anything V2** (không dựng 3D toàn phòng), luôn kèm **fallback đặt đồ thủ công**. Đây là điểm khác biệt cốt lõi giúp trải nghiệm "ướm thử" đủ thật và đủ nhanh. Rủi ro kỹ thuật được kiểm soát bằng human-in-the-loop: user luôn có thể manual resize/drag nếu depth estimation sai, và hệ thống tự chuyển sang manual mode khi confidence thấp.
+→ **Decision gate:** chạy **spike ngay tuần đầu M1** để xác nhận chất lượng depth/scale đủ dùng; nếu spike thất bại, hạ AI xuống nhánh phụ và ship trước luồng đặt đồ thủ công.
 
 ---
 
@@ -242,12 +261,11 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 | Metric | Định nghĩa | Target (3 tháng đầu) | Tại sao đo metric này |
 |---|---|---|---|
-| **Activation Rate** | % user hoàn thành luồng: Chọn phong cách → Upload ảnh → Đặt ≥ 1 món đồ vào phòng | ≥ 30% | Đo xem core value "sống thử" có đủ hấp dẫn để user đi hết luồng không |
-| **Time-to-Value** | Thời gian từ lúc mở app đến lúc đặt món đồ đầu tiên vào ảnh | ≤ 3 phút | Nếu > 5 phút → UX quá phức tạp, user bỏ cuộc |
-| **Save/Share Rate** | % user lưu lại bản thiết kế sau khi phối đồ | ≥ 20% | Proxy cho "intent to buy" — nếu lưu lại nghĩa là đang cân nhắc nghiêm túc |
-| **Click-to-Buy Rate** | % user nhấn "Xem chi tiết / Mua" trên ít nhất 1 sản phẩm | ≥ 15% | Đo được liệu user có thực sự muốn hiện thực hóa hay chỉ "chơi thử" |
-| **Return Rate (D7)** | % user quay lại app trong vòng 7 ngày | ≥ 25% | Đo retention — nếu thấp, có thể core value chưa đủ mạnh hoặc catalog quá ít |
-| **AI Placement Accuracy** | % đồ được AI đặt mà user KHÔNG cần chỉnh lại tỉ lệ/vị trí | ≥ 60% | Đo chất lượng depth estimation — nếu < 40% thì user phải chỉnh tay quá nhiều, UX tệ |
+| **Activation Rate** | % user hoàn thành luồng: Chọn phong cách → Upload ảnh → Đặt ≥ 1 món đồ | ≥ 30% | Đo lường ý định thực sự của user. |
+| **Save/Share Rate** | % user lưu lại bản thiết kế sau khi phối đồ | ≥ 30% | Proxy cho "intent to buy" (Theo KR1 - OKR Quý 1). |
+| **Click-to-Buy Rate** | % user nhấn "Xem chi tiết / Mua" trên ít nhất 1 sản phẩm | ≥ 15% | Metric cốt lõi sinh doanh thu Affiliate (Theo KR2 - OKR Quý 1). |
+| **Average Order Value (AOV)** | Giá trị trung bình của giỏ hàng khi user click Mua | Base ~10 tr VNĐ (mục tiêu M1) | 15 tr VNĐ ("mua cả không gian" — hiệu ứng Identity-Linked Premium) là **upside**, không phải con số cam kết. |
+| **Return Rate (D7)** | % user quay lại app trong vòng 7 ngày | ≥ 25% | Đo retention (Theo KR3 - OKR Quý 1). |
 
 ---
 
@@ -257,7 +275,7 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 | Dependency | Mô tả | Rủi ro | Mitigation |
 |---|---|---|---|
-| **Catalog 3D** | Cần tối thiểu 50–80 mô hình 3D nội thất chất lượng khá, phân bổ đều cho 5 phong cách (10–16 models/phong cách) | Tự tạo 3D tốn thời gian + chi phí | Giai đoạn MVP: sử dụng free/paid 3D assets từ Sketchfab, TurboSquid, CGTrader. Về lâu dài: partner với nhà cung cấp để họ cung cấp 3D scan sản phẩm thật |
+| **Catalog 3D** | M1 cần **16–24 mô hình 3D** nội thất chất lượng khá, phân bổ cho **2–3 phong cách** (5 phong cách là mục tiêu sau) | Tự tạo 3D tốn thời gian + chi phí | M1: dùng 3D assets từ Sketchfab/CGTrader. Scale: Onboard nhà cung cấp VN để số hóa 3D, tạo ra hào nước phòng thủ "Supplier Lock-in" |
 | **Dữ liệu giá + nguồn mua** | Cần giá tham khảo và link mua thật cho mỗi sản phẩm 3D | Giá biến động, link hết hạn | MVP dùng giá tham khảo (khoảng giá), cập nhật thủ công hàng tháng. Scale: API tự động crawl giá từ đối tác |
 | **3D Rendering Engine** | Rendering 3D trên mobile (React Native + Three.js/Expo GL, hoặc native SceneKit/ARCore) phụ thuộc vào GPU thiết bị | Điện thoại cũ render chậm/lag | Set minimum requirement (iPhone 8+ / Android mid-range 2020+), cung cấp fallback 2D preview cho thiết bị yếu |
 | **AI Depth Estimation** | Model ước lượng độ sâu từ ảnh 2D (MiDaS / Depth Anything) để đặt đồ khớp phối cảnh | Độ chính xác depth map phụ thuộc chất lượng ảnh, góc chụp | Cho phép user override thủ công (pinch-to-resize), cung cấp hướng dẫn chụp ảnh tối ưu |
@@ -267,22 +285,24 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 | Constraint | Chi tiết |
 |---|---|
 | **Team size** | Solo founder — 1 người phụ trách cả product, design, development |
-| **Timeline** | MVP cần ship trong 4–6 tuần để kịp validate giả thuyết |
-| **Budget** | Bootstrap, chưa có funding — ưu tiên free/low-cost tools (Three.js miễn phí, hosting trên Vercel/Netlify free tier, AI API dùng free quota) |
-| **Platform** | App-first (iOS + Android qua React Native / Flutter) — ưu tiên trải nghiệm mobile vì user chụp ảnh phòng bằng điện thoại, tương tác kéo thả trên touchscreen tự nhiên hơn web |
-| **Catalog limit** | MVP chỉ cần 5 phong cách × ~15 sản phẩm = ~75 models. Không cần cover tất cả phong cách và sản phẩm |
+| **Timeline** | **M1** cần ship trong 4–6 tuần để kịp validate giả thuyết (M2 mobile: 3–4 tháng sau đó) |
+| **Budget** | **Bootstrap-first**: burn ~11.7 triệu VNĐ/tháng. Sau khi M1 pass, cân nhắc gọi vốn để mở rộng M2 (không phụ thuộc vào việc gọi được seed ngay) |
+| **Platform** | **M1 = Web-first** (tái dùng PoC `WebApp/`, deploy web/PWA, không qua App Store) để solo iterate nhanh. **Mobile native (iOS+Android) = M2** — trải nghiệm chụp ảnh/kéo thả touchscreen tự nhiên hơn, làm sau khi M1 validate |
+| **Catalog limit** | M1 chỉ cần **2–3 phong cách × 8 sản phẩm ≈ 16–24 models**. Không cần cover tất cả phong cách và sản phẩm (5 phong cách là mục tiêu sau) |
 
 ---
 
 ### 10.7. Model Selection Rationale (AI-Specific #1)
 
-**Tính năng AI trong MVP:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ.
+**Tính năng AI trong M1:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D (**depth on-device**) để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ (**cloud inpainting qua API hosted, trả theo lượt**).
+
+> **Ranh giới on-device vs cloud (D3):** Depth estimation chạy **on-device** (real-time, mỗi lần drag). Inpainting chạy **cloud** (API hosted, chỉ gọi khi user xóa đồ). **"100% on-device" là tầm nhìn dài hạn, KHÔNG phải M1.** Privacy được đảm bảo bằng **consent thật**: "ảnh gửi lên xử lý và xóa ngay" — KHÔNG dùng câu "không upload ảnh".
 
 | Tiêu chí | Lựa chọn | Lý do |
 |---|---|---|
-| **Depth Estimation** | **Depth Anything V2** (open-source, chạy on-device) hoặc **MiDaS** (Intel) | Chạy local trên điện thoại (không cần API call) → zero latency, zero cost/request. Depth Anything V2 small (~25MB) đủ chính xác cho use case "scale đồ theo phối cảnh" |
-| **Inpainting (xóa đồ)** | **LaMa** (open-source) hoặc fallback đơn giản (hiện lại ảnh gốc tại vùng bị che) | LaMa nhẹ, chạy on-device được. MVP có thể dùng fallback đơn giản: lưu ảnh gốc → khi xóa item → reveal lại pixel gốc phía dưới |
-| **Tại sao không dùng cloud API (GPT-4o Vision, Gemini)?** | Depth estimation cần real-time (mỗi lần drag đồ), gửi API mỗi frame là không khả thi về latency và chi phí | On-device inference là bắt buộc cho UX mượt |
+| **Depth Estimation** | **Depth Anything V2** (open-source, chạy **on-device**) hoặc **MiDaS** (Intel) | Chạy local trên điện thoại (không cần API call) → zero latency cho thao tác drag. Depth Anything V2 small (~25MB) đủ chính xác cho use case "scale đồ theo phối cảnh" |
+| **Inpainting (xóa đồ)** | **Cloud inpainting** (API hosted, ví dụ LaMa/Replicate/AWS), trả theo lượt. Kèm **fallback đơn giản** (reveal lại pixel gốc tại vùng bị che) | **LaMa ~200MB cần GPU → KHÔNG chạy on-device được**, nên inpainting chất lượng cao đặt trên cloud. Inpainting chỉ gọi khi user **xóa đồ** (không phải mỗi frame) nên độ trễ/chi phí API chấp nhận được. Fallback không cần AI: lưu ảnh gốc → khi xóa item → reveal lại pixel gốc phía dưới |
+| **Depth on-device vs inpainting cloud?** | Depth cần real-time (mỗi lần drag) → **on-device** bắt buộc cho UX mượt. Inpainting chỉ chạy khi xóa đồ, tần suất thấp → **cloud** hợp lý, không phá vỡ trải nghiệm | Tách đúng ranh giới: cái gì cần real-time thì on-device, cái gì nặng & thưa thì cloud |
 | **Tại sao không dùng ARKit/ARCore full?** | Yêu cầu camera live + quét không gian → phức tạp, Out-of-scope MVP. Depth from single image đủ tốt cho "ướm thử" | Giảm ma sát: user chỉ cần 1 ảnh chụp, không cần quét phòng |
 | **Trade-off chấp nhận được** | Depth từ ảnh 2D kém chính xác hơn LiDAR/ARKit (~±15-20% sai số) nhưng đủ cho trải nghiệm trực quan. User có thể chỉnh tay (pinch-to-resize) | Human-in-the-loop bù đắp sai số |
 
@@ -292,15 +312,16 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 | Nguồn dữ liệu | Mục đích | Chủ sở hữu | Cập nhật |
 |---|---|---|---|
-| **3D Furniture Catalog** | Metadata cho ~75 mô hình 3D (tên, phong cách, kích thước thật, giá tham khảo, link mua, file .glb/.gltf) | YourSpace curate từ Sketchfab/CGTrader + đối tác tương lai | Founder thêm thủ công trong MVP |
+| **3D Furniture Catalog** | Metadata cho **16–24 mô hình 3D** (tên, phong cách, kích thước thật, giá tham khảo, link mua, file .glb/.gltf) | YourSpace curate từ Sketchfab/CGTrader + đối tác tương lai | Founder thêm thủ công trong M1 |
 | **Depth Estimation Model** | Model weights cho Depth Anything V2 Small (~25MB), bundle cùng app | Open-source (MIT license) | Cập nhật khi có version mới cải thiện accuracy |
-| **Style Knowledge Base** | Mô tả chi tiết 5 phong cách nội thất (đặc trưng, palette, chất liệu). Dùng cho UI hiển thị, không cho AI | YourSpace tự biên soạn | Founder cập nhật khi thêm phong cách mới |
+| **Style Knowledge Base** | Mô tả chi tiết **2–3 phong cách** nội thất (đặc trưng, palette, chất liệu) cho M1; 5 phong cách là mục tiêu sau. Dùng cho UI hiển thị, không cho AI | YourSpace tự biên soạn | Founder cập nhật khi thêm phong cách mới |
 | **User Interaction Logs** | Phong cách nào được chọn, đồ nào hay kéo vào, đồ nào hay bị xóa, tần suất override AI scale → training data tương lai | YourSpace (auto-collected) | Real-time logging |
-| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth estimation | User sở hữu | Xử lý on-device, không upload lên server trong MVP — tránh vấn đề privacy |
+| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth (on-device) và inpainting (cloud) | User sở hữu | Depth xử lý on-device; khi user xóa đồ, vùng ảnh liên quan **gửi lên server cloud để inpainting rồi xóa ngay** (zero-retention). Có **consent thật** trước khi gửi: "ảnh được gửi lên xử lý và xóa ngay" |
 
 **Lưu ý quan trọng về dữ liệu:**
-- AI trong MVP chạy **hoàn toàn on-device** (depth estimation + inpainting) → không cần server AI, không có chi phí API per-request.
-- **Không dùng RAG, không fine-tune** ở giai đoạn MVP.
+- AI trong M1 **tách ranh giới**: depth estimation chạy **on-device**; inpainting (xóa đồ) chạy **cloud** (API hosted) → có **chi phí API theo lượt** cho mỗi lần inpainting. **"100% on-device" là tầm nhìn dài hạn, không phải M1** (LaMa ~200MB cần GPU nên chưa chạy on-device được).
+- Privacy: dùng **consent thật** ("ảnh gửi lên xử lý và xóa ngay", zero-retention) — KHÔNG dùng câu "không upload ảnh".
+- **Không dùng RAG, không fine-tune** ở giai đoạn M1.
 - Chiến lược dài hạn: Tích lũy interaction logs (đồ nào user hay override scale?) → cải thiện heuristic đặt đồ + data cho Style Quiz AI ở phase sau.
 
 ---
@@ -346,8 +367,8 @@ Kiểm tra cuối cùng để đảm bảo PRD đủ rõ ràng:
 |---|---|---|
 | User Stories mô tả **hành vi**, không mô tả giao diện UI? | ✅ | Các story mô tả "tôi muốn kéo thả đồ", "AI tự động scale" (hành vi), không mô tả UI cụ thể |
 | Fallback UX chỉ rõ **trigger** và **hành động cụ thể**? | ✅ | 6 kịch bản bao phủ: scale sai, depth sai, inpainting lỗi, ảnh kém, device yếu, undo — mỗi cái có trigger + action rõ ràng |
-| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao on-device (Depth Anything V2), tại sao không cloud API, tại sao không ARKit full, trade-off sai số chấp nhận được |
-| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT), Sketchfab/CGTrader cho 3D, LaMa cho inpainting |
+| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao depth on-device (Depth Anything V2) còn inpainting cloud (LaMa ~200MB cần GPU), tại sao không ARKit full, trade-off sai số chấp nhận được |
+| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT) on-device, Sketchfab/CGTrader cho 3D, cloud inpainting (LaMa/API hosted) cho xóa đồ |
 | **Kill question:** Engineer đọc User Story + Fallback UX, cần hỏi lại > 3 câu? | ✅ Không | Acceptance criteria có số cụ thể (≤ 5s depth, ≥ 30fps, ±15-20% sai số), Fallback có bảng trigger-action cho cả 6 tình huống |
 
 ---
@@ -405,7 +426,7 @@ Churn toàn bộ → Mô hình nền tảng sụp đổ
 
 > "Chúng tôi tin rằng **[AI Spatial Placement — tự động scale đồ khớp depth/phối cảnh phòng]** sẽ giúp **[Young Aesthetes]** đạt được **[cảm giác "thật" khi ướm thử, đủ tin tưởng để ra quyết định mua]**.
 >
-> Chúng tôi sẽ biết mình đúng khi thấy **[AI Placement Accuracy — % đồ user KHÔNG cần chỉnh lại sau khi thả]** đạt **[≥ 60%]** và **[Time-to-Value (thời gian từ mở app → đặt đồ đầu tiên)]** đạt **[≤ 3 phút]**."
+> Chúng tôi sẽ kiểm chứng qua **spike depth-placement tuần đầu M1 (D4 decision gate):** nếu depth-từ-1-ảnh cho scale/đặt đồ đủ tốt để **đa số user KHÔNG phải chỉnh tay** → giữ AI Spatial Placement là must-have; nếu dưới ngưỡng → **degrade mượt về đặt đồ thủ công** (fallback đã chốt). *(Lưu ý: "AI Placement Accuracy ≥ 60%" và "Time-to-Value ≤ 3 phút" đã được BỎ khỏi bộ success metrics chính thức §10.5 — xác thực qua spike/decision gate thay vì KPI cứng.)*"
 
 ---
 
@@ -472,7 +493,7 @@ Nội thất là mua sắm **tần suất thấp** (Low Frequency) — người 
 | # | Tính năng In-Scope bị nghi ngờ | Phán quyết | Lập luận |
 |---|---|---|---|
 | **S1** | **AI Spatial Placement (Depth Estimation on-device)** | ⚠️ **MUST-HAVE có rủi ro kỹ thuật cao** | Quyết định sản phẩm hiện tại: AI Spatial Placement là MVP vì nó tạo cảm giác "thật" và giảm ma sát scale thủ công. Rủi ro không nằm ở việc có làm hay không, mà ở mức tự động hóa đến đâu. MVP phải giới hạn scope: AI chỉ gợi ý scale/vị trí ban đầu, user luôn override được, và nếu confidence thấp thì chuyển sang manual mode. |
-| **S2** | **Inpainting khi xóa đồ (dù là fallback reveal ảnh gốc)** | ✅ OK nếu chỉ reveal ảnh gốc | Nhưng PRD (mục 10.7) vẫn list LaMa như một lựa chọn. Bạn cần **xóa hẳn LaMa khỏi scope MVP** chứ không phải ghi "hoặc fallback". Mập mờ = scope creep. |
+| **S2** | **Inpainting khi xóa đồ** | ✅ **Đã chốt (D3): inpainting = CLOUD API hosted (must-have) + fallback reveal ảnh gốc** | Cập nhật sau stress-test: thay vì "xóa hẳn LaMa", quyết định D3 giữ inpainting chất lượng cao nhưng chạy **cloud** (LaMa/Replicate hosted — LaMa ~200MB cần GPU nên KHÔNG chạy on-device). PRD §10.7 đã đồng bộ: depth on-device, inpainting cloud, fallback reveal ảnh gốc. |
 | **S3** | **5 phong cách × 15 sản phẩm = 75 models 3D** | ⚠️ **Quá nhiều cho MVP** | Bạn cần 75 mô hình 3D chất lượng, curate thủ công, gắn metadata (tên, giá, link, phong cách, kích thước thật). Solo founder làm 75 cái = 2–3 tuần chỉ riêng việc curate. **Giảm xuống: 2 phong cách × 8 sản phẩm = 16 models.** Đủ để test giả thuyết. Nếu 16 models mà user vẫn click Mua → validate rồi, thêm sau. |
 | **S4** | **Xoay item 360° (User Story #4 Acceptance Criteria)** | ⚠️ **Giảm scope** | Giữ xoay cơ bản để user căn hướng đồ, nhưng không biến nó thành tính năng 3D editor phức tạp. Mục tiêu MVP là đủ thật để ướm thử và click mua, không phải thay thế phần mềm thiết kế. |
 | **S5** | **Nút "Tôi muốn tư vấn" + thu thập SĐT/Zalo** | ⚠️ **Scope creep từ Workshop 3** | Tính năng này không có trong PRD ban đầu (Mục 9–10), nhưng Workshop 3 tự thêm vào. Nó tạo ra nghĩa vụ: ai nhận lead? Ai gọi lại? Bạn là solo founder — **bạn sẽ tự gọi điện tư vấn nội thất cho user?** Nếu không có đội offline nhận lead, nút này tạo kỳ vọng rồi gây thất vọng (user để SĐT nhưng không ai gọi lại). **Chỉ giữ nếu bạn cam kết tự gọi lại trong 24h. Nếu không → cắt.** |
@@ -541,7 +562,7 @@ Nội thất là mua sắm **tần suất thấp** (Low Frequency) — người 
 | 2 | **Chạy Depth Anything V2 trên 20 ảnh phòng VN thật** để xác định baseline accuracy | Validation | 🔴 P0 | Tuần 1 |
 | 3 | Cắt xoay 360° khỏi MVP Acceptance Criteria — chỉ giữ xoay trục Y | Scope | 🟡 P1 | Cập nhật PRD |
 | 4 | Giảm catalog từ 75 models → 16 models (2 phong cách × 8 sản phẩm) | Scope | 🟡 P1 | Cập nhật PRD |
-| 5 | Xóa hẳn LaMa khỏi PRD — MVP chỉ dùng reveal ảnh gốc khi xóa item 3D | Scope | 🟡 P1 | Cập nhật PRD |
+| 5 | **Cập nhật theo D3:** inpainting = cloud API hosted (LaMa on-device bỏ vì cần GPU), giữ fallback reveal ảnh gốc — đã đồng bộ PRD §10.7 | Scope | ✅ Done | Đã cập nhật PRD |
 | 6 | Tạo QA checklist cho 3D model metadata (kích thước thật, origin, up-axis) | Data | 🟡 P1 | Trước khi import model |
 | 7 | Thêm pre-check brightness cho ảnh upload (trước khi chạy depth estimation) | AI Fallback | 🟡 P1 | Trong dev |
 | 8 | Cache depth map theo hash ảnh gốc — không tính lại khi mở bản phối cũ | AI Fallback | 🟡 P1 | Trong dev |

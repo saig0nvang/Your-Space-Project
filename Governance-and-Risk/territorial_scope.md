@@ -19,9 +19,9 @@
   4. **Hình ảnh không gian phòng thật** (Chứa dữ liệu nhạy cảm về không gian riêng tư của người dùng).
   5. Vị trí thiết bị (IP address, location cơ bản để tối ưu app).
 * **Có chuyển dữ liệu ra nước ngoài không?** 
-  - Về AI: Mô hình Depth Anything V2 chạy hoàn toàn **On-device** trên điện thoại người dùng, nên hình ảnh phòng chụp *không bị gửi lên server AI nước ngoài*.
+  - Về AI (cập nhật D3, 2026-07-23): **Depth Anything V2 chạy on-device**, NHƯNG tính năng **Inpainting (xóa đồ cũ) chạy trên Cloud API hosted** (Replicate/AWS) — nghĩa là **hình ảnh phòng CÓ được gửi lên server (có thể xuyên biên giới)** để xử lý rồi xóa ngay. Đây KHÔNG còn là kiến trúc "ảnh không gửi lên server". → **Bắt buộc có DPIA + cơ chế zero-retention** cho luồng ảnh này.
   - Về Hệ thống: Hosting (Vercel) và Database (Supabase/Firebase) được đặt tại các server quốc tế (VD: AWS/GCP region Singapore/Mỹ). Do đó, dữ liệu hệ thống **CÓ** luân chuyển xuyên biên giới.
-* **Kết quả:** **CÓ ÁP DỤNG** Nghị định 13/2023/NĐ-CP (Nghị định Bảo vệ dữ liệu cá nhân - PDPD). **CÓ CẦN** lập Hồ sơ đánh giá tác động chuyển dữ liệu cá nhân ra nước ngoài.
+* **Kết quả:** **CÓ ÁP DỤNG** Nghị định 13/2023/NĐ-CP (Nghị định Bảo vệ dữ liệu cá nhân - PDPD). **CÓ CẦN** lập Hồ sơ đánh giá tác động (DPIA) cho việc xử lý & chuyển ảnh phòng + dữ liệu cá nhân ra nước ngoài, kèm cam kết vendor zero-retention (không lưu trữ/không train trên ảnh user).
 
 ---
 
@@ -36,7 +36,7 @@
 
 Dựa trên yêu cầu của pháp luật Việt Nam (Đặc biệt là Nghị định 13/2023/NĐ-CP) và tiến độ ra mắt, team cần note 4 deadline sau:
 
-1. **Trước ngày Launch MVP (Tháng 1):** Cập nhật **Chính sách Quyền riêng tư (Privacy Policy) & Terms of Service** rõ ràng ngay màn hình Onboarding. Phải có checkbox đồng ý (Opt-in) cho việc thu thập hình ảnh phòng và số điện thoại.
+1. **Trước ngày Launch M1 (X tuần sau khi M1 pass — mốc tương đối, không hard-code tháng):** Cập nhật **Chính sách Quyền riêng tư (Privacy Policy) & Terms of Service** rõ ràng ngay màn hình Onboarding. Phải có checkbox đồng ý (Opt-in) + **consent thật** cho việc gửi ảnh phòng lên cloud xử lý & xóa ngay, và thu thập số điện thoại.
 2. **Kể từ lúc phát sinh thu thập dữ liệu User đầu tiên + 60 ngày:** Hoàn thành nộp **Hồ sơ Đánh giá tác động xử lý dữ liệu cá nhân** (theo mẫu NĐ 13) lên Cục An ninh mạng (A05 - Bộ Công an).
 3. **Kể từ lúc đẩy Database lên Cloud quốc tế + 60 ngày:** Hoàn thành nộp **Hồ sơ Đánh giá tác động chuyển dữ liệu cá nhân ra nước ngoài** (Gửi Cục A05).
 4. **Xuyên suốt quá trình vận hành (72 giờ):** Bất cứ khi nào phát hiện sự cố rò rỉ dữ liệu (Data breach), bắt buộc phải có thông báo cho A05 và người dùng trong vòng **72 giờ** kể từ thời điểm phát hiện. Lập kế hoạch (Plan B) sẵn sàng ứng phó sự cố mạng.

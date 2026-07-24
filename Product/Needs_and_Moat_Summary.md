@@ -4,22 +4,7 @@
 
 ---
 
-## 🔥 NEED #1 — Sợ mua nhầm, kê không hợp
-
-| | |
-|---|---|
-| **Need statement** | Người dùng cần xem trước món đồ nội thất sẽ trông như thế nào khi đặt vào chính căn phòng thật của mình, trước khi bỏ tiền mua. |
-| **Current workaround** | Xem ảnh sản phẩm trên Shopee / Lazada / website showroom → tự tưởng tượng trong đầu xem có hợp không → hoặc đo đạc thủ công bằng thước rồi đoán. Một số người chi thêm tiền thuê nhà thiết kế tư vấn. |
-| **Pain signal** | Tỉ lệ trả hàng nội thất online rất cao. Người dùng thường mất 2–4 tuần đắn đo trước khi mua một món đồ lớn (sofa, bàn ăn). Nhiều bài review: *"Mua về kê vào phòng khác hoàn toàn so với tưởng tượng."* |
-| **Evidence (or proxy)** | IKEA Place (AR app) đạt hơn 2 triệu lượt tải — cho thấy nhu cầu "thử trước khi mua" là rất lớn trên quy mô toàn cầu. Tại VN, group Facebook "Nghiện Nhà" (500K+ thành viên) có hàng trăm bài mỗi tuần hỏi *"Sofa này kê vào phòng tôi có hợp không?"*. |
-| **Why underserved** | Chưa có ứng dụng Việt nào cho phép kéo thả đồ nội thất vào ảnh chụp căn phòng thực tế. Các giải pháp quốc tế (IKEA Place, Houzz) chỉ phục vụ catalog nước ngoài, không có sản phẩm và mức giá phù hợp thị trường Việt Nam. |
-
-**JTBD Rewrite:**
-> *Khi tôi muốn mua một bộ sofa Mid-Century nhưng rất phân vân liệu nó có hợp với phòng khách hiện tại, tôi muốn **đặt thử nó vào ảnh chụp căn phòng thật của mình**, để tôi có thể **quyết định mua mà không sợ lãng phí hàng chục triệu đồng**.*
-
----
-
-## 🔥 NEED #2 — Thích cái đẹp nhưng không biết gọi tên phong cách
+## 🔥 NEED #1 — Thích cái đẹp nhưng không biết gọi tên phong cách (STYLE-FIRST)
 
 | | |
 |---|---|
@@ -34,6 +19,21 @@
 
 ---
 
+## 🔥 NEED #2 — Sợ mua nhầm, kê không hợp
+
+| | |
+|---|---|
+| **Need statement** | Người dùng cần xem trước món đồ nội thất sẽ trông như thế nào khi đặt vào chính căn phòng thật của mình, trước khi bỏ tiền mua. |
+| **Current workaround** | Xem ảnh sản phẩm trên Shopee / Lazada / website showroom → tự tưởng tượng trong đầu xem có hợp không → hoặc đo đạc thủ công bằng thước rồi đoán. Một số người chi thêm tiền thuê nhà thiết kế tư vấn. |
+| **Pain signal** | Tỉ lệ trả hàng nội thất online rất cao. Người dùng thường mất 2–4 tuần đắn đo trước khi mua một món đồ lớn (sofa, bàn ăn). Nhiều bài review: *"Mua về kê vào phòng khác hoàn toàn so với tưởng tượng."* |
+| **Evidence (or proxy)** | IKEA Place (AR app) đạt hơn 2 triệu lượt tải — cho thấy nhu cầu "thử trước khi mua" là rất lớn trên quy mô toàn cầu. Tại VN, group Facebook "Nghiện Nhà" (500K+ thành viên) có hàng trăm bài mỗi tuần hỏi *"Sofa này kê vào phòng tôi có hợp không?"*. |
+| **Why underserved** | Chưa có ứng dụng Việt nào cho phép kéo thả đồ nội thất vào ảnh chụp căn phòng thực tế. Các giải pháp quốc tế (IKEA Place, Houzz) chỉ phục vụ catalog nước ngoài, không có sản phẩm và mức giá phù hợp thị trường Việt Nam. |
+
+**JTBD Rewrite:**
+> *Khi tôi muốn mua một bộ sofa Mid-Century nhưng rất phân vân liệu nó có hợp với phòng khách hiện tại, tôi muốn **đặt thử nó vào ảnh chụp căn phòng thật của mình**, để tôi có thể **quyết định mua mà không sợ lãng phí hàng chục triệu đồng**.*
+
+---
+
 ## 🔥 NEED #3 — Mơ hồ về giá cả và nguồn mua đáng tin
 
 | | |
@@ -41,7 +41,7 @@
 | **Need statement** | Người dùng cần biết rõ chi phí ước tính và nguồn hàng uy tín cho các sản phẩm nội thất theo từng phong cách cụ thể, ngay trong quá trình thiết kế. |
 | **Current workaround** | Nhắn tin hỏi giá từng shop trên Shopee / Facebook → so sánh thủ công trên Excel / ghi giấy → không biết đâu là hàng chính hãng, đâu là hàng nhái → quyết định dựa trên cảm tính hoặc bỏ cuộc vì quá mất thời gian. |
 | **Pain signal** | Người dùng phàn nàn: *"Cùng một kiểu bàn mà shop A bán 3 triệu, shop B bán 12 triệu, không biết chất lượng khác gì"*. Nhiều người mua phải hàng kém chất lượng vì không có nguồn tham chiếu đáng tin cậy theo phong cách. |
-| **Evidence (or proxy)** | Thị trường nội thất VN ước tính ~$5 tỷ USD nhưng cực kỳ phân mảnh, không có nền tảng aggregator phân loại theo phong cách thiết kế. Khảo sát Q&Me (2024): người tiêu dùng trẻ VN sẵn sàng chi thêm 15–20% nếu được đảm bảo nguồn gốc + chất lượng rõ ràng. |
+| **Evidence (or proxy)** | Tổng ngành nội thất VN ước tính ~$9.76 tỷ USD/năm (Mordor) nhưng cực kỳ phân mảnh, không có nền tảng aggregator phân loại theo phong cách thiết kế. Khảo sát Q&Me (2024): người tiêu dùng trẻ VN sẵn sàng chi thêm 15–20% nếu được đảm bảo nguồn gốc + chất lượng rõ ràng. |
 | **Why underserved** | Shopee / Lazada phân loại sản phẩm theo công năng (ghế, bàn, tủ) — không theo phong cách thiết kế. Showroom cao cấp có chuyên gia tư vấn nhưng chi phí cao, không tiếp cận được đại chúng. Không có nền tảng nào kết hợp **thử → xem giá → mua** trong một luồng liền mạch. |
 
 **JTBD Rewrite:**

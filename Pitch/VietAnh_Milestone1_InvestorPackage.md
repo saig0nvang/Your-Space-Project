@@ -11,7 +11,7 @@ Thị trường nội thất Việt Nam ($9.76B) có một nghịch lý: Dư th�
 
 Người trẻ lưu hàng trăm ảnh phòng đẹp trên mạng, nhưng tê liệt 2–4 tuần khi chọn mua từng món đồ vì "sợ mua về kê không hợp". Nhãn hàng mất 30% doanh thu vì khách bỏ giỏ hàng.
 
-YourSpace là "Visual Sales Channel" giúp người dùng chuyển từ việc bơi trong biển "Product Catalog" sang "Style Palette" — kéo thả 3D đồ đạc thẳng vào ảnh chụp phòng thật. Không cần app AR nặng nề, chỉ cần web/mobile với AI on-device (Zero latency). 
+YourSpace là công cụ giúp người dùng thử đặt đồ vào chính ảnh chụp phòng thật của mình để **mua đúng** — chuyển từ việc bơi trong biển "Product Catalog" sang "Style Palette", kéo thả 3D đồ đạc thẳng vào ảnh phòng. Khi đã chứng minh nhu cầu người dùng, chính luồng này mở ra lớp giá trị B2B: một "Visual Sales Channel" cho nhãn hàng. Không cần app AR nặng nề — chỉ cần web-first với AI depth on-device (Depth Anything V2) kết hợp inpainting cloud trả-theo-lượt để xóa đồ cũ trong ảnh phòng thật. 
 
 Triệt tiêu đắn đo. Tự tin chốt đơn.
 
@@ -31,18 +31,18 @@ Bằng cách chuyển từ "Product Catalog" sang "Style Palette", YourSpace thu
 **3. THE SOLUTION**
 YourSpace mang đến trải nghiệm **"Zero-friction Visualization"**: chụp ảnh phòng thật, chọn phong cách, tự kéo thả đồ 3D vào ảnh — không cần đăng nhập hay quét không gian 3D.
 Việc kết nối thẳng đến catalog của nhà cung cấp Việt Nam biến YourSpace thành **Visual Sales Channel** cho nhãn hàng: triệt tiêu đắn đo, tối ưu Sales Cycle, giảm hoàn hàng.
-AI on-device tự scale đồ đúng phối cảnh — zero server cost, zero latency.
+AI depth on-device (Depth Anything V2) tự scale đồ đúng phối cảnh; phần inpainting xóa đồ cũ chạy trên cloud API trả-theo-lượt (có chi phí biến đổi/lượt) — ảnh gửi lên xử lý và xóa ngay. Tầm nhìn dài hạn: đưa toàn bộ pipeline về on-device để tối ưu privacy.
 
 **4. WHY NOW**
-- **Tech Inflection:** Các mô hình AI nhỏ gọn giờ có thể chạy on-device trên thiết bị di động.
+- **Tech Inflection:** Các mô hình AI như Depth Anything V2 giờ đủ nhỏ để chạy on-device; inpainting chất lượng cao có sẵn qua cloud API trả-theo-lượt với chi phí thấp.
 - **Behavioral Shift:** TikTok định hình cảm hứng không gian của giới trẻ, nhưng họ đâm sầm vào rào cản từ những catalog 2D tĩnh lỗi thời.
 - **Market Momentum:** Nội thất B2C online tại VN là kênh tăng trưởng nhanh nhất.
 
-**5. THE ASK: $150,000 USD**
-Vốn Seed cho 18 tháng runway để chứng minh YourSpace là "điểm chạm" tạo ra sự tự tin giao dịch.
-- **Validation:** Đạt Click-to-Buy Rate ≥ 15%.
-- **Technology:** Ship mobile MVP (Tháng 3-4), bao gồm AI Spatial Placement on-device.
-- **Partnership:** Onboard 10 nhà cung cấp nội thất mid-range.
+**5. THE ASK: Bootstrap-first → Seed $150,000 sau traction**
+Chúng tôi bootstrap tự chạy M1 validation (burn ~11.7 triệu VNĐ/tháng) để chứng minh YourSpace là "điểm chạm" tạo ra sự tự tin giao dịch — không đốt vốn nhà đầu tư vào một giả định chưa kiểm chứng.
+- **Validation (M1, tự bootstrap):** Đạt Click-to-Buy Rate ≥ 15%.
+- **Seed $150k (gọi SAU khi có traction):** Tài trợ M2 — escrow (thanh toán bảo vệ người mua) + mobile native (React Native + Expo GL) + onboard 10 nhà cung cấp nội thất mid-range.
+- **Technology:** Theo thang bậc mốc — M1 bản validation web-first (4–6 tuần) rồi M2 MVP mobile native (~3–4 tháng, sau gọi vốn), gồm AI Spatial Placement (depth on-device + inpainting cloud trả-theo-lượt).
 
 <div style="page-break-after: always;"></div>
 
@@ -50,8 +50,8 @@ Vốn Seed cho 18 tháng runway để chứng minh YourSpace là "điểm chạm
 
 **1. Market Sizing**
 - **TAM:** $9.76 tỷ USD/năm (Tổng thị trường nội thất VN)
-- **SAM:** ~$2.5 tỷ USD/năm (Phân khúc nội thất cho người trẻ đô thị online)
-- **SOM:** $150 triệu USD (Mục tiêu doanh thu giao dịch qua platform)
+- **SAM:** ~$300–500 triệu USD/năm (B2C online nội thất mid-range cho người trẻ đô thị)
+- **SOM:** GMV giao dịch ~$2–4 triệu USD trong 24 tháng đầu (5.000–10.000 đơn × 10 triệu VNĐ); commission thực nhận ~$230–320K. *(Con số $150 triệu là GMV mục tiêu dài hạn — tầm nhìn xa, không phải SOM gần hạn.)*
 
 **2. Target User (Young Aesthetes)**
 Người trẻ 25–35 tuổi, đang sở hữu nhà đầu tiên tại các đô thị lớn. Coi không gian sống là sự kéo dài bản sắc cá nhân. 
@@ -83,13 +83,13 @@ Rào cản: Có gu thẩm mỹ nhưng không biết tên phong cách, không hì
 ## FINANCIAL MODEL
 
 ### 1. Revenue Model & Pricing (Base Case)
-- **Mô hình Doanh thu:** Affiliate Commission (Không lưu kho, không bán hàng trực tiếp).
+- **Mô hình Doanh thu (tiến hóa theo mốc):** M1 = hoa hồng affiliate 8% (link-out sang nhà cung cấp); M2 = take-rate 8% qua escrow (giữ tiền trung gian, bảo vệ người mua). Cùng mức 8% — không lưu kho, không bán hàng trực tiếp.
 - **ARPU:** 800,000 VNĐ / đơn (Dựa trên GMV 10 triệu x 8% Commission Rate).
 - **Khách hàng mới / tháng:** ~300 đơn (Dựa trên mô hình Organic marketing của Founder qua cộng đồng 500K+ mem).
-- **Thâm nhập thị trường:** TAM 65,000 khách mua/tháng. Adoption Rate năm đầu chỉ ở mức 0.46%.
+- **Thâm nhập thị trường:** 65,000 khách mua/tháng là quy mô *segment phục vụ được* (chỉ số đơn vị người mua dùng để tính adoption — khác với TAM giá trị $9.76B ở trên). Adoption Rate năm đầu chỉ ở mức 0.46%.
 
 ### 2. Chi phí & Break-Even
-- **COGS (Chi phí biến đổi):** ~0 VNĐ (Sử dụng On-device AI hoàn toàn, không gọi API. Hosting Free tier).
+- **COGS (Chi phí biến đổi):** Gồm chi phí API inpainting cloud trả-theo-lượt — ~100K / 500K / 1,500K VNĐ/tháng theo kịch bản best / base / worst (D3, đồng bộ Business_Assumptions). Depth chạy on-device; hosting Vercel free tier. Chi phí nhỏ và tăng dần theo lượng dùng — **KHÔNG còn ~0**.
 - **Fixed Costs:** ~11,700,000 VNĐ/tháng (SaaS Tools, Bootstrap).
 - **Break-Even Point:** Chỉ cần ~15 đơn/tháng là hòa vốn (Cực kỳ dễ đạt).
 
@@ -104,7 +104,7 @@ Rào cản: Có gu thẩm mỹ nhưng không biết tên phong cách, không hì
 - **Payback Period:** < 1 tháng.
 
 ### 2. Defensibility (Moat & Lợi thế cấu trúc)
-- **Identity-Linked Premium:** Tăng ARPU nhờ bán "Không gian Wabi-sabi" (15 triệu) thay vì bán "cái ghế" (2 triệu) — khao khát khẳng định bản sắc dẫn dắt kích cỡ giỏ hàng.
+- **Identity-Linked Premium (upside):** Tăng ARPU nhờ bán "Không gian Wabi-sabi" (AOV tới 15 triệu — *dư địa upside*, base là GMV 10tr/ARPU 800K) thay vì bán "cái ghế" (2 triệu) — khao khát khẳng định bản sắc dẫn dắt kích cỡ giỏ hàng.
 - **Margin Protection:** Hiệu ứng sở hữu (IKEA effect) kết hợp AR trực quan giúp giảm dự kiến 40% tỉ lệ hoàn hàng.
 - **Supplier Lock-in:** Nắm giữ độc quyền catalog 3D từ các xưởng nội địa (Data mà OpenAI không có và các sàn e-commerce khó đập đi xây lại).
 
@@ -153,7 +153,7 @@ Rào cản: Có gu thẩm mỹ nhưng không biết tên phong cách, không hì
 
 **Tuyển chọn 3D Data → Kéo thả 3D → Test Memory Leak → Submit App**
 
-- `Task 1: Chuẩn bị 50 mô hình 3D`: Không có 3D Data thì không thể code trải nghiệm core.
+- `Task 1: Chuẩn bị 16–24 mô hình 3D (2–3 phong cách)`: Không có 3D Data thì không thể code trải nghiệm core.
 - `Task 3: Build tương tác Kéo thả 3D`: Task cốt lõi có độ khó lập trình cao (Three.js/React Native).
 - `Task 5: Test Memory Leak thiết bị thật`: Rendering 3D mobile dễ vỡ bộ nhớ, bắt buộc test diện rộng.
 - `Task 6: Submit App Store`: Gate cuối cùng ra thị trường.

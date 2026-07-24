@@ -36,7 +36,7 @@
 
 > **YourSpace.**
 >
-> Chúng tôi thay thế "Product Catalog" bằng "Style Palette". Một nền tảng Visual Sales Channel nơi người dùng có thể "sống thử" với toàn bộ phong cách ngay trên ảnh chụp căn phòng thật của họ.
+> Chúng tôi thay thế "Product Catalog" bằng "Style Palette". Một công cụ để người dùng "sống thử" toàn bộ phong cách ngay trên ảnh chụp căn phòng thật của mình — để mua đúng, không mua nhầm. Về sau, khi đã chứng minh nhu cầu người dùng, chính luồng này trở thành một "Visual Sales Channel" cho nhãn hàng.
 > 
 > *Sống thử trước. Yêu rồi mới đăng ký.*
 
@@ -85,7 +85,7 @@
 
 ---
 
-> 💡 **Speaker note:** Con số $5 tỷ USD thị trường nội thất VN — nếu bị hỏi thì nêu ra. Nhưng đừng nhét vào đây, sẽ mất flow câu chuyện.
+> 💡 **Speaker note:** Con số thị trường — TAM $9.76 tỷ USD (Mordor Intelligence), SAM $300–500 triệu USD (B2C online mid-range) — nếu bị hỏi thì nêu ra. Nhưng đừng nhét vào đây, sẽ mất flow câu chuyện.
 
 ---
 ---
@@ -154,7 +154,7 @@
 
 **"SAM của chúng tôi — B2C online, home furniture, mid-range + premium, tại HCM/HN/Đà Nẵng: khoảng $300–500 triệu USD/năm và đang tăng trưởng hai chữ số."**
 
-**"SOM trong 24 tháng đầu: $1–3 triệu USD — 5,000–10,000 giao dịch × 10 triệu VNĐ × commission 8%. Giới hạn bởi capacity founder, không phải giới hạn của thị trường."**
+**"SOM trong 24 tháng đầu: GMV giao dịch ~$2–4 triệu USD — 5.000–10.000 giao dịch × 10 triệu VNĐ; commission thực nhận ~$230–320K (8%). Giới hạn bởi capacity founder, không phải giới hạn của thị trường."**
 
 > **[Nếu bị hỏi về nguồn:]** *"Mordor Intelligence Vietnam Furniture Market Report, cập nhật tháng 2/2026. Tôi có thể gửi link báo cáo nếu anh/chị muốn xem chi tiết."*
 > **[Nếu bị hỏi tại sao online tăng mạnh:]** *"Logistics và digital payment đang cải thiện mạnh, brands đang scale omnichannel — nhưng conversion rate vẫn thấp vì thiếu trải nghiệm trực quan. Đây chính xác là vấn đề YourSpace giải quyết."*
@@ -170,19 +170,19 @@
 
 **"YourSpace không bán đồ nội thất. Chúng tôi là cầu nối."**
 
-**"Doanh thu đến từ hoa hồng affiliate: 8% trên mỗi giao dịch thành công."**
+**"Doanh thu đến từ mức 8% trên mỗi giao dịch thành công — tiến hóa theo mốc: M1 là hoa hồng affiliate 8% (link-out), M2 chuyển sang take-rate 8% qua escrow (giữ tiền trung gian, bảo vệ người mua). Cùng một mức 8%."**
 
 **"Nhưng điểm hấp dẫn nhất là cấu trúc Unit Economics có tính phòng thủ siêu cao của chúng tôi:"**
 
-**"Thứ nhất — Identity-Linked Premium. Chúng tôi bán 'không gian Wabi-sabi' thay vì bán 'cái ghế'. Khát vọng thẩm mỹ kéo basket size tăng vọt, AOV dự kiến đạt 10-15 triệu VNĐ/đơn."**
+**"Thứ nhất — Identity-Linked Premium. Chúng tôi bán 'không gian Wabi-sabi' thay vì bán 'cái ghế'. Base case của chúng tôi là GMV ~10 triệu VNĐ/đơn → ARPU ~800K (commission 8%). Khi khát vọng thẩm mỹ kéo cả bộ phong cách vào giỏ, AOV có thể lên tới ~15 triệu — nhưng đó là dư địa upside, không phải con số base."**
 
 **"Thứ hai — Margin Protection. Hiệu ứng tự tay thiết kế kết hợp 3D giúp dự kiến giảm 40% tỉ lệ hoàn hàng. Ít hoàn hàng đồng nghĩa với biên lợi nhuận của nhà cung cấp cao hơn — đó là lý do họ vui vẻ trả commission cho nền tảng."**
 
-**"Với commission 8% (ARPU ~800k), mô hình cho thấy LTV/CAC = 12.5 lần nếu CAC duy trì dưới 160K VNĐ."**
+**"Với commission 8% (ARPU ~800K) và CAC ~100K VNĐ, mô hình cho thấy LTV/CAC = 12.5 lần."**
 
 **"Break-even chỉ cần 15 đơn/tháng — một con số chúng tôi tự tin đạt ngay trong tuần đầu launch nếu validate được giả thuyết cốt lõi."**
 
-**"Và quan trọng hơn — AI trong YourSpace chạy hoàn toàn on-device, không có chi phí API per-request. Mô hình asset-light thật sự."**
+**"Về công nghệ — AI ước lượng độ sâu (Depth Anything V2) chạy on-device, còn phần inpainting xóa đồ cũ chạy trên cloud qua API trả-theo-lượt, nên COGS có một phần chi phí API/lượt (không phải zero). Mô hình vẫn asset-light — chi phí biến đổi nhỏ, tăng dần theo lượng dùng. Tầm nhìn dài hạn: đưa toàn bộ pipeline về 100% on-device để tối ưu privacy khi công nghệ cho phép."**
 
 ---
 ---
@@ -227,7 +227,7 @@
 
 **"Tầng hai: Dữ liệu khao khát. Mỗi tương tác kéo thả → tích lũy thành 'Aesthetic Identity Graph': bản đồ gu thẩm mỹ của người Việt. Đây không phải dữ liệu mua hàng mà Shopee đã có, đây là dữ liệu về ý định và khao khát thẩm mỹ."**
 
-**"Đối thủ có thể copy tính năng kéo thả 3D trong vài tháng. Nhưng họ không thể copy mạng lưới nhà cung cấp và 12 tháng data flywheel của chúng tôi."**
+**"Đối thủ có thể copy tính năng kéo thả 3D trong vài tháng. Còn moat thật — mạng lưới nhà cung cấp và data flywheel gu thẩm mỹ — là giả thuyết chúng tôi đang kiểm chứng qua việc onboard supplier và tích lũy dữ liệu. Nếu giả thuyết đúng, đây chính là thứ khó copy nhất."**
 
 ---
 ---
@@ -240,7 +240,7 @@
 
 **"Chúng tôi đã build working prototype trên web để prove concept nhanh nhất có thể — kéo thả 3D, shadow catcher, transform controls đều hoạt động. Bạn có thể test ngay hôm nay tại localhost."**
 
-**"MVP thật sẽ build trên mobile app — React Native + Expo GL — vì đây là platform đúng: user chụp ảnh phòng bằng điện thoại, kéo thả bằng ngón tay tự nhiên hơn chuột, và AI depth estimation (Depth Anything V2) chạy on-device không cần server."**
+**"Chúng tôi build theo thang bậc mốc: M1 là bản validation web-first — tái dùng nhanh PoC, iterate solo, không vướng App Store; mobile native (React Native + Expo GL) để giai đoạn M2 sau. Về AI: depth estimation (Depth Anything V2) chạy on-device, còn inpainting xóa đồ cũ chạy trên cloud qua API trả-theo-lượt — ảnh gửi lên xử lý và xóa ngay."**
 
 **"Điều chúng tôi CHƯA làm — và sẽ làm TRƯỚC KHI viết thêm một dòng code:"**
 
@@ -250,7 +250,7 @@
 
 **"Nếu không ai click Mua → dừng dự án. Không lãng phí thêm nguồn lực."**
 
-**"Nếu ≥ 15% click → đủ tín hiệu để build full MVP trong 4–6 tuần."**
+**"Nếu ≥ 15% click → đủ tín hiệu để build M1 — bản validation web-first — trong 4–6 tuần."**
 
 ---
 
@@ -261,20 +261,20 @@
 
 ## 🟠 SLIDE 10 — THE ASK *(30 giây)*
 
-> **[Slide: $150,000 USD — "Buy the Confidence"]**
+> **[Slide: "Bootstrap-first → Gọi vốn khi có traction"]**
 
 ---
 
-**"Chúng tôi đang gọi vốn Seed $150,000 USD."**
+**"Chúng tôi đang chọn con đường bootstrap-first."**
 
-**"Số vốn này đảm bảo 18 tháng runway với một mục tiêu duy nhất: Chứng minh YourSpace là 'điểm chạm' tạo ra sự tự tin giao dịch cho hàng triệu người trẻ."**
+**"Ngay bây giờ, với burn khoảng 11.7 triệu VNĐ/tháng, chúng tôi tự build M1 — bản validation web-first — và chạy RAT để chứng minh giả thuyết cốt lõi: người dùng thật sự click Mua. Chúng tôi không đốt vốn nhà đầu tư vào một giả định chưa được kiểm chứng."**
 
-**"Kế hoạch phân bổ:"**
-- **Hoàn tất Validation:** Thực thi RAT, đạt ngưỡng Conversion Rate ≥ 15%.
-- **Hoàn thiện Công nghệ:** Ship Mobile MVP trong vòng 3–4 tháng.
-- **Xây dựng Partnership:** Onboard thành công 10 nhà cung cấp mid-range để số hóa 3D catalog.
+**"Chúng tôi sẽ gọi vốn seed SAU khi có traction thật — RAT pass (Conversion Rate ≥ 15%) và những nhà cung cấp pilot đầu tiên. Khi đó, vốn dùng cho M2:"**
+- **Escrow & thanh toán:** hạ tầng giao dịch bảo vệ người mua.
+- **Mobile native:** đưa trải nghiệm lên điện thoại (React Native + Expo GL).
+- **Partnership:** onboard 10 nhà cung cấp mid-range để số hóa 3D catalog.
 
-**"Ngoài vốn, chúng tôi tìm kiếm những nhà đầu tư có thể kết nối YourSpace với 3–5 nhà cung cấp nội thất sẵn sàng pilot. Đây là mảnh ghép cuối cùng chúng tôi cần để bứt phá."**
+**"Điều chúng tôi tìm kiếm ngay lúc này không phải là một tấm séc, mà là kết nối tới 3–5 nhà cung cấp nội thất sẵn sàng pilot — mảnh ghép giúp chúng tôi validate nhanh nhất."**
 
 ---
 ---
@@ -299,13 +299,13 @@
 | **"AI depth estimation có chính xác không?"** | "±15–20% sai số — đủ cho 'sống thử', không đủ để thay thế thiết kế kỹ thuật. User override được bằng pinch-to-resize. Đây là Human-in-the-loop có chủ đích." |
 | **"Sao không làm AR quét phòng cho xịn hơn?"** | "AR/LiDAR yêu cầu camera live + quét phòng — quá nhiều friction. User chỉ cần 1 ảnh chụp là đủ validate purchase intent. MVP không cần xịn, cần đủ." |
 | **"User sẽ mua hay chỉ 'chơi' thôi?"** | "Đó chính xác là RAT — rủi ro nguy hiểm nhất. Chúng tôi test bằng Photoshop experiment trước khi code. Nếu không ai mua → dừng. Không đoán mò." |
-| **"Shopee/Lazada có thể copy không?"** | "Tính năng kéo thả 3D — có thể copy. Data gu thẩm mỹ người Việt tích lũy 12+ tháng — không thể copy. Moat nằm ở data flywheel, không ở feature." |
+| **"Shopee/Lazada có thể copy không?"** | "Tính năng kéo thả 3D — có thể copy. Giả thuyết moat của chúng tôi: data gu thẩm mỹ người Việt + mạng lưới supplier tích lũy theo thời gian sẽ khó copy — đây là điều đang kiểm chứng qua onboarding, không phải tuyên bố chắc nịch. Moat nằm ở data flywheel, không ở feature." |
 | **"Nhà cung cấp có chịu ký không?"** | "Unknown #2 của chúng tôi — chưa validate. Hypothesis: họ sẽ thấy ROI khi YourSpace tạo ra qualified leads (user đã phối đồ trong phòng thật) thay vì cold traffic." |
 | **"Catalog 3D lấy từ đâu?"** | "MVP: Sketchfab + CGTrader (free/paid assets). Scale: partner với nhà cung cấp để họ cung cấp 3D scan sản phẩm thật — họ được 'showroom ảo miễn phí', chúng tôi được catalog." |
 | **"Revenue model có phụ thuộc quá vào affiliate không?"** | "Giai đoạn đầu: có. Giai đoạn sau: phí showcase cho nhà cung cấp muốn featured catalog, data licensing cho các sàn TMĐT lớn muốn hiểu gu thẩm mỹ user." |
-| **"Tại sao build app thay vì web?"** | "3 lý do: (1) User chụp ảnh phòng bằng điện thoại — workflow tự nhiên nhất là ở trên app. (2) Kéo thả bằng ngón tay trên touchscreen tự nhiên hơn nhiều so với chuột. (3) AI depth estimation (Depth Anything V2) chạy on-device — không cần server, zero latency, zero cost/request. Web prototype hiện tại chỉ là proof-of-concept để validate UX nhanh." |
-| **"Web prototype hiện tại có phải là sản phẩm cuối không?"** | "Không — web prototype là bước validate UX concept nhanh nhất. MVP thật sẽ là mobile app: React Native + Expo GL cho iOS/Android. Quyết định này cũng nhất quán với constraint: user chụp ảnh phòng bằng điện thoại, không phải laptop." |
-| **"Tại sao gọi vốn $150K ngay từ giai đoạn Pre-launch?"** | "$150K là để de-risk công nghệ (on-device AI) và chiếm lĩnh trước nguồn cung (độc quyền 3D catalog). Chúng tôi có Unit Economics phòng thủ và một bài test RAT rõ ràng để không đốt tiền mù quáng vào marketing." |
+| **"App hay web?"** | "M1 chúng tôi build web-first để iterate nhanh, validate rẻ và không vướng App Store; mobile native là giai đoạn M2. Về lâu dài mobile là platform tự nhiên (user chụp ảnh phòng bằng điện thoại, kéo thả bằng ngón tay). Về AI: depth (Depth Anything V2) chạy on-device, còn inpainting xóa đồ cũ qua cloud API trả-theo-lượt (có chi phí/lượt) — ảnh xử lý xong xóa ngay. Tham vọng dài hạn là đưa cả pipeline về on-device để tối ưu privacy." |
+| **"Web hiện tại có phải sản phẩm cuối không?"** | "Web hiện tại là PoC (M0). Sản phẩm kế tiếp là M1 — bản validation web-first; mobile native để M2. Chúng tôi tách rõ ba mốc để không ai hiểu nhầm là đã có app mobile." |
+| **"Các bạn đang gọi vốn bao nhiêu / khi nào?"** | "Hiện tại chúng tôi bootstrap (burn ~11.7tr/tháng) để tự build M1 web-first và chạy RAT — validate ý định mua TRƯỚC. Chỉ gọi vốn seed sau khi có traction thật (RAT pass, supplier pilot đầu tiên); lúc đó vốn dùng cho M2 (escrow, mobile native, onboard supplier). Cách này de-risk cho cả nhà đầu tư: chúng tôi chứng minh trước, đốt tiền sau." |
 
 ---
 ---

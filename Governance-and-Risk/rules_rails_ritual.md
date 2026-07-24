@@ -12,7 +12,7 @@
 - **Lộ tài sản của Supplier:** KHÔNG hardcode API Keys hoặc bộ dữ liệu 3D Model độc quyền của các nhà cung cấp nội thất vào mã nguồn hở hoặc chia sẻ qua các kênh không bảo mật.
 
 ### ✅ Được làm (Giải pháp thay thế)
-- **Xử lý hình ảnh:** Tuân thủ triệt để kiến trúc **AI on-device**. Mô hình Depth Anything V2 phải xử lý ảnh trực tiếp trên điện thoại khách hàng, không lưu trữ ảnh gốc trên server.
+- **Xử lý hình ảnh (cập nhật D3, 2026-07-23):** Kiến trúc MVP = **Depth on-device + Inpainting trên Cloud API hosted** (Replicate/AWS). Ảnh phòng CÓ được gửi lên server để xử lý → **BẮT BUỘC consent thật** ở onboarding ("ảnh của bạn được gửi lên hệ thống để xử lý và **xóa ngay**"), **cơ chế zero-retention** (vendor không lưu trữ/không train trên ảnh user) + DPIA theo NĐ13. **KHÔNG** dùng câu "không upload ảnh / 100% on-device" trong khi đang chạy cloud (tuyên bố sai → rủi ro Điều 198). Mục tiêu **inpainting on-device là tầm nhìn dài hạn**, revisit khi công nghệ (model nhẹ hơn, NPU mobile mạnh hơn) cho phép.
 - **Phân tích dữ liệu nội bộ:** Nếu cần phân tích data hành vi hoặc debug, CHỈ sử dụng môi trường bảo mật (như OpenAI Enterprise, Claude for Work) hoặc các công cụ local đã được setup tính năng "Do not train on my data".
 
 ### ⚠️ Hậu quả vi phạm

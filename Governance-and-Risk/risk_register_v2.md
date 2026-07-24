@@ -2,9 +2,11 @@
 **Ngày lập:** 07/05/2026 | **Người lập:** Phạm Việt Anh (qua AI CRO Audit Lab 4)
 
 ### 0. Cơ sở tính toán (Burn Rate)
-- **Vốn mục tiêu (Seed):** $150,000 cho 18 tháng
-- **Burn rate trung bình:** ~$8,333/tháng
-- **Impact scale:**
+> **Cập nhật 2026-07-23 (D6):** Đường tài chính thật = **BOOTSTRAP** (tiền mặt ~50tr VND, burn ~11.7tr VND/tháng → runway ~4.3 tháng). Kịch bản Seed $150,000 / burn ~$8,333/tháng dưới đây là **kịch bản M2 sau gọi vốn** — các con số USD chấm điểm bên dưới đọc theo kịch bản seed/M2, ở bootstrap cần quy về thang VND (11.7tr/tháng = 1 tháng runway).
+
+- **Vốn mục tiêu (Seed — kịch bản M2 sau gọi vốn):** $150,000 cho 18 tháng
+- **Burn rate trung bình (kịch bản seed/M2):** ~$8,333/tháng
+- **Impact scale (kịch bản seed/M2):**
   - Impact 1: < $8,333 (<1 tháng runway)
   - Impact 2: $8,333 – $16,000 (1-2 tháng runway)
   - Impact 3: $25,000 (3 tháng runway)
@@ -18,49 +20,49 @@
 ### RISK 1: AI Spatial Hallucination (KILL ZONE)
 - **Type:** Customer-facing
 - **If:** Mô hình Depth Anything V2 tính sai độ sâu ảnh 15-20% trong chiến dịch marketing lớn.
-- **Then:** 100 khách hàng mua nhầm giường/sofa không nhét vừa phòng. Nhãn hàng ép YourSpace đền bù phí hoàn hàng (30% x 20tr/đơn). Khách phốt lên TikTok.
-- **Leading to:** $24,000 bồi thường và xử lý khủng hoảng PR = **3 tháng runway**.
+- **Then:** 100 khách hàng mua nhầm giường/sofa không nhét vừa phòng. Theo mô hình đã chốt (D2), **phí hoàn hàng do SUPPLIER chịu** (khấu trừ qua escrow + phạt SLA 8%), KHÔNG phải YourSpace đền. Nhưng khách vẫn phốt lên TikTok → đòn reputational.
+- **Leading to:** Tổn thất tài chính trực tiếp về YourSpace giảm mạnh (bồi hoàn thuộc supplier); còn lại chủ yếu là chi phí xử lý khủng hoảng PR + tổn hại uy tín/traction. *(Nghĩa vụ bồi hoàn qua escrow thuộc M2; ở M1 web-first bước "mua" là affiliate/thu lead nên chưa phát sinh.)*
 - **Likelihood (1-5):** 4 (Rất dễ xảy ra với AI tính toán chiều sâu từ ảnh tĩnh 2D).
-- **Impact (1-5):** 3 (Mất 3 tháng). Score: **12**.
+- **Impact (1-5):** 3 (Tài chính giảm vì supplier chịu bồi hoàn, nhưng rủi ro REPUTATIONAL vẫn cao). Score: **12**.
 - **Mitigation:**
   1. Code chế độ "Manual Fallback" để user tự nhập chiều dài tường nếu AI confidence < 80%.
   2. Hiển thị UI cảnh báo rõ: "AI chỉ mang tính tham khảo kích thước tương đối".
-  3. Ký thỏa thuận chia sẻ phí hoàn hàng (50-50) với Supplier trong thời gian beta.
+  3. **Ràng buộc hợp đồng + SLA: Supplier chịu 100% phí hoàn hàng** khi lỗi dẫn tới trả hàng, khấu trừ trực tiếp qua escrow (KHÔNG chia 50-50, KHÔNG để founder móc túi).
 
 ### RISK 2: OS Update Breaks Local AI
 - **Type:** Vendor
 - **If:** Apple (iOS 19) hoặc Google tung bản cập nhật hệ điều hành thay đổi quyền truy cập Camera/CoreML.
-- **Then:** Mô hình Depth Anything V2 on-device bị crash hàng loạt. App mất tính năng lõi (visual commerce). Phải đập đi xây lại hoặc chuyển lên cloud server (phá vỡ cấu trúc zero-cost).
-- **Leading to:** $15,000 chi phí dev gấp + $8,000 server cost khẩn cấp = **2.5 tháng runway**.
+- **Then:** Mô hình Depth Anything V2 on-device (tính độ sâu) bị crash hàng loạt. App mất tính năng lõi đặt đồ đúng phối cảnh. Phải đập đi xây lại hoặc chạy depth trên cloud server (phát sinh thêm chi phí API/lượt — API cost ≠ 0).
+- **Leading to:** $15,000 chi phí dev gấp + $8,000 server cost khẩn cấp = **2.5 tháng runway** (kịch bản seed/M2).
 - **Likelihood (1-5):** 3 (Apple thường xuyên xiết chặt quyền camera/AI).
 - **Impact (1-5):** 3. Score: **9**.
 - **Mitigation:**
-  1. Có sẵn kiến trúc fallback lên cloud inference (AWS/Replicate) để chạy tạm trong lúc đợi Apple review bản sửa lỗi.
+  1. **Lưu ý kiến trúc (D3):** Với INPAINTING (xóa đồ cũ), cloud inference qua API hosted (Replicate/AWS) đã là **hướng MVP CHÍNH THỨC**, KHÔNG còn là "fallback" — chấp nhận API cost/lượt để đảm bảo chất lượng. Rủi ro này chỉ còn áp cho phần DEPTH chạy on-device; nếu OS phá depth on-device thì cloud inference cũng là phương án chuyển tạm sẵn có.
   2. Tham gia Apple Developer Beta để test trước các OS update 3 tháng.
   3. Log kỹ các API deprecation warnings trên Expo.
 
 ### RISK 3: Camera Privacy App Store Ban
 - **Type:** Regulatory
-- **If:** Policy của App Store/Play Store hoặc Luật bảo vệ dữ liệu (Nghị định 13 VN / GDPR) quét thấy YourSpace dùng camera mà không có popup giải thích rõ việc xử lý ảnh on-device.
+- **If:** Policy của App Store/Play Store hoặc Luật bảo vệ dữ liệu (Nghị định 13 VN / GDPR) quét thấy YourSpace dùng camera VÀ gửi ảnh phòng lên cloud để inpainting (D3) mà không có popup consent giải thích rõ ràng việc xử lý & xóa ảnh.
 - **Then:** App bị gỡ khỏi store (delisted) không báo trước. Toàn bộ tiền quảng cáo đang chạy đổ xuống sông.
 - **Leading to:** Mất $10,000 tiền Ads + 3 tuần không có doanh thu ($5,000) = **1.8 tháng runway**.
 - **Likelihood (1-5):** 4 (Reviewer Apple rất khắt khe với app có chữ "AI" và quyền Camera).
 - **Impact (1-5):** 2. Score: **8**.
 - **Mitigation:**
-  1. Thêm màn hình Onboarding giải thích bằng hình ảnh: "Mọi tính toán AI diễn ra trên máy bạn. Không upload ảnh phòng riêng tư".
-  2. Bổ sung chính sách bảo mật (Privacy Policy) chuẩn GDPR/NĐ13.
+  1. Thêm màn hình Onboarding **consent thật** (KHÔNG dùng câu "không upload ảnh" vì sai sự thật → dính rủi ro Điều 198): "Ảnh phòng của bạn được gửi lên hệ thống để xử lý (xóa đồ cũ) và **xóa ngay** sau khi hoàn tất — không lưu trữ, không dùng để train AI." Ghi rõ mục tiêu on-device trong tương lai. Checkbox opt-in bắt buộc.
+  2. Bổ sung chính sách bảo mật (Privacy Policy) chuẩn GDPR/NĐ13 + DPIA cho luồng ảnh lên cloud (có thể xuyên biên giới) + cơ chế zero-retention.
   3. Không gắn các SDK analytics bên thứ 3 vào màn hình chụp ảnh.
 
 ### RISK 4: Post-Payment Fulfillment Failure (Hết hàng/Chậm thi công)
 - **Type:** Customer-facing
 - **If:** Khách hàng đã thanh toán/chốt đơn thành công trên YourSpace, nhưng Supplier gặp sự cố (hết nguyên liệu, xưởng quá tải không thi công kịp) hoặc API không đồng bộ tồn kho thời gian thực.
-- **Then:** Khách hàng đợi lâu không có hàng, lên mạng bóc phốt YourSpace "lừa đảo chiếm dụng vốn". YourSpace phải tự ứng tiền túi ra hoàn trả lập tức cho khách để dập khủng hoảng truyền thông, trong khi phải đợi nhiều tuần để đối soát/đòi lại tiền từ Supplier.
-- **Leading to:** Bị kẹt dòng tiền mặt và phải hoàn trả khẩn cấp $10,000 = **1.2 tháng runway**.
+- **Then:** Khách hàng đợi lâu không có hàng, lên mạng bóc phốt YourSpace "lừa đảo chiếm dụng vốn". Nhờ cơ chế escrow (D2), tiền khách chưa được giải ngân cho Supplier → **hoàn trả cho khách được thực hiện NGAY từ tài khoản escrow, và khoản bồi hoàn do SUPPLIER chịu** (không phải founder móc túi). YourSpace chỉ điều phối hoàn tiền + đối soát phạt SLA với Supplier.
+- **Leading to:** Vì tiền nằm ở escrow, YourSpace KHÔNG còn phải tự ứng tiền túi. Tổn thất còn lại chủ yếu là chi phí vận hành xử lý sự cố + rủi ro uy tín. *(Escrow thuộc M2 — D5; ở M1 web-first chưa có bước thanh toán/escrow nên kịch bản này áp cho M2.)*
 - **Likelihood (1-5):** 4 (Rất phổ biến ở ngành nội thất VN, đặc biệt với các xưởng gia công).
 - **Impact (1-5):** 2. Score: **8**.
 - **Mitigation:**
-  1. **Thanh toán Escrow (Tạm giữ):** Dòng tiền từ khách sẽ nằm ở cổng thanh toán trung gian, CHỈ giải ngân cho Supplier khi có biên bản giao hàng thành công.
-  2. **Ràng buộc SLA trong hợp đồng:** Supplier phải chịu phạt 8% giá trị đơn hàng nếu tự ý hủy đơn hoặc trễ deadline sau khi đã Confirm.
+  1. **Thanh toán Escrow qua cổng ĐƯỢC CẤP PHÉP (D2):** Dòng tiền từ khách nằm ở **cổng thanh toán có hold/escrow được cấp phép** (PayOS/MoMo/VNPay/ngân hàng) — YourSpace KHÔNG tự giữ tiền để né giấy phép trung gian thanh toán NHNN. CHỈ giải ngân cho Supplier khi có biên bản giao hàng thành công. **Escrow thuộc M2** (sau gọi vốn).
+  2. **Ràng buộc SLA trong hợp đồng:** Supplier **chịu trách nhiệm bồi hoàn** và phạt 8% giá trị đơn hàng nếu tự ý hủy đơn hoặc trễ deadline sau khi đã Confirm — khấu trừ trực tiếp qua escrow.
   3. **Quản trị kỳ vọng UX:** Thay vì nút "Mua ngay", đổi thành "Đặt cọc & Chờ Supplier xác nhận (Tối đa 4h)" để tránh việc khách đinh ninh là hàng đã có sẵn.
 
 ### RISK 5: Supplier 3D API Lockout
@@ -91,7 +93,7 @@
 - **Type:** Reputational
 - **If:** Một nhóm user cố tình kéo thả nội thất sai tỷ lệ, tạo ra các phòng siêu dị/phản cảm (VD: nhét 5 cái toilet vào phòng ngủ), chụp ảnh kèm watermark YourSpace và đăng X/TikTok chê bai.
 - **Then:** YourSpace biến thành trò cười mạng xã hội. Định vị "Aesthetic/Style-first" bị phá hủy. Các Supplier xịn đòi rút tên vì bị ảnh hưởng hình ảnh.
-- **Leading to:** Mất 3 Supplier chính ($15k MRR tiềm năng) + tốn 1 tháng tái định vị = **2 tháng runway**.
+- **Leading to:** Mất 3 Supplier chính (tương ứng ~$15k doanh thu/tháng tiềm năng = **take-rate 8% trên GMV giao dịch thật** từ các supplier này theo mô hình D6, KHÔNG phải phí subscription/showcase) + tốn 1 tháng tái định vị = **2 tháng runway**.
 - **Likelihood (1-5):** 3 (Troll internet rất phổ biến với tool AR).
 - **Impact (1-5):** 2. Score: **6**.
 - **Mitigation:**

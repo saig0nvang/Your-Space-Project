@@ -6,7 +6,7 @@
 
 Cục An ninh mạng (A05) và Cơ quan Cảnh sát điều tra mời Founder lên làm việc: *"Anh có biết hệ thống AI của anh đẩy dữ liệu nhạy cảm ra nước ngoài trái phép không? Anh có cố tình lừa dối tính năng AI để gọi vốn và thu tiền Affiliate không?"*
 
-**Mục tiêu hiện tại (Tháng 5/2026):** Xây dựng ngay bộ hồ sơ "Bảo hiểm pháp lý" để nếu ngày đó xảy ra, Founder có bằng chứng văn bản chứng minh mình **ĐÃ THẨM ĐỊNH** rủi ro (Giảm trừ/miễn trách nhiệm hình sự), chứ không phải "biết rõ là sai nhưng vẫn làm" (cố ý làm trái).
+**Mục tiêu hiện tại (giai đoạn trước Launch M1):** Xây dựng ngay bộ hồ sơ "Bảo hiểm pháp lý" để nếu ngày đó xảy ra, Founder có bằng chứng văn bản chứng minh mình **ĐÃ THẨM ĐỊNH** rủi ro (Giảm trừ/miễn trách nhiệm hình sự), chứ không phải "biết rõ là sai nhưng vẫn làm" (cố ý làm trái).
 
 ---
 
@@ -14,7 +14,7 @@ Cục An ninh mạng (A05) và Cơ quan Cảnh sát điều tra mời Founder l�
 
 | # | Loại hồ sơ bảo vệ | Trạng thái hiện tại | Deadline (Nếu CHƯA CÓ) |
 |---|---|---|---|
-| 1 | **Nhật ký kiểm thử claim AI** <br>*(Chứng minh AI Inpainting & Scale hoạt động đúng như quảng cáo, test độ sai lệch)* | ❌ CHƯA CÓ | Trước khi Launch MVP (Tuần 4/Tháng 5) |
+| 1 | **Nhật ký kiểm thử claim AI** <br>*(Chứng minh AI Inpainting & Scale hoạt động đúng như quảng cáo, test độ sai lệch)* | ❌ CHƯA CÓ | Trước khi Launch M1 (X tuần sau khi M1 pass) |
 | 2 | **Hồ sơ rà soát điều khoản Vendor** <br>*(Review chính sách quyền riêng tư của Cloud API xử lý Inpainting)* | ❌ CHƯA CÓ | Cuối tuần này |
 | 3 | **Nhật ký giám sát giao dịch bất thường** <br>*(Chống fraud click ảo link Affiliate)* | ❌ CHƯA CÓ | Sau khi đạt 1,000 MAU đầu tiên |
 | 4 | **DPIA / CTIA đã nộp** <br>*(Hồ sơ Đánh giá tác động chuyển dữ liệu hình ảnh phòng lên Cloud theo NĐ13)* | ❌ CHƯA CÓ | Trong vòng 60 ngày kể từ lúc test luồng data |
@@ -27,7 +27,7 @@ Cục An ninh mạng (A05) và Cơ quan Cảnh sát điều tra mời Founder l�
 
 **🔥 TOP 1 Ưu tiên:** **Hồ sơ số (4) - DPIA / CTIA (Đánh giá tác động xử lý & chuyển dữ liệu cá nhân).**
 
-**Lý do:** YourSpace vừa quyết định chuyển tính năng AI Inpainting từ On-device (chạy local) sang Cloud API (đẩy lên server) để tối ưu chất lượng. Việc lấy hình ảnh phòng ngủ riêng tư của user đẩy qua biên giới mà không làm hồ sơ đánh giá NĐ13/2023/NĐ-CP là vi phạm luật sờ sờ, nguy cơ bị cấm hoạt động và phạt cực nặng ngay tắp lự nếu bị lộ ảnh.
+**Lý do:** YourSpace đã **chốt quyết định chính thức (D3, 2026-07-23)** chuyển tính năng AI Inpainting từ On-device (chạy local) sang **Cloud API hosted trả-theo-lượt** (Replicate hoặc tương đương) cho MVP để tối ưu chất lượng; "100% on-device" là tầm nhìn dài hạn, revisit khi công nghệ cho phép. Việc lấy hình ảnh phòng ngủ riêng tư của user đẩy qua biên giới mà không làm hồ sơ đánh giá NĐ13/2023/NĐ-CP là vi phạm luật sờ sờ, nguy cơ bị cấm hoạt động và phạt cực nặng ngay tắp lự nếu bị lộ ảnh.
 
 ---
 
@@ -40,4 +40,4 @@ Cục An ninh mạng (A05) và Cơ quan Cảnh sát điều tra mời Founder l�
 
 **Phân công thực hiện:**
 * **Người chịu trách nhiệm:** Phạm Việt Anh (Founder).
-* **Tần suất cập nhật:** 1 lần trước khi Launch MVP + Cập nhật lại ngay lập tức nếu đổi nhà cung cấp Cloud API khác.
+* **Tần suất cập nhật:** 1 lần trước khi Launch M1 + Cập nhật lại ngay lập tức nếu đổi nhà cung cấp Cloud API khác.

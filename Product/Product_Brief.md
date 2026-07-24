@@ -7,8 +7,8 @@
 4. **Bước 4:** Xem bảng ước tính chi phí và giá cả liên quan.
 5. **Bước 5:** Nhận tư vấn chuyên sâu hoặc tiến hành đặt mua ngay.
 
-## 3D Modeling (Mô hình hóa 3D)
-Ứng dụng hướng dẫn người dùng chụp ảnh không gian, sau đó tự động tái tạo căn phòng dưới dạng mô hình 3D. Người dùng có toàn quyền chọn trường không gian và đánh dấu giữ nguyên trạng các vật thể có sẵn theo ý muốn.
+## Đặt đồ 3D lên ảnh không gian (2D + Depth)
+Ứng dụng hướng dẫn người dùng chụp/tải một ảnh không gian phòng thật, sau đó đặt các mẫu nội thất 3D **lên chính ảnh 2D đó** với tỉ lệ và phối cảnh đúng nhờ bản đồ độ sâu (Depth Anything V2 — depth suy ra từ 1 ảnh). Ứng dụng **KHÔNG dựng lại toàn bộ căn phòng thành mô hình 3D**; nó chỉ hiểu chiều sâu đủ để đặt đồ đúng scale/góc nhìn. Người dùng có toàn quyền chọn vùng không gian và đánh dấu giữ nguyên trạng các vật thể có sẵn theo ý muốn. Nếu depth-từ-1-ảnh chưa đủ chính xác, hệ thống degrade mượt về **đặt đồ thủ công** (user tự kéo/scale/xoay theo trục Y).
 
 ## Context (Bối cảnh thị trường)
 Khách hàng mục tiêu là thế hệ trẻ trong độ tuổi 25 - 35. Đây là độ tuổi đang bước vào giai đoạn kiến tạo không gian sống, sở hữu nhà ở độc lập thay vì sống cùng hệ thế cũ. Xã hội ngày càng phát triển, nhu cầu về chất lượng nội thất đã chuyển dịch mạnh mẽ từ "ăn chắc mặc bền" (chỉ cần có chỗ ở ổn định) sang định hướng "sống có gu" (đề cao giá trị thẩm mỹ và cá nhân hóa). Nhờ quá trình hội nhập quốc tế toàn diện, các phong cách thiết kế kiến trúc toàn cầu đang thâm nhập và định hình mạnh mẽ xu hướng không gian sống tại Việt Nam.
@@ -33,9 +33,11 @@ Những người trẻ tuổi mang tư duy cấp tiến, mong muốn nắm bắt
 - Phổ cập hóa kiến thức nền tảng và trực quan về các phong cách thiết kế.
 - Triệt tiêu nguy cơ rủi ro định hình (đo lường độ tương thích trước khi mua sắm).
 - Thuận lợi tiếp cận các sản phẩm "hàng hiệu" với mức chi phí tối ưu nhất thị trường.
-- Kênh kết nối uy tín đến đúng chuyên gia thiết kế thạo việc cho một phong cách cụ thể.
+- Kênh kết nối uy tín đến đúng chuyên gia thiết kế thạo việc cho một phong cách cụ thể. *(M1: thu-lead — người dùng để lại SĐT để được tư vấn follow-up; tính năng matching/chat chuyên gia đầy đủ ở M2+.)*
 
 ### Đối với bài toán Doanh nghiệp (Business Value)
+> **Định vị:** YourSpace là công cụ **cho người dùng trước hết** — giúp user mua ĐÚNG, không phải chi NHIỀU. Các giá trị B2B dưới đây là **lớp monetization/mở rộng bật ở phase sau** (sau khi đã chứng minh nhu cầu user), KHÔNG phải danh từ lõi của sản phẩm.
+
 - **Tối ưu hóa chu trình bán hàng (Sales Cycle):** Rút ngắn quá trình đắn đo của người bán, tăng tốc độ đưa sản phẩm tới tay khách hàng cuối.
 - **Nâng tầm trải nghiệm mua sắm:** Thiết lập hành vi mua sắm nội thất tiện lợi như Shopee. Bằng cách cho phép "ướm thử" sản phẩm, ứng dụng khơi gợi mạnh mẽ nhu cầu và tác động lớn đến quyết định mua hàng (Conversion Rate).
 - **Mô hình "Showroom thiết thực - chi phí 0 đồng":** Ứng dụng gánh vác vai trò làm không gian trưng bày ảo sinh động, mang ý nghĩa lớn trong việc giúp doanh nghiệp cắt giảm trực tiếp chi phí mặt bằng và tinh gọn đội ngũ nhận sự tư vấn.

@@ -3,6 +3,8 @@
 **Tình huống giả định (Dựa trên Risk Register):**
 9h30 sáng. Một Tiktoker đăng video phàn nàn: Tính năng AI của YourSpace tự động đo sai kích thước, khiến họ tin tưởng và mua nhầm chiếc sofa 25 triệu VNĐ không nhét vừa cửa phòng. Video đạt 200 shares trong 30 phút. Đang có tín hiệu viral (Khủng hoảng thuộc vùng KILL ZONE).
 
+> **Lưu ý tài chính (D2):** Khoản hoàn 25tr KHÔNG do founder móc túi. Vì có giao dịch escrow (thuộc M2), tiền được **hoàn ngay từ tài khoản escrow giữ tiền và do SUPPLIER chịu** theo cam kết SLA. YourSpace ưu tiên hoàn cho khách trước để dập khủng hoảng, rồi khấu trừ/đối soát với Supplier sau.
+
 ---
 
 ## Bước 1: VERIFY (0–5 phút)
@@ -36,7 +38,7 @@ Chào [Tên khách hàng],
 
 Việc xảy ra: AI của bên mình đã tính sai độ sâu ảnh phòng của bạn, dẫn đến việc gợi ý sai tỷ lệ chiếc sofa. Lỗi này hoàn toàn thuộc về YourSpace.
 Mình đang làm gì: Mình đã tạm tắt tính năng đo tự động trên app với mọi người dùng để kiểm tra lại log.
-Cách sửa lỗi: Mình sẽ tự bỏ tiền túi hoàn lại 100% tiền mặt (25 triệu VNĐ) và cho người qua thu hồi sofa ngay trong hôm nay -- bạn không cần phải làm bất cứ form từ chối nhận hàng nào với nhãn hàng.
+Cách sửa lỗi: Bên mình sẽ hoàn lại 100% (25 triệu VNĐ) NGAY trong hôm nay và cho người qua thu hồi sofa -- bạn không cần làm bất cứ form từ chối nhận hàng nào. (Khoản này được hoàn ngay từ tài khoản escrow giữ tiền và do nhà cung cấp chịu theo cam kết SLA -- bạn không phải chờ đối soát, cứ nhận tiền trước.)
 Mình sẽ gọi bạn trong 24h tới: 0855751359 (Đây là số cá nhân của mình, bạn gọi lúc nào cũng được).
 
 -- Phạm Việt Anh
