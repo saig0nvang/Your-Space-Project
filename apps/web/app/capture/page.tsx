@@ -24,6 +24,9 @@ export default function CapturePage() {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [tilt, setTilt] = useState<Tilt | null>(null);
   const [sensorMsg, setSensorMsg] = useState("Chưa bật cảm biến.");
+  const [evtCount, setEvtCount] = useState(0);
+  const [raw, setRaw] = useState<string>("(chưa có sự kiện)");
+  const [env, setEnv] = useState<string>("");
   const [shot, setShot] = useState<{ url: string; aspect: number; tilt: Tilt } | null>(null);
   const [ultrawide, setUltrawide] = useState(false);
   const [heightM, setHeightM] = useState(1.5);
@@ -32,12 +35,26 @@ export default function CapturePage() {
 
   // ── cảm biến hướng máy ────────────────────────────────────────────────
   const onOrient = useCallback((e: DeviceOrientationEvent) => {
-    if (e.beta === null || e.gamma === null) return;
+    setEvtCount((n) => n + 1);
+    setRaw(
+      `type=${e.type} alpha=${e.alpha?.toFixed(0) ?? "null"} beta=${e.beta?.toFixed(1) ?? "null"} gamma=${e.gamma?.toFixed(1) ?? "null"}`,
+    );
+    if (e.beta === null || e.gamma === null) return; // sự kiện rỗng → vẫn đếm để chẩn đoán
     setTilt({
       beta: e.beta,
       gamma: e.gamma,
       screenAngle: typeof screen !== "undefined" && screen.orientation ? screen.orientation.angle : 0,
     });
+  }, []);
+
+  useEffect(() => {
+    const hasReq =
+      typeof (DeviceOrientationEvent as unknown as { requestPermission?: unknown }).requestPermission ===
+      "function";
+    setEnv(
+      `${location.protocol}//${location.host} · secure=${window.isSecureContext} · ` +
+        `DeviceOrientationEvent=${typeof DeviceOrientationEvent !== "undefined"} · iOS-permission=${hasReq}`,
+    );
   }, []);
 
   async function enableSensor() {
@@ -51,14 +68,22 @@ export default function CapturePage() {
           return;
         }
       }
+      // một số máy Android chỉ bắn 'deviceorientationabsolute'
       window.addEventListener("deviceorientation", onOrient);
-      setSensorMsg("Cảm biến ON — nghiêng máy thử, số bên dưới phải đổi.");
-    } catch {
-      setSensorMsg("Thiết bị không hỗ trợ cảm biến → dùng /spike.");
+      window.addEventListener("deviceorientationabsolute", onOrient as EventListener);
+      setSensorMsg("Đã đăng ký lắng nghe — NGHIÊNG MÁY, xem 'sự kiện nhận' bên dưới có tăng không.");
+    } catch (e) {
+      setSensorMsg("Lỗi bật cảm biến: " + (e instanceof Error ? e.message : String(e)));
     }
   }
 
-  useEffect(() => () => window.removeEventListener("deviceorientation", onOrient), [onOrient]);
+  useEffect(
+    () => () => {
+      window.removeEventListener("deviceorientation", onOrient);
+      window.removeEventListener("deviceorientationabsolute", onOrient as EventListener);
+    },
+    [onOrient],
+  );
 
   // ── camera ────────────────────────────────────────────────────────────
   async function startCamera() {
@@ -141,12 +166,24 @@ export default function CapturePage() {
             <button onClick={capture} disabled={!stream}>3 · Chụp</button>
           </div>
           <p style={{ fontSize: 12, color: "#444" }}>{sensorMsg}</p>
-          {tilt && (
-            <p style={{ fontSize: 12, fontFamily: "monospace", color: Math.abs(roll) > 8 ? "#b00" : "#060" }}>
-              beta={tilt.beta.toFixed(0)}° gamma={tilt.gamma.toFixed(0)}° · pitch≈{(90 - tilt.beta).toFixed(0)}°
-              {Math.abs(roll) > 8 ? " ⚠️ máy đang nghiêng — giữ thẳng" : " ✓ máy thẳng"}
-            </p>
-          )}
+
+          {/* bảng chẩn đoán — LUÔN hiện, kể cả khi chưa có sự kiện */}
+          <div style={{ fontSize: 11, fontFamily: "monospace", background: "#f5f1ea", border: "1px solid #d8d0c4", borderRadius: 8, padding: "8px 10px", margin: "8px 0", lineHeight: 1.7 }}>
+            <div style={{ color: "#8A8275" }}>{env}</div>
+            <div>
+              sự kiện nhận: <b style={{ color: evtCount > 0 ? "#060" : "#b00" }}>{evtCount}</b>
+              {evtCount === 0 && " ← nếu vẫn 0 khi đã nghiêng máy: thiết bị/trình duyệt không cấp cảm biến"}
+            </div>
+            <div>raw: {raw}</div>
+            {tilt ? (
+              <div style={{ color: Math.abs(roll) > 8 ? "#b00" : "#060" }}>
+                pitch≈{(90 - tilt.beta).toFixed(0)}° · screenAngle={tilt.screenAngle}°
+                {Math.abs(roll) > 8 ? " ⚠️ máy nghiêng — giữ thẳng" : " ✓ máy thẳng"}
+              </div>
+            ) : (
+              <div style={{ color: "#8A8275" }}>chưa có beta/gamma hợp lệ — vẫn chụp được (dùng pitch giả định 15°)</div>
+            )}
+          </div>
           <video
             ref={videoRef}
             playsInline

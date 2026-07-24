@@ -43,3 +43,9 @@ node_modules/
 .next/
 .env*
 *.local
+
+# local dev TLS certs
+certs/
+
+# dev cert phát cho thiết bị (gắn IP máy, không commit)
+apps/web/public/yourspace-dev-cert.crt

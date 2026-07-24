@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plain test — không React</title>
+<style>
+  body{font-family:-apple-system,system-ui,sans-serif;max-width:700px;margin:0 auto;padding:18px;background:#EDE8E0;color:#1A1A1A}
+  h1{font-size:19px;margin:0 0 6px}
+  p.sub{font-size:13px;color:#666;margin:0 0 14px}
+  button{font-size:19px;padding:16px;width:100%;background:#B0654A;color:#fff;border:0;border-radius:10px;-webkit-appearance:none}
+  .box{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#F5F1EA;border:1px solid #D8D0C4;border-radius:8px;padding:12px;margin:10px 0;word-break:break-all;line-height:1.7}
+  .err{background:#fdeceb;border-color:#e0a9a2}
+  .ok{color:#060;font-weight:700}.bad{color:#b00;font-weight:700}
+</style>
+<script>
+  // Bắt lỗi NGAY TỪ ĐẦU, không phụ thuộc framework nào.
+  window.__errs = [];
+  window.addEventListener('error', function(e){
+    window.__errs.push('error: ' + e.message + ' @ ' + (e.filename||'') + ':' + (e.lineno||''));
+    var el = document.getElementById('errs'); if (el) el.textContent = window.__errs.join('\n');
+    var w = document.getElementById('errwrap'); if (w) w.style.display = 'block';
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    window.__errs.push('rejection: ' + String(e.reason));
+    var el = document.getElementById('errs'); if (el) el.textContent = window.__errs.join('\n');
+    var w = document.getElementById('errwrap'); if (w) w.style.display = 'block';
+  });
+</script>
+</head>
+<body>
+  <h1>Plain test — HTML thuần, KHÔNG React</h1>
+  <p class="sub">Nếu nút này bấm được → thiết bị/JS ổn, lỗi nằm ở bundle Next/React. Nếu vẫn không bấm được → vấn đề ở tầng trình duyệt/chứng chỉ.</p>
+
+  <button id="btn">BẤM VÀO ĐÂY</button>
+
+  <div class="box">
+    <div>số lần bấm: <span id="taps" class="bad">0</span></div>
+    <div>trạng thái: <span id="msg">chưa bấm</span></div>
+    <div>sự kiện cảm biến: <span id="cnt" class="bad">0</span></div>
+    <div>raw: <span id="raw">(chưa có)</span></div>
+  </div>
+
+  <div class="box">
+    <div style="color:#8A8275">ENV</div>
+    <div id="env">đang đọc…</div>
+  </div>
+
+  <div class="box err" id="errwrap" style="display:none">
+    <div style="color:#9E4B3F;font-weight:700">LỖI JS</div>
+    <pre id="errs" style="white-space:pre-wrap;margin:0"></pre>
+  </div>
+
+<script>
+(function(){
+  var taps=0, cnt=0;
+  var $=function(id){return document.getElementById(id)};
+
+  $('env').textContent = [
+    location.protocol+'//'+location.host,
+    'secure='+window.isSecureContext,
+    'DOE='+(typeof DeviceOrientationEvent!=='undefined'),
+    'needPerm='+(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'),
+    'touch='+navigator.maxTouchPoints,
+    'UA='+navigator.userAgent
+  ].join(' · ');
+
+  function onOrient(e){
+    cnt++; var c=$('cnt'); c.textContent=cnt; c.className='ok';
+    $('raw').textContent='beta='+(e.beta==null?'null':e.beta.toFixed(1))
+      +' gamma='+(e.gamma==null?'null':e.gamma.toFixed(1))
+      +' alpha='+(e.alpha==null?'null':e.alpha.toFixed(0));
+  }
+
+  function onTap(){
+    taps++; var t=$('taps'); t.textContent=taps; t.className='ok';
+    $('msg').textContent='đã bấm — xin quyền…';
+    try{
+      if (typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+        DeviceOrientationEvent.requestPermission().then(function(res){
+          $('msg').textContent='requestPermission → '+res;
+          if(res==='granted'){
+            window.addEventListener('deviceorientation', onOrient);
+            window.addEventListener('deviceorientationabsolute', onOrient);
+          }
+        }).catch(function(err){ $('msg').textContent='LỖI xin quyền: '+err; });
+      } else {
+        $('msg').textContent='không cần xin quyền — đã đăng ký lắng nghe';
+        window.addEventListener('deviceorientation', onOrient);
+        window.addEventListener('deviceorientationabsolute', onOrient);
+      }
+    }catch(err){ $('msg').textContent='LỖI: '+err; }
+  }
+
+  var b=$('btn');
+  b.addEventListener('click', onTap);
+  b.addEventListener('touchend', onTap);   // phòng trường hợp click bị nuốt trên iOS
+})();
+</script>
+</body>
+</html>
