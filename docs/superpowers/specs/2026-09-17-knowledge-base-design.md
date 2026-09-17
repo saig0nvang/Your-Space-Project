@@ -30,8 +30,10 @@ máy sinh và theo dõi được.
 ## 3. Nguyên tắc
 
 1. **Quyết định là bất biến.** Đổi ý = tạo bản ghi mới, liên kết ngược về bản cũ. Không sửa tại chỗ.
-2. **Một cạnh, một nơi ghi.** Quan hệ chỉ được khai ở `derives_from` của tài liệu downstream.
-   Chiều ngược lại luôn được suy ra, không bao giờ được ghi tay.
+2. **Không có cạnh nào ghi hai lần mà không được đối chiếu.** Cạnh quyết định → tài liệu chỉ
+   khai ở `derives_from` của tài liệu downstream; chiều ngược lại luôn suy ra, không bao giờ ghi tay.
+   Cạnh giữa các quyết định ghi cả hai đầu (để đọc file là thấy, không cần chạy công cụ), nhưng
+   `kb check` bắt buộc hai đầu phải khớp nhau.
 3. **Phát hiện là tự động, sửa là có người duyệt.** Máy khoanh vùng; agent đề xuất; founder gật.
 4. **Cảnh báo, không chặn.** Hook chặn cứng sẽ bị `--no-verify` trong vài ngày rồi quên.
 
@@ -65,6 +67,12 @@ amended_by: [D3b]         # id[], khi bị bổ sung một phần
 amends: null              # id, khi bổ sung cái khác
 ---
 ```
+
+`status`, `superseded_by` và `amended_by` là thông tin **suy ra được** từ `supersedes`/`amends`
+của các file khác, nhưng vẫn được ghi ra để đọc file là hiểu ngay mà không phải chạy công cụ.
+Đổi lại, `kb check` xác minh ba thứ này khớp với chiều ngược lại và coi sai lệch là **lỗi cấu
+trúc** (mã thoát 2), chứ không phải cảnh báo. Ghi hai đầu mà không đối chiếu chính là cách
+`Decisions_Log` cũ trôi khỏi thực tế.
 
 Thân bài giữ **nguyên văn** nội dung D1–D6 từ `Decisions_Log_2026-07-23.md`. Không viết lại,
 không biên tập. Đây là bước di trú, không phải bước xét lại quyết định.
@@ -152,6 +160,8 @@ downstream không, và là input trực tiếp cho `/sync-decision`.
   nếu không lần diff sau sẽ mất bản đối chiếu.
 - *Hai file quyết định trùng `id`*: lỗi cứng, `kb` thoát mã 2.
 - *`derives_from` trỏ tới `id` không tồn tại*: lỗi cứng, thoát mã 2.
+- *Hai đầu của một cạnh giữa quyết định không khớp* (D3b khai `amends: D3` nhưng D3 không khai
+  `amended_by: [D3b]`, hoặc `status` không phản ánh đúng): lỗi cứng, thoát mã 2, in ra cặp lệch.
 
 ## 6. `scripts/kb.mjs`
 
@@ -208,8 +218,9 @@ thực sự hoặc khi founder chủ động gọi `kb ack` bằng tay.
    `Doc_Sync_Plan_2026-07-23.md` đã liệt kê sẵn từng file dính quyết định nào (mục A–F) —
    dùng bản đồ đó thay vì đọc lại 56k từ. Tài liệu không có trong plan được xét riêng và
    gắn `derives_from: []` nếu thực sự độc lập.
-6. Commit toàn bộ, rồi `kb ack` tất cả để lấy hash nền. Lưu ý thứ tự: phải commit trước
-   thì blob mới vào kho object.
+6. Lấy hash nền, theo đúng thứ tự này: **commit `decisions/` trước** (để blob của các file
+   quyết định vào kho object), rồi chạy `kb ack` cho toàn bộ tài liệu — lệnh này ghi hash vào
+   frontmatter của chúng — rồi commit lần hai cho các tài liệu vừa bị sửa frontmatter.
 7. Chạy `kb check` lần đầu — kết quả mong đợi là một danh sách dài tài liệu stale, chính là
    hàng đợi sync tồn đọng.
 
@@ -226,7 +237,7 @@ Ca cần phủ:
 - Tài liệu thiếu `derives_from` → vào mục ②; có `derives_from: []` → không vào mục nào.
 - Quyết định có `amended_by` → tài liệu trỏ vào nó vào mục ③ dù hash không đổi.
 - Chuỗi trong `forbidden` xuất hiện trong tài liệu → vào mục ④ kèm số dòng.
-- Trùng `id`, `derives_from` trỏ id không tồn tại → thoát `2`.
+- Trùng `id`, `derives_from` trỏ id không tồn tại, hai đầu cạnh quyết định lệch nhau → thoát `2`.
 - `--warn` ép thoát `0` dù có drift.
 
 ## 11. Không làm
