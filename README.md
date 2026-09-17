@@ -128,3 +128,12 @@ Trọng tâm tiếp theo:
 ## Định Vị
 
 YourSpace trước hết là công cụ giúp người dùng tự tin chuyển từ cảm hứng sang quyết định mua đúng — giảm sự đắn đo ngay tại thời điểm cần ra quyết định. Lớp visual sales channel cho ngành nội thất (kết nối brand/supplier) là hướng monetization bật sau, khi đã chứng minh được nhu cầu người dùng.
+
+## Knowledge base
+
+Tài liệu và quyết định được liên kết qua `decisions/` và frontmatter `derives_from`.
+Sau khi clone, bật hook cảnh báo drift:
+
+    git config core.hooksPath .githooks
+
+Lệnh thường dùng: `pnpm kb:check` · `pnpm kb:impact D3` · `pnpm kb:ack <file>` · `pnpm kb:graph`.

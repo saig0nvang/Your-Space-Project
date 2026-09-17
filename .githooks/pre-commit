@@ -1,0 +1,4 @@
+#!/bin/sh
+# Cảnh báo, không chặn. Xem docs/superpowers/specs/2026-09-17-knowledge-base-design.md
+node scripts/kb.mjs check --warn
+exit 0
