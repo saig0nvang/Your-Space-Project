@@ -1,5 +1,6 @@
 ---
 derives_from: []
+facts_check: false
 ---
 # Knowledge Base Quyết định ↔ Tài liệu — Implementation Plan
 

@@ -39,11 +39,12 @@ test('deps null khi thiếu derives_from, [] khi khai tường minh', () => {
   } finally { r.cleanup() }
 })
 
-test('loại trừ apps/web, decisions/, CREDITS.md, CLAUDE.md khỏi tập tài liệu', () => {
+test('loại trừ apps/web, decisions/, .claude/, CREDITS.md, CLAUDE.md khỏi tập tài liệu', () => {
   const r = makeRepo()
   try {
     seed(r)
     r.write('apps/web/README.md', '# web\n')
+    r.write('.claude/skills/x/SKILL.md', '# skill\n')
     r.write('CLAUDE.md', '# claude\n')
     r.write('Assets/CREDITS.md', '# credits\n')
     r.commit('them file bi loai')

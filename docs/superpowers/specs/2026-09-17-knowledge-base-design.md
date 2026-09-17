@@ -1,5 +1,6 @@
 ---
 derives_from: []
+facts_check: false
 ---
 # YourSpace — Knowledge Base liên kết Quyết định ↔ Tài liệu (thiết kế)
 

@@ -6,6 +6,7 @@ import { readFrontmatter } from './frontmatter.mjs'
 export function DOC_EXCLUDES(file) {
   if (file.startsWith('apps/web/')) return true
   if (file.startsWith('decisions/')) return true
+  if (file.startsWith('.claude/')) return true
   const base = basename(file)
   return base === 'CREDITS.md' || base === 'CLAUDE.md'
 }

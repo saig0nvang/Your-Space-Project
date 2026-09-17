@@ -9,7 +9,7 @@
   Product/Product_Brief.md  ←  D3 được bổ sung bởi D3b
   Product_research/MVP_Research_and_PMF.md  ←  D3 được bổ sung bởi D3b
 
-④ Vi phạm facts.yml (60):
+④ Vi phạm facts.yml (34):
   Governance-and-Risk/document_trail.md:33  "100% on-device" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
   Governance-and-Risk/risk_register.md:8  "$8,333" đã bị loại bỏ, giá trị đúng là "11.7tr VND/tháng" (burn)
   Governance-and-Risk/risk_register.md:17  "$8,333" đã bị loại bỏ, giá trị đúng là "11.7tr VND/tháng" (burn)
@@ -44,29 +44,3 @@
   Product_research/Strategic_Discovery.md:566  "xoay 360" đã bị loại bỏ, giá trị đúng là "chỉ xoay trục Y" (rotation)
   Product_research/Strategic_Discovery.md:567  "75 models" đã bị loại bỏ, giá trị đúng là "16-24 models, 2-3 phong cách" (catalog)
   docs/superpowers/plans/2026-07-24-m1-spike-and-foundation.md:21  "không upload ảnh" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:743  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:744  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:751  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:761  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:763  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1394  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1394  "~$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1398  "$2.5B" đã bị loại bỏ, giá trị đúng là "$300-500M" (sam)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1402  "$1-3M commission" đã bị loại bỏ, giá trị đúng là "GMV ~$2-4M / 24 tháng, commission ~$230-320K" (som)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1406  "CAC≤160K" đã bị loại bỏ, giá trị đúng là "100K VND" (cac)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1406  "CAC 160K" đã bị loại bỏ, giá trị đúng là "100K VND" (cac)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1410  "$8,333" đã bị loại bỏ, giá trị đúng là "11.7tr VND/tháng" (burn)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1418  "6 tháng" đã bị loại bỏ, giá trị đúng là "M1 4-6 tuần, M2 3-4 tháng" (timeline)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1422  "100% on-device" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1422  "hoàn toàn on-device" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1422  "không upload ảnh" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1422  "API cost/tháng = 0" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1426  "360 độ" đã bị loại bỏ, giá trị đúng là "chỉ xoay trục Y" (rotation)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1426  "xoay 360" đã bị loại bỏ, giá trị đúng là "chỉ xoay trục Y" (rotation)
-  docs/superpowers/plans/2026-09-17-knowledge-base.md:1430  "75 models" đã bị loại bỏ, giá trị đúng là "16-24 models, 2-3 phong cách" (catalog)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:102  "$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:102  "~$5B" đã bị loại bỏ, giá trị đúng là "$9.76B/năm" (tam)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:106  "$2.5B" đã bị loại bỏ, giá trị đúng là "$300-500M" (sam)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:114  "$8,333" đã bị loại bỏ, giá trị đúng là "11.7tr VND/tháng" (burn)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:118  "100% on-device" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
-  docs/superpowers/specs/2026-09-17-knowledge-base-design.md:118  "không upload ảnh" đã bị loại bỏ, giá trị đúng là "ảnh gửi lên xử lý & xóa ngay" (privacy_claim)
