@@ -1,3 +1,7 @@
+---
+derives_from: []
+facts_check: false
+---
 # YourSpace — Audit Nhất Quán Tài Liệu & Drift Ý Tưởng
 
 > Ngày: 2026-07-23 · Phạm vi: 30 tài liệu (Product, Product_research, Pitch, Governance-and-Risk, Technical, README, WebApp/Docs)

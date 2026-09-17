@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb]
+---
 # 3 R's Startup Governance — YourSpace
 
 **Mục tiêu:** Áp dụng framework "phanh Brembo" (Day 21) cho YourSpace để ngăn chặn rủi ro làm cạn runway, đặc biệt tập trung vào rủi ro "ảo giác không gian" (Spatial Hallucination) của AI gây hoàn hàng và rủi ro bảo mật dữ liệu.

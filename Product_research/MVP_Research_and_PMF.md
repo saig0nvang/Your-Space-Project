@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb, D4@bb7f1ffe]
+---
 ## 9. MVP Boundaries
 
 Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để test giả thuyết cốt lõi nhanh nhất, ranh giới cho phiên bản MVP đầu tiên được xác định như sau:

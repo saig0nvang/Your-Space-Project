@@ -1,3 +1,6 @@
+---
+derives_from: []
+---
 # Design System — YourSpace (M1 Web Validation)
 
 > Nguồn chuẩn thiết kế. Đọc file này TRƯỚC mọi quyết định UI. Tạo bởi `/design-consultation` 2026-07-24.

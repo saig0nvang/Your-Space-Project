@@ -1,3 +1,7 @@
+---
+derives_from: []
+facts_check: false
+---
 # YourSpace — Kế Hoạch Đồng Bộ Tài Liệu (chờ duyệt)
 
 > Mục tiêu: sửa toàn bộ tài liệu cho khớp `Decisions_Log_2026-07-23.md` (D1-D6). **PRD = nguồn chân lý**, các file khác trỏ về.

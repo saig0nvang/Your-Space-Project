@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a]
+---
 # YourSpace M1 — Web Validation — Design Spec
 
 > Ngày: 2026-07-24 · Branch: `m1-build` · Trạng thái: **Draft chờ founder duyệt**

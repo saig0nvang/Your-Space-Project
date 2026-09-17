@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb, D6@b921ed46]
+---
 # Đánh giá Phạm vi Pháp lý & Luật AI (Territorial Scope)
 *Dự án: YourSpace MVP*
 

@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a]
+---
 # M1 Spike + Foundation — Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

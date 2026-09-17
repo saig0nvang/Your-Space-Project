@@ -1,3 +1,6 @@
+---
+derives_from: [D5@15cdc73a, D6@b921ed46, D9@8fec2ed2]
+---
 > **YourSpace**: người trẻ VN lưu trăm ảnh Pinterest — **họ biết mình thích gì, nhưng không biết phải mua gì** để tạo ra nó. App kéo thả đồ 3D vào ảnh phòng thật, style-first, không đăng nhập. Thị trường $9.76B, CAGR 7.26%. LTV/CAC 12.5×. Bootstrap M1 validation, gọi vốn sau traction.
 
 ---

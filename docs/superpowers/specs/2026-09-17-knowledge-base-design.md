@@ -1,3 +1,6 @@
+---
+derives_from: []
+---
 # YourSpace — Knowledge Base liên kết Quyết định ↔ Tài liệu (thiết kế)
 
 > Ngày: 2026-09-17 · Trạng thái: thiết kế đã duyệt, chờ lập plan

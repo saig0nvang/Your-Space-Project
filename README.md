@@ -1,3 +1,6 @@
+---
+derives_from: [D1@d0d780f3, D4@bb7f1ffe, D5@15cdc73a, D7@96011236]
+---
 # YourSpace
 
 YourSpace là nền tảng visual commerce cho nội thất, giúp người dùng thử đặt đồ vào chính căn phòng của mình trước khi mua.

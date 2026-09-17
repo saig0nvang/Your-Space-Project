@@ -1,3 +1,6 @@
+---
+derives_from: [D3@7fbc47fb, D6@b921ed46]
+---
 # BẢO HIỂM PHÁP LÝ (Document Trail) - YourSpace
 *Tình huống giả định & Bài tập Workshop 3*
 

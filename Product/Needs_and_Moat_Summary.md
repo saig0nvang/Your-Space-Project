@@ -1,3 +1,6 @@
+---
+derives_from: [D6@b921ed46, D8@4efe52c0]
+---
 # YourSpace — Priority Needs (Điền biểu mẫu)
 
 **Persona**: Người trẻ 25–35 tuổi tại Việt Nam, đang sở hữu hoặc chuẩn bị sở hữu nhà ở / căn hộ, có nhu cầu cá nhân hóa không gian sống.

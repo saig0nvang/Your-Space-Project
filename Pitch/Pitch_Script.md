@@ -1,3 +1,6 @@
+---
+derives_from: [D5@15cdc73a, D6@b921ed46]
+---
 # 🎤 YourSpace — Pitch Script
 
 > **Thời lượng:** 5–7 phút trình bày | 3–5 phút Q&A

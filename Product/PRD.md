@@ -1,3 +1,15 @@
+---
+derives_from:
+  [
+    D1@d0d780f3,
+    D2@499c7e4d,
+    D3@7fbc47fb,
+    D4@bb7f1ffe,
+    D5@15cdc73a,
+    D6@b921ed46,
+    D7@96011236
+  ]
+---
 ## 10. PRD Skeleton — Workshop 2
 
 > **Mục tiêu:** Xác định quyết định sản phẩm (Product Decision) ở Tầng 5 (UX & Prototype) — thống nhất **"Cái gì"** và **"Tại sao"**, không đi sâu vào kỹ thuật "Làm thế nào".

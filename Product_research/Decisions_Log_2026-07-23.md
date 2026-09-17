@@ -1,3 +1,7 @@
+---
+derives_from: []
+facts_check: false
+---
 # YourSpace — Sổ Quyết Định Định Hướng (2026-07-23)
 
 > **⚠️ SNAPSHOT LỊCH SỬ — không sửa file này nữa.**

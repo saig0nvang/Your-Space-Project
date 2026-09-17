@@ -1,3 +1,6 @@
+---
+derives_from: [D2@499c7e4d, D5@15cdc73a, D6@b921ed46]
+---
 # Risk Register v1 — YourSpace
 **Ngày lập:** 07/05/2026 | **Người lập:** Phạm Việt Anh (Founder)
 

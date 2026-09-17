@@ -1,3 +1,6 @@
+---
+derives_from: [D4@bb7f1ffe, D5@15cdc73a]
+---
 # Phân tích Giá trị & Roadmap MVP (Day 20)
 
 Tài liệu này tổng hợp kết quả phân tích độ ưu tiên tính năng (RICE, Ma trận Value-Effort) và Roadmap triển khai của YourSpace MVP, phục vụ cho việc trình bày chiến lược sản phẩm với VC.

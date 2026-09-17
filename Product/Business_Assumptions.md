@@ -1,3 +1,6 @@
+---
+derives_from: [D2@499c7e4d, D3@7fbc47fb, D6@b921ed46]
+---
 # Tab 1 — ASSUMPTIONS / Giả định đầu vào
 
 > **Luật chơi:** Chỉ điền vào các ô MÀU VÀNG. Các ô khác là công thức và sẽ tự tính.

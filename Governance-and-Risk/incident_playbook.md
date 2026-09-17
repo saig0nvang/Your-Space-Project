@@ -1,3 +1,6 @@
+---
+derives_from: [D2@499c7e4d]
+---
 # Incident Playbook — YourSpace
 
 **Tình huống giả định (Dựa trên Risk Register):**

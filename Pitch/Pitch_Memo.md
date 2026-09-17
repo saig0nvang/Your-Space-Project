@@ -1,3 +1,6 @@
+---
+derives_from: [D1@d0d780f3, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46]
+---
 # PITCH MEMO — YourSpace
 **Audience:** Seed VC | **Format:** Sequoia/YC 1-pager | **Date:** 2026-05-05
 
