@@ -83,6 +83,23 @@ test('checkOutdatedRefs bắt tài liệu trỏ vào quyết định đã bị b
   } finally { r.cleanup() }
 })
 
+test('checkOutdatedRefs bỏ qua tài liệu đã trỏ cả quyết định lẫn bản bổ sung', () => {
+  const r = makeRepo()
+  try {
+    r.write('decisions/D3-cloud.md',
+      '---\nid: D3\ntitle: Cloud\nstatus: amended\ndate: 2026-07-23\namended_by: [D3b]\n---\nthan bai\n')
+    r.write('decisions/D3b-depth.md',
+      '---\nid: D3b\ntitle: Depth\nstatus: accepted\ndate: 2026-07-24\namends: D3\n---\nthan bai\n')
+    r.commit('seed')
+    const sha3 = hashObject('decisions/D3-cloud.md', { cwd: r.dir }).slice(0, 8)
+    const sha3b = hashObject('decisions/D3b-depth.md', { cwd: r.dir }).slice(0, 8)
+    r.write('docs/spec.md', `---\nderives_from: [D3@${sha3}, D3b@${sha3b}]\n---\n# Spec\n`)
+    r.commit('doc')
+    const model = loadModel(r.dir)
+    assert.deepEqual(checkOutdatedRefs(model), [])
+  } finally { r.cleanup() }
+})
+
 test('checkFacts báo file và số dòng của chuỗi bị cấm', () => {
   const r = makeRepo()
   try {

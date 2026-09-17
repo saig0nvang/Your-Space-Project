@@ -37,11 +37,14 @@ export function checkOutdatedRefs(model) {
   const out = []
   for (const doc of model.docs) {
     if (!doc.deps) continue
+    const depIds = new Set(doc.deps.map((dep) => dep.id))
     for (const dep of doc.deps) {
       const d = model.decisions.get(dep.id)
       if (d.supersededBy) {
         out.push({ file: doc.file, id: dep.id, kind: 'superseded', replacement: [d.supersededBy] })
       } else if (d.amendedBy.length > 0) {
+        // amends chỉ bổ sung một phần: trỏ đủ mọi bản bổ sung là trạng thái đúng
+        if (d.amendedBy.every((id) => depIds.has(id))) continue
         out.push({ file: doc.file, id: dep.id, kind: 'amended', replacement: [...d.amendedBy] })
       }
     }
