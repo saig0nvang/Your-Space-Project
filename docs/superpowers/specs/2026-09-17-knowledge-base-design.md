@@ -196,6 +196,12 @@ YAML không parse được). Cờ `--warn` ép mọi trường hợp về `0`; h
 Mục ③ tồn tại để việc supersede không trở nên vô hình: khi D3 bị D3b bổ sung, mọi tài liệu còn
 trỏ vào D3 phải được nhắc rằng có bản mới hơn, kể cả khi hash của D3 chưa hề đổi.
 
+Hai loại cạnh được xử lý khác nhau ở đây, và khác biệt này là cốt lõi chứ không phải chi tiết
+cài đặt. Với `amends`, tài liệu đã khai đủ mọi bản bổ sung thì **không** báo: bản gốc vẫn còn
+hiệu lực ở phần không bị đụng, nên trỏ cả hai là trạng thái đúng, báo ở đây là báo động giả.
+Với `supersedes` thì luôn báo: bản cũ đã chết hoàn toàn, trỏ vào nó là sai kể cả khi tài liệu
+có trỏ thêm bản mới — việc cần làm là gỡ hẳn tham chiếu cũ.
+
 **Phụ thuộc:** `yaml` (devDependency ở root). Frontmatter và `facts.yml` là YAML thật —
 `facts.yml` có nested mapping và mảng — nên tự chế parser sẽ vỡ ở ca biên đầu tiên khi sửa tay.
 

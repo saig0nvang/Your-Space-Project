@@ -719,6 +719,22 @@ test('checkOutdatedRefs bắt tài liệu trỏ vào quyết định đã bị b
   } finally { r.cleanup() }
 })
 
+test('checkOutdatedRefs im lặng khi tài liệu đã khai cả bản bổ sung', () => {
+  const r = makeRepo()
+  try {
+    r.write('decisions/D3-cloud.md',
+      '---\nid: D3\ntitle: Cloud\nstatus: amended\ndate: 2026-07-23\namended_by: [D3b]\n---\nthan bai\n')
+    r.write('decisions/D3b-depth.md',
+      '---\nid: D3b\ntitle: Depth\nstatus: accepted\ndate: 2026-07-24\namends: D3\n---\nthan bai\n')
+    r.commit('seed')
+    const a = hashObject('decisions/D3-cloud.md', { cwd: r.dir }).slice(0, 8)
+    const b = hashObject('decisions/D3b-depth.md', { cwd: r.dir }).slice(0, 8)
+    r.write('docs/spec.md', `---\nderives_from: [D3@${a}, D3b@${b}]\n---\n# Spec\n`)
+    r.commit('doc')
+    assert.deepEqual(checkOutdatedRefs(loadModel(r.dir)), [])
+  } finally { r.cleanup() }
+})
+
 test('checkFacts báo file và số dòng của chuỗi bị cấm', () => {
   const r = makeRepo()
   try {
@@ -808,6 +824,8 @@ export function checkOutdatedRefs(model) {
       if (d.supersededBy) {
         out.push({ file: doc.file, id: dep.id, kind: 'superseded', replacement: [d.supersededBy] })
       } else if (d.amendedBy.length > 0) {
+        const seen = new Set(doc.deps.map((x) => x.id))
+        if (d.amendedBy.every((id) => seen.has(id))) continue
         out.push({ file: doc.file, id: dep.id, kind: 'amended', replacement: [...d.amendedBy] })
       }
     }
@@ -847,12 +865,17 @@ export function checkFacts(model, cwd, facts) {
 }
 ```
 
+Hai nhánh của `checkOutdatedRefs` cố ý xử lý khác nhau. Nhánh `amended` im lặng khi tài liệu đã
+khai đủ mọi bản bổ sung, vì `amends` chỉ đụng một phần — bản gốc vẫn còn hiệu lực, nên trỏ cả hai
+là trạng thái **đúng**. Nhánh `superseded` thì luôn báo: thay thế toàn bộ nghĩa là bản cũ đã chết,
+trỏ vào nó luôn sai kể cả khi có trỏ thêm bản mới.
+
 Lưu ý `checkStale` gọi `hashObject(d.file, { write: true })` trước khi diff: bản **mới** của file quyết định có thể chưa được commit, và `git diff` cần cả hai blob nằm trong kho object.
 
 - [ ] **Step 4: Chạy test, xác nhận PASS**
 
 Run: `pnpm kb:test`
-Expected: 24 test PASS
+Expected: 25 test PASS
 
 - [ ] **Step 5: Commit**
 
@@ -1221,7 +1244,7 @@ run()
 - [ ] **Step 5: Chạy test, xác nhận PASS**
 
 Run: `pnpm kb:test`
-Expected: 35 test PASS
+Expected: 36 test PASS
 
 - [ ] **Step 6: Commit**
 
@@ -1550,7 +1573,10 @@ Run: `pnpm kb:check`
 Expected:
 - Mục ① **rỗng** — mọi hash vừa được đóng dấu.
 - Mục ② **rỗng** — mọi tài liệu đã vào graph.
-- Mục ③ liệt kê các tài liệu trỏ `D3` (Business_Assumptions, MVP_Research, Pitch_Memo, risk_register_v2, document_trail, territorial_scope, rules_rails_ritual, Product_Brief, PRD) kèm ghi chú "được bổ sung bởi D3b".
+- Mục ③ liệt kê đúng **9** tài liệu chỉ trỏ `D3` (Business_Assumptions, MVP_Research, Pitch_Memo,
+  risk_register_v2, document_trail, territorial_scope, rules_rails_ritual, Product_Brief, PRD) kèm
+  ghi chú "được bổ sung bởi D3b". Hai tài liệu trong `docs/superpowers/` khai cả `D3` lẫn `D3b`
+  nên **không** xuất hiện ở đây.
 - Mục ④ liệt kê các dòng chứa chuỗi bị cấm — **đây chính là hàng đợi đồng bộ tồn đọng**.
 - Mã thoát 1.
 
