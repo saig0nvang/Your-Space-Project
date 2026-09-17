@@ -14,7 +14,7 @@ export function writeFrontmatter(text, data) {
     const node = doc.get(key, true)
     if (node && Array.isArray(node.items)) node.flow = true
   }
-  const yaml = doc.toString({ flowCollectionPadding: false }).trimEnd()
+  const yaml = doc.toString({ flowCollectionPadding: false, lineWidth: 0 }).trimEnd()
   const block = `---\n${yaml}\n---\n`
   const m = FM_RE.exec(text)
   return m ? block + text.slice(m[0].length) : block + text

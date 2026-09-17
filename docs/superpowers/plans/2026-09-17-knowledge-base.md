@@ -329,7 +329,7 @@ export function writeFrontmatter(text, data) {
     const node = doc.get(key, true)
     if (node && Array.isArray(node.items)) node.flow = true
   }
-  const yaml = doc.toString({ flowCollectionPadding: false }).trimEnd()
+  const yaml = doc.toString({ flowCollectionPadding: false, lineWidth: 0 }).trimEnd()
   const block = `---\n${yaml}\n---\n`
   const m = FM_RE.exec(text)
   return m ? block + text.slice(m[0].length) : block + text
@@ -338,6 +338,8 @@ export function writeFrontmatter(text, data) {
 
 `flowCollectionPadding: false` là bắt buộc: mặc định gói `yaml` xuất mảng flow thành
 `[ D1@aaaaaaaa ]` có khoảng trắng trong ngoặc, không khớp định dạng spec `[D1@aaaaaaaa]`.
+`lineWidth: 0` tắt tự ngắt dòng ở cột 80 — nếu không, tài liệu phụ thuộc nhiều quyết định
+(PRD trỏ 7 cái) sẽ bị xuống dòng thành mảng nhiều dòng, vẫn hợp lệ nhưng lệch định dạng.
 
 - [ ] **Step 4: Chạy test, xác nhận PASS**
 

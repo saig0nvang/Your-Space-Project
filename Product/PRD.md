@@ -1,14 +1,5 @@
 ---
-derives_from:
-  [
-    D1@d0d780f3,
-    D2@499c7e4d,
-    D3@7fbc47fb,
-    D4@bb7f1ffe,
-    D5@15cdc73a,
-    D6@b921ed46,
-    D7@96011236
-  ]
+derives_from: [D1@d0d780f3, D2@499c7e4d, D3@7fbc47fb, D4@bb7f1ffe, D5@15cdc73a, D6@b921ed46, D7@96011236]
 ---
 ## 10. PRD Skeleton — Workshop 2
 
