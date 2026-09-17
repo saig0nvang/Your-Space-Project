@@ -325,11 +325,15 @@ export function writeFrontmatter(text, data) {
     const node = doc.get(key, true)
     if (node && Array.isArray(node.items)) node.flow = true
   }
-  const block = `---\n${doc.toString().trimEnd()}\n---\n`
+  const yaml = doc.toString({ flowCollectionPadding: false }).trimEnd()
+  const block = `---\n${yaml}\n---\n`
   const m = FM_RE.exec(text)
   return m ? block + text.slice(m[0].length) : block + text
 }
 ```
+
+`flowCollectionPadding: false` là bắt buộc: mặc định gói `yaml` xuất mảng flow thành
+`[ D1@aaaaaaaa ]` có khoảng trắng trong ngoặc, không khớp định dạng spec `[D1@aaaaaaaa]`.
 
 - [ ] **Step 4: Chạy test, xác nhận PASS**
 
@@ -619,7 +623,8 @@ git commit -m "feat(kb): nạp model quyết định/tài liệu + kiểm tra c�
   - `loadFacts(cwd): Map<string, { value, owner, forbidden: string[] }>` — trả Map rỗng nếu không có `decisions/facts.yml`
   - `checkFacts(model, cwd, facts): Array<{ file, line, forbidden, key, value }>`
 
-`checkFacts` bỏ qua tài liệu có `factsCheck === false`. Khoá này tồn tại vì ba tài liệu meta (`Decisions_Log_2026-07-23.md`, `Doc_Sync_Plan_2026-07-23.md`, `Doc_Consistency_Audit_2026-07-23.md`) trích dẫn nguyên văn các giá trị đã bị loại bỏ để nói về chính việc loại bỏ chúng — quét chúng sẽ cho toàn báo động giả.
+`checkFacts` bỏ qua tài liệu có `factsCheck === false`, đọc từ khoá frontmatter `facts_check: false`.
+Khoá này là **phần bổ sung so với spec §4.3** (spec chỉ mô tả `derives_from`); spec đã được cập nhật kèm theo. Khoá này tồn tại vì ba tài liệu meta (`Decisions_Log_2026-07-23.md`, `Doc_Sync_Plan_2026-07-23.md`, `Doc_Consistency_Audit_2026-07-23.md`) trích dẫn nguyên văn các giá trị đã bị loại bỏ để nói về chính việc loại bỏ chúng — quét chúng sẽ cho toàn báo động giả.
 
 - [ ] **Step 1: Viết test thất bại**
 
@@ -997,6 +1002,18 @@ test('impact với id không tồn tại thoát 2', () => {
   } finally { r.cleanup() }
 })
 
+test('frontmatter YAML hỏng thoát 2', () => {
+  const r = makeRepo()
+  try {
+    seed(r)
+    r.write('Pitch/Memo.md', '---\nderives_from: [D6@aaaaaaaa\n  loi: [[[\n---\n# Memo\n')
+    r.commit('yaml hong')
+    const { code, out } = kb(r.dir, 'check')
+    assert.equal(code, 2)
+    assert.match(out, /YAML/)
+  } finally { r.cleanup() }
+})
+
 test('graph xuất Mermaid', () => {
   const r = makeRepo()
   try {
@@ -1092,7 +1109,13 @@ function finish(code) {
 }
 
 function modelOrExit() {
-  const model = loadModel(cwd)
+  let model
+  try {
+    model = loadModel(cwd)
+  } catch (err) {
+    process.stdout.write(formatErrors([`không đọc được YAML: ${err.message}`]))
+    process.exit(2)
+  }
   if (model.errors.length > 0) {
     process.stdout.write(formatErrors(model.errors))
     process.exit(2)
@@ -1191,7 +1214,7 @@ run()
 - [ ] **Step 5: Chạy test, xác nhận PASS**
 
 Run: `pnpm kb:test`
-Expected: 34 test PASS
+Expected: 35 test PASS
 
 - [ ] **Step 6: Commit**
 

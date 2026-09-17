@@ -136,6 +136,17 @@ Chuỗi sau `@` là **git blob SHA** (8 ký tự đầu) của file quyết đ�
 quyết định nào" — khác hẳn với **thiếu** `derives_from`, nghĩa là "chưa vào graph".
 Phân biệt này thay cho một danh sách loại trừ cứng trong code.
 
+Khoá tuỳ chọn thứ hai:
+
+```yaml
+facts_check: false
+```
+
+Miễn tài liệu khỏi phép kiểm tra `facts.yml` ở mục 6. Cần cho đúng ba tài liệu meta —
+`Decisions_Log_2026-07-23.md`, `Doc_Sync_Plan_2026-07-23.md`, `Doc_Consistency_Audit_2026-07-23.md`
+— vì chúng trích dẫn nguyên văn các giá trị đã bị loại bỏ để nói về chính việc loại bỏ chúng.
+Quét chúng chỉ sinh báo động giả, và báo động giả là thứ làm người ta bỏ qua cả báo cáo.
+
 ## 5. Cơ chế phát hiện drift
 
 Vì mỗi quyết định là một file riêng, **không cần hash theo section**. Toàn bộ cơ chế dựa trên
