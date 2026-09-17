@@ -1,0 +1,92 @@
+graph LR
+  D1["D1 — User-first, two-sided có thứ tự"]
+  D2["D2 — Marketplace + Escrow, đáp xuống M2"]
+  D3["D3 — MVP dùng cloud inpainting qua API hosted"]
+  D3b["D3b — Depth chạy server-side, cache theo hash ảnh"]
+  D4["D4 — AI Spatial Placement kiểu Kreativ-lite, có fallback thủ công"]
+  D5["D5 — Thang bậc mốc M0 PoC → M1 Validation → M2 MVP thật"]
+  D6["D6 — Bootstrap trước; bộ số thị trường & doanh thu chuẩn"]
+  D7["D7 — Kết nối chuyên gia — M1 thu-lead, chat/matching M2+"]
+  D8["D8 — Need #1 = STYLE-FIRST"]
+  D9["D9 — Twitter pitch viết lại bootstrap-first"]
+  Governance_and_Risk_document_trail_md("Governance-and-Risk/document_trail.md")
+  D3 --> Governance_and_Risk_document_trail_md
+  D6 --> Governance_and_Risk_document_trail_md
+  Governance_and_Risk_incident_playbook_md("Governance-and-Risk/incident_playbook.md")
+  D2 --> Governance_and_Risk_incident_playbook_md
+  Governance_and_Risk_risk_register_md("Governance-and-Risk/risk_register.md")
+  D2 --> Governance_and_Risk_risk_register_md
+  D5 --> Governance_and_Risk_risk_register_md
+  D6 --> Governance_and_Risk_risk_register_md
+  Governance_and_Risk_risk_register_v2_md("Governance-and-Risk/risk_register_v2.md")
+  D2 --> Governance_and_Risk_risk_register_v2_md
+  D3 --> Governance_and_Risk_risk_register_v2_md
+  D5 --> Governance_and_Risk_risk_register_v2_md
+  D6 --> Governance_and_Risk_risk_register_v2_md
+  Governance_and_Risk_rules_rails_ritual_md("Governance-and-Risk/rules_rails_ritual.md")
+  D3 --> Governance_and_Risk_rules_rails_ritual_md
+  Governance_and_Risk_territorial_scope_md("Governance-and-Risk/territorial_scope.md")
+  D3 --> Governance_and_Risk_territorial_scope_md
+  D6 --> Governance_and_Risk_territorial_scope_md
+  Pitch_Pitch_Memo_md("Pitch/Pitch_Memo.md")
+  D1 --> Pitch_Pitch_Memo_md
+  D3 --> Pitch_Pitch_Memo_md
+  D5 --> Pitch_Pitch_Memo_md
+  D6 --> Pitch_Pitch_Memo_md
+  Pitch_Pitch_Script_md("Pitch/Pitch_Script.md")
+  D5 --> Pitch_Pitch_Script_md
+  D6 --> Pitch_Pitch_Script_md
+  Pitch_Twitter_Pitch_eval_md("Pitch/Twitter_Pitch_eval.md")
+  D9 --> Pitch_Twitter_Pitch_eval_md
+  Pitch_VietAnh_Milestone1_InvestorPackage_md("Pitch/VietAnh_Milestone1_InvestorPackage.md")
+  D5 --> Pitch_VietAnh_Milestone1_InvestorPackage_md
+  D6 --> Pitch_VietAnh_Milestone1_InvestorPackage_md
+  Pitch_twitter_pitch_md("Pitch/twitter_pitch.md")
+  D5 --> Pitch_twitter_pitch_md
+  D6 --> Pitch_twitter_pitch_md
+  D9 --> Pitch_twitter_pitch_md
+  Product_Business_Assumptions_md("Product/Business_Assumptions.md")
+  D2 --> Product_Business_Assumptions_md
+  D3 --> Product_Business_Assumptions_md
+  D6 --> Product_Business_Assumptions_md
+  Product_Needs_and_Moat_Summary_md("Product/Needs_and_Moat_Summary.md")
+  D6 --> Product_Needs_and_Moat_Summary_md
+  D8 --> Product_Needs_and_Moat_Summary_md
+  Product_PRD_md("Product/PRD.md")
+  D1 --> Product_PRD_md
+  D2 --> Product_PRD_md
+  D3 --> Product_PRD_md
+  D4 --> Product_PRD_md
+  D5 --> Product_PRD_md
+  D6 --> Product_PRD_md
+  D7 --> Product_PRD_md
+  Product_Product_Brief_md("Product/Product_Brief.md")
+  D1 --> Product_Product_Brief_md
+  D3 --> Product_Product_Brief_md
+  D4 --> Product_Product_Brief_md
+  D7 --> Product_Product_Brief_md
+  Product_research_MVP_Research_and_PMF_md("Product_research/MVP_Research_and_PMF.md")
+  D3 --> Product_research_MVP_Research_and_PMF_md
+  D4 --> Product_research_MVP_Research_and_PMF_md
+  Product_research_Roadmap_md("Product_research/Roadmap.md")
+  D4 --> Product_research_Roadmap_md
+  D5 --> Product_research_Roadmap_md
+  Product_research_Strategic_Discovery_md("Product_research/Strategic_Discovery.md")
+  D1 --> Product_research_Strategic_Discovery_md
+  D6 --> Product_research_Strategic_Discovery_md
+  D7 --> Product_research_Strategic_Discovery_md
+  README_md("README.md")
+  D1 --> README_md
+  D4 --> README_md
+  D5 --> README_md
+  D7 --> README_md
+  docs_superpowers_plans_2026_07_24_m1_spike_and_foundation_md("docs/superpowers/plans/2026-07-24-m1-spike-and-foundation.md")
+  D3 --> docs_superpowers_plans_2026_07_24_m1_spike_and_foundation_md
+  D3b --> docs_superpowers_plans_2026_07_24_m1_spike_and_foundation_md
+  D4 --> docs_superpowers_plans_2026_07_24_m1_spike_and_foundation_md
+  D5 --> docs_superpowers_plans_2026_07_24_m1_spike_and_foundation_md
+  docs_superpowers_specs_2026_07_24_m1_web_validation_design_md("docs/superpowers/specs/2026-07-24-m1-web-validation-design.md")
+  D3 --> docs_superpowers_specs_2026_07_24_m1_web_validation_design_md
+  D3b --> docs_superpowers_specs_2026_07_24_m1_web_validation_design_md
+  D4 --> docs_superpowers_specs_2026_07_24_m1_web_validation_design_md
+  D5 --> docs_superpowers_specs_2026_07_24_m1_web_validation_design_md
