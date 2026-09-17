@@ -1,5 +1,10 @@
 # YourSpace — Sổ Quyết Định Định Hướng (2026-07-23)
 
+> **⚠️ SNAPSHOT LỊCH SỬ — không sửa file này nữa.**
+> Nguồn chân lý hiện tại là thư mục `decisions/`, mỗi quyết định một file, bất biến.
+> Đổi ý = tạo bản ghi mới với `supersedes:` hoặc `amends:`, không sửa tại chỗ.
+> File này giữ nguyên trạng thái ngày 2026-07-23 để đối chiếu.
+
 > Đây là các quyết định founder đã chốt khi review lại tài liệu. Dùng làm nguồn chuẩn để đồng bộ toàn bộ tài liệu (đặt PRD làm "nguồn chân lý", các file khác trỏ về). Đối chiếu với `Doc_Consistency_Audit_2026-07-23.md`.
 
 ## D1 — Định vị lõi / khách hàng chính ✅ CHỐT

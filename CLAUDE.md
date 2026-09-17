@@ -3,7 +3,7 @@
 Nền tảng visual-commerce nội thất: user đặt đồ 3D vào ảnh phòng thật → xem hợp không → mua. Đang xây **M1 — Web Validation** (web-first, ~4–6 tuần, solo).
 
 ## Nguồn chân lý (đọc trước khi làm)
-- **Định hướng sản phẩm:** `Product_research/Decisions_Log_2026-07-23.md` (6 quyết định D1–D6). KHÔNG tự ý đảo ngược.
+- **Định hướng sản phẩm:** `decisions/` (D1–D9, mỗi file một quyết định, bất biến). KHÔNG tự ý đảo ngược. Đổi ý = tạo bản ghi mới với `supersedes:`/`amends:`, chạy `pnpm kb:impact <id>` trước để biết tài liệu nào bị ảnh hưởng. `Product_research/Decisions_Log_2026-07-23.md` là snapshot lịch sử, không còn là nguồn chân lý.
 - **Spec kỹ thuật M1:** `docs/superpowers/specs/2026-07-24-m1-web-validation-design.md`.
 - **PRD:** `Product/PRD.md`.
 

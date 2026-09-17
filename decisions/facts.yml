@@ -1,0 +1,40 @@
+tam:
+  value: "$9.76B/năm"
+  owner: D6
+  forbidden: ["$5B", "~$5B"]
+sam:
+  value: "$300-500M"
+  owner: D6
+  forbidden: ["$2.5B"]
+som:
+  value: "GMV ~$2-4M / 24 tháng, commission ~$230-320K"
+  owner: D6
+  forbidden: ["$1-3M commission"]
+cac:
+  value: "100K VND"
+  owner: D6
+  forbidden: ["CAC≤160K", "CAC 160K"]
+burn:
+  value: "11.7tr VND/tháng"
+  owner: D6
+  forbidden: ["$8,333"]
+arpu:
+  value: "ARPU 800K, GMV 10tr/đơn"
+  owner: D6
+  forbidden: []
+timeline:
+  value: "M1 4-6 tuần, M2 3-4 tháng"
+  owner: D5
+  forbidden: ["6 tháng"]
+privacy_claim:
+  value: "ảnh gửi lên xử lý & xóa ngay"
+  owner: D3
+  forbidden: ["100% on-device", "hoàn toàn on-device", "không upload ảnh", "API cost/tháng = 0"]
+rotation:
+  value: "chỉ xoay trục Y"
+  owner: D4
+  forbidden: ["360 độ", "xoay 360"]
+catalog:
+  value: "16-24 models, 2-3 phong cách"
+  owner: D4
+  forbidden: ["75 models"]
