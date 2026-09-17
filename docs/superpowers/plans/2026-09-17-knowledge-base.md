@@ -728,7 +728,7 @@ test('checkFacts báo file và số dòng của chuỗi bị cấm', () => {
     const hits = checkFacts(model, r.dir, loadFacts(r.dir))
     assert.equal(hits.length, 1)
     assert.equal(hits[0].file, 'Pitch/Memo.md')
-    assert.equal(hits[0].line, 5)
+    assert.equal(hits[0].line, 6)
     assert.equal(hits[0].forbidden, '$5B')
     assert.equal(hits[0].value, '$9.76B')
   } finally { r.cleanup() }
@@ -748,6 +748,10 @@ test('checkFacts bỏ qua tài liệu có facts_check: false', () => {
   } finally { r.cleanup() }
 })
 ```
+
+Dòng 6 chứ không phải 5: `checkFacts` đếm 1-based trên **toàn** file kể cả khối frontmatter,
+và fixture có một dòng trống trước dòng chứa chuỗi bị cấm. Đếm cả frontmatter là đúng — báo cáo
+in ra `file:line` để nhảy thẳng tới dòng đó trong editor, nên số phải khớp cái editor hiển thị.
 
 - [ ] **Step 2: Chạy test, xác nhận FAIL**
 
