@@ -1,5 +1,5 @@
 ---
-derives_from: [D1@d0d780f3, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46]
+derives_from: [D1@d0d780f3, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46, D3b@4248a41d, D10@4b681365]
 ---
 # PITCH MEMO — YourSpace
 **Audience:** Seed VC | **Format:** Sequoia/YC 1-pager | **Date:** 2026-05-05
@@ -24,7 +24,7 @@ Vấn đề của e-commerce nội thất không phải là thiếu lựa chọn
 
 ## 3. THE SOLUTION
 
-YourSpace là ứng dụng web-first (M1 — bản validation đang build; mobile native với React Native + Expo GL để giai đoạn M2) mang đến trải nghiệm **"Zero-friction Visualization"**: cho phép người dùng chụp ảnh phòng thật, chọn phong cách nội thất, rồi tự kéo thả đồ 3D vào ảnh và thấy ngay tổng thể — không cần đăng nhập, không cần quét không gian 3D; đăng nhập chỉ cần khi muốn lưu thiết kế hoặc đặt mua.
+YourSpace là ứng dụng web-first (M1 — bản validation đang build; mobile native với React Native + Expo GL để giai đoạn M2) mang đến trải nghiệm **"Zero-friction Visualization"**: cho phép người dùng chụp ảnh phòng thật, chọn phong cách nội thất, rồi tự kéo thả đồ 3D vào ảnh và thấy ngay tổng thể — không cần đăng nhập (kể cả khi lưu thiết kế), không cần quét không gian 3D; chỉ xác minh số điện thoại khi thanh toán (từ M2).
 
 Khác với IKEA Place (bơi trong catalog) và AI gen rooms (mất kiểm soát), YourSpace là **công cụ giúp người dùng thử đặt đồ vào phòng thật để mua đúng** — style-first + user-controlled. Việc kết nối thẳng đến catalog của nhà cung cấp Việt cho phép user mua với giá thật; và về sau, khi đã chứng minh nhu cầu người dùng, chính luồng này mở ra lớp monetization B2B — một **Visual Sales Channel** cho nhãn hàng (triệt tiêu sự đắn đo, tối ưu Sales Cycle, giảm hoàn hàng). Đây là sự khác biệt giữa "AI làm cho bạn" và "bạn làm, AI hỗ trợ".
 

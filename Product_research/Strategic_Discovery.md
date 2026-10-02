@@ -1,5 +1,5 @@
 ---
-derives_from: [D1@d0d780f3, D6@b921ed46, D7@96011236]
+derives_from: [D1@d0d780f3, D6@b921ed46, D7@96011236, D3@7fbc47fb, D3b@4248a41d]
 ---
 # Day 16 Submission — Team YourSpace
 
@@ -150,7 +150,7 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 ## 10. PRD Skeleton — Workshop 2
 
-> 🔗 **Đồng bộ:** `Product/PRD.md` là **nguồn chuẩn (source of truth)** cho PRD Skeleton. Phần §10 dưới đây là bản nhúng đã **đồng bộ 2026-07-23** theo Decisions Log D1–D6 — nếu có khác biệt, lấy `Product/PRD.md` làm chuẩn.
+> 🔗 **Bản lịch sử:** §10 dưới đây là bản nhúng PRD Skeleton cũ, dừng cập nhật từ 2026-10-02. PRD hiện hành là `Product/PRD.md` v2.0 (flow chuẩn ở §4.2, user story theo epic ở `Product/prd/epics/`). Khi khác nhau, `Product/PRD.md` là chuẩn.
 
 > **Mục tiêu:** Xác định quyết định sản phẩm (Product Decision) ở Tầng 5 (UX & Prototype) — thống nhất **"Cái gì"** và **"Tại sao"**, không đi sâu vào kỹ thuật "Làm thế nào".
 
@@ -297,15 +297,15 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 
 ### 10.7. Model Selection Rationale (AI-Specific #1)
 
-**Tính năng AI trong M1:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D (**depth on-device**) để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ (**cloud inpainting qua API hosted, trả theo lượt**).
+**Tính năng AI trong M1:** Spatial Placement — ước lượng độ sâu căn phòng từ ảnh 2D (**depth chạy server-side/cloud ở M1-web**, 1 lần/ảnh) để đặt đồ nội thất khớp phối cảnh + inpainting khi xóa đồ (**cloud inpainting qua API hosted, trả theo lượt**).
 
-> **Ranh giới on-device vs cloud (D3):** Depth estimation chạy **on-device** (real-time, mỗi lần drag). Inpainting chạy **cloud** (API hosted, chỉ gọi khi user xóa đồ). **"100% on-device" là tầm nhìn dài hạn, KHÔNG phải M1.** Privacy được đảm bảo bằng **consent thật**: "ảnh gửi lên xử lý và xóa ngay" — KHÔNG dùng câu "không upload ảnh".
+> **Ranh giới on-device vs cloud (D3 — cập nhật cho M1-web 2026-07-24):** Depth estimation tính **1 LẦN/ảnh lúc upload** (KHÔNG per-frame — sửa lại tiền đề cũ). Cho **M1-web: depth chạy server-side/cloud** (cache theo hash ảnh) vì web không có NPU và in-browser cần WebGPU chưa phổ cập; đặt sau interface để **M2-mobile swap sang on-device**. Inpainting chạy **cloud** (chỉ khi xóa đồ). **"100% on-device" là tầm nhìn dài hạn.** Privacy = **consent thật** ("ảnh gửi lên xử lý và xóa ngay") — KHÔNG dùng câu "không upload ảnh". Chi tiết: `docs/superpowers/specs/2026-07-24-m1-web-validation-design.md`.
 
 | Tiêu chí | Lựa chọn | Lý do |
 |---|---|---|
-| **Depth Estimation** | **Depth Anything V2** (open-source, chạy **on-device**) hoặc **MiDaS** (Intel) | Chạy local trên điện thoại (không cần API call) → zero latency cho thao tác drag. Depth Anything V2 small (~25MB) đủ chính xác cho use case "scale đồ theo phối cảnh" |
+| **Depth Estimation** | **Depth Anything V2** (open-source) hoặc **MiDaS** (Intel) — ở M1-web chạy **server-side/cloud** qua API hosted, cache theo hash ảnh, đặt sau interface `AIGateway.depth()` để M2-mobile swap sang on-device | Depth chỉ tính **1 lần/ảnh lúc upload** (không per-frame), thao tác drag chỉ đọc depth map đã có → độ trễ một lần lúc upload là chấp nhận được. Web không có NPU, in-browser cần WebGPU chưa phổ cập. Depth Anything V2 small đủ chính xác cho use case "scale đồ theo phối cảnh" |
 | **Inpainting (xóa đồ)** | **Cloud inpainting** (API hosted, ví dụ LaMa/Replicate/AWS), trả theo lượt. Kèm **fallback đơn giản** (reveal lại pixel gốc tại vùng bị che) | **LaMa ~200MB cần GPU → KHÔNG chạy on-device được**, nên inpainting chất lượng cao đặt trên cloud. Inpainting chỉ gọi khi user **xóa đồ** (không phải mỗi frame) nên độ trễ/chi phí API chấp nhận được. Fallback không cần AI: lưu ảnh gốc → khi xóa item → reveal lại pixel gốc phía dưới |
-| **Depth on-device vs inpainting cloud?** | Depth cần real-time (mỗi lần drag) → **on-device** bắt buộc cho UX mượt. Inpainting chỉ chạy khi xóa đồ, tần suất thấp → **cloud** hợp lý, không phá vỡ trải nghiệm | Tách đúng ranh giới: cái gì cần real-time thì on-device, cái gì nặng & thưa thì cloud |
+| **Ranh giới on-device vs cloud?** | M1: **cả depth và inpainting chạy cloud**. Depth tính 1 lần/ảnh lúc upload → drag không cần gọi model, không cần on-device để mượt. Inpainting chỉ chạy khi xóa đồ, tần suất thấp → cloud hợp lý | Tiền đề cũ "depth cần real-time mỗi lần drag nên phải on-device" đã được sửa (D3b, 2026-07-24). On-device là hướng M2-mobile / tầm nhìn dài hạn |
 | **Tại sao không dùng ARKit/ARCore full?** | Yêu cầu camera live + quét không gian → phức tạp, Out-of-scope MVP. Depth from single image đủ tốt cho "ướm thử" | Giảm ma sát: user chỉ cần 1 ảnh chụp, không cần quét phòng |
 | **Trade-off chấp nhận được** | Depth từ ảnh 2D kém chính xác hơn LiDAR/ARKit (~±15-20% sai số) nhưng đủ cho trải nghiệm trực quan. User có thể chỉnh tay (pinch-to-resize) | Human-in-the-loop bù đắp sai số |
 
@@ -316,13 +316,13 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 | Nguồn dữ liệu | Mục đích | Chủ sở hữu | Cập nhật |
 |---|---|---|---|
 | **3D Furniture Catalog** | Metadata cho **16–24 mô hình 3D** (tên, phong cách, kích thước thật, giá tham khảo, link mua, file .glb/.gltf) | YourSpace curate từ Sketchfab/CGTrader + đối tác tương lai | Founder thêm thủ công trong M1 |
-| **Depth Estimation Model** | Model weights cho Depth Anything V2 Small (~25MB), bundle cùng app | Open-source (MIT license) | Cập nhật khi có version mới cải thiện accuracy |
+| **Depth Estimation Model** | Depth Anything V2 Small — ở M1-web gọi qua API hosted server-side (không bundle cùng app); bundle on-device là hướng M2-mobile | Open-source (MIT license) | Cập nhật khi có version mới cải thiện accuracy |
 | **Style Knowledge Base** | Mô tả chi tiết **2–3 phong cách** nội thất (đặc trưng, palette, chất liệu) cho M1; 5 phong cách là mục tiêu sau. Dùng cho UI hiển thị, không cho AI | YourSpace tự biên soạn | Founder cập nhật khi thêm phong cách mới |
 | **User Interaction Logs** | Phong cách nào được chọn, đồ nào hay kéo vào, đồ nào hay bị xóa, tần suất override AI scale → training data tương lai | YourSpace (auto-collected) | Real-time logging |
-| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth (on-device) và inpainting (cloud) | User sở hữu | Depth xử lý on-device; khi user xóa đồ, vùng ảnh liên quan **gửi lên server cloud để inpainting rồi xóa ngay** (zero-retention). Có **consent thật** trước khi gửi: "ảnh được gửi lên xử lý và xóa ngay" |
+| **Ảnh phòng user upload** | Ảnh 2D làm background + input cho depth và inpainting (đều chạy cloud ở M1) | User sở hữu | Ảnh **gửi lên server lúc upload để tính depth** (1 lần, cache kết quả theo hash ảnh); khi user xóa đồ, vùng ảnh liên quan **gửi lên để inpainting**; xử lý xong **xóa ngay** (zero-retention). Có **consent thật** trước khi gửi: "ảnh được gửi lên xử lý và xóa ngay" |
 
 **Lưu ý quan trọng về dữ liệu:**
-- AI trong M1 **tách ranh giới**: depth estimation chạy **on-device**; inpainting (xóa đồ) chạy **cloud** (API hosted) → có **chi phí API theo lượt** cho mỗi lần inpainting. **"100% on-device" là tầm nhìn dài hạn, không phải M1** (LaMa ~200MB cần GPU nên chưa chạy on-device được).
+- AI trong M1: **cả depth estimation (1 lần/ảnh, cache theo hash) và inpainting (xóa đồ) đều chạy cloud** (API hosted) → có **chi phí API theo lượt** cho cả hai. **"100% on-device" là tầm nhìn dài hạn, không phải M1** (LaMa ~200MB cần GPU nên chưa chạy on-device được).
 - Privacy: dùng **consent thật** ("ảnh gửi lên xử lý và xóa ngay", zero-retention) — KHÔNG dùng câu "không upload ảnh".
 - **Không dùng RAG, không fine-tune** ở giai đoạn M1.
 - Chiến lược dài hạn: Tích lũy interaction logs (đồ nào user hay override scale?) → cải thiện heuristic đặt đồ + data cho Style Quiz AI ở phase sau.
@@ -347,7 +347,7 @@ Dựa trên định vị "Nền tảng phong cách sống" (Style-first) để t
 | **F2** | **AI đặt đồ sai vị trí depth** (đồ lơ lửng, không chạm sàn) | Depth map có confidence thấp tại vùng user thả đồ, HOẶC user di chuyển đồ ngay sau khi thả | Snap đồ xuống "đường sàn" ước lượng gần nhất, cho phép user drag tự do | Hiển thị grid/guideline mờ trên ảnh giúp user căn vị trí. Tooltip: *"Giữ và kéo để đặt đúng chỗ"* |
 | **F3** | **Xóa đồ nhưng inpainting xấu** (vùng xóa bị nhòe, artifact) | User xóa item và vùng phía sau bị lỗi thị giác rõ rệt | Fallback: hiển thị lại pixel gốc từ ảnh ban đầu (không dùng inpainting AI) | Tự động reveal ảnh gốc. Nếu user đã đặt nhiều đồ chồng lên → hiện nút *"Khôi phục ảnh gốc"* để reset vùng đó |
 | **F4** | **Ảnh upload chất lượng kém** (mờ, góc lạ, quá tối) | Depth estimation trả về confidence < 0.4 trên > 50% diện tích ảnh | Không block user — vẫn cho sử dụng nhưng tắt auto-scale, chuyển sang manual mode | Hiển thị: *"Ảnh hơi khó phân tích — bạn sẽ tự chỉnh kích thước đồ nhé. Mẹo: chụp thẳng, đủ sáng, thấy rõ sàn nhà."* + Nút [Chụp lại] |
-| **F5** | **Thiết bị quá yếu** (không chạy được depth model on-device) | GPU không hỗ trợ hoặc inference > 15 giây | Tắt hoàn toàn AI depth, chuyển sang pure manual mode (user tự resize tất cả) | Hiển thị: *"Thiết bị của bạn chưa hỗ trợ đặt đồ tự động — bạn có thể tự chỉnh kích thước bằng tay."* Trải nghiệm core (kéo thả, xoay, xóa) vẫn hoạt động 100% |
+| **F5** | **Không lấy được depth** (API depth cloud lỗi hoặc quá chậm) | API depth trả lỗi hoặc > 15 giây | Tắt hoàn toàn AI depth, chuyển sang pure manual mode (user tự resize tất cả) | Hiển thị: *"Hệ thống chưa phân tích được ảnh — bạn có thể tự chỉnh kích thước bằng tay."* Trải nghiệm core (kéo thả, xoay, xóa) vẫn hoạt động 100% |
 | **F6** | **User muốn undo thao tác** | User nhấn nút Undo hoặc shake device | Hoàn tác hành động gần nhất (thêm/xóa/di chuyển/resize) | Nút Undo luôn hiển thị. Hỗ trợ multi-undo (≥ 10 bước) |
 
 #### Nguyên tắc bất di bất dịch:
@@ -369,9 +369,9 @@ Kiểm tra cuối cùng để đảm bảo PRD đủ rõ ràng:
 | Tiêu chí | Kết quả | Ghi chú |
 |---|---|---|
 | User Stories mô tả **hành vi**, không mô tả giao diện UI? | ✅ | Các story mô tả "tôi muốn kéo thả đồ", "AI tự động scale" (hành vi), không mô tả UI cụ thể |
-| Fallback UX chỉ rõ **trigger** và **hành động cụ thể**? | ✅ | 6 kịch bản bao phủ: scale sai, depth sai, inpainting lỗi, ảnh kém, device yếu, undo — mỗi cái có trigger + action rõ ràng |
-| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao depth on-device (Depth Anything V2) còn inpainting cloud (LaMa ~200MB cần GPU), tại sao không ARKit full, trade-off sai số chấp nhận được |
-| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT) on-device, Sketchfab/CGTrader cho 3D, cloud inpainting (LaMa/API hosted) cho xóa đồ |
+| Fallback UX chỉ rõ **trigger** và **hành động cụ thể**? | ✅ | 6 kịch bản bao phủ: scale sai, depth sai, inpainting lỗi, ảnh kém, không lấy được depth, undo — mỗi cái có trigger + action rõ ràng |
+| Model Selection có **lý do cụ thể**, không chỉ ghi tên model? | ✅ | Giải thích tại sao M1 chạy cả depth (Depth Anything V2, 1 lần/ảnh) lẫn inpainting (LaMa ~200MB cần GPU) trên cloud, tại sao không ARKit full, trade-off sai số chấp nhận được |
+| Data Source có **tên nguồn thực tế**? | ✅ | Depth Anything V2 (MIT) qua API hosted server-side, Sketchfab/CGTrader cho 3D, cloud inpainting (LaMa/API hosted) cho xóa đồ |
 | **Kill question:** Engineer đọc User Story + Fallback UX, cần hỏi lại > 3 câu? | ✅ Không | Acceptance criteria có số cụ thể (≤ 5s depth, ≥ 30fps, ±15-20% sai số), Fallback có bảng trigger-action cho cả 6 tình huống |
 
 ---

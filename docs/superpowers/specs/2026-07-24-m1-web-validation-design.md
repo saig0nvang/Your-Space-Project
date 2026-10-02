@@ -29,8 +29,8 @@ derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a]
 | Ai code | Claude viết phần lớn, founder review/định hướng → tối ưu stack cho độ tin cậy + dễ bảo trì |
 | Persistence | **Stateless, không login.** Save/Share = export PNG (+ optional state trong URL) |
 | Catalog | **Model 3D free** (Sketchfab/CGTrader/Poly) + **giá tham khảo thật + link affiliate** tới sản phẩm có sẵn. 16–24 model, **3 phong cách: Japandi · Mid-Century · Bauhaus** (chốt 2026-07-24) |
-| Xóa đồ cũ | **CÓ, bản gọn trong M1**: chọn đồ cũ → SAM (cloud) mask → LaMa (cloud) inpaint. Fallback: reveal pixel gốc |
-| Depth | **Server-side/cloud cho M1** (1 lần/ảnh, cache theo hash). ⚠️ *Lệch PRD §10.7 "on-device" — xem §15.* On-device = M2/tầm nhìn |
+| Xóa đồ cũ | **CÓ, bản gọn trong M1**: chọn đồ cũ → SAM (cloud) mask → LaMa (cloud) inpaint. Fallback: hủy lần xóa (ảnh gốc hiện lại, tương đương hoàn tác) hoặc thử lại với vùng nhỏ hơn — PRD v2 F3 |
+| Depth | **Server-side/cloud cho M1** (1 lần/ảnh, cache theo hash). *(Đã khớp PRD §10.7 sau D3b — xem §15.)* On-device = M2/tầm nhìn |
 | Platform | Web-first (deploy web/PWA, không App Store ở M1). Mobile native = M2 |
 
 ---
@@ -177,7 +177,7 @@ Server: `/api/*` → `AIGateway`.
 | Ảnh kém (mờ/tối/góc lạ) | Confidence thấp → manual mode + tip + nút chụp lại (F4) |
 | Depth sai (đồ lơ lửng) | Snap về đường sàn, kéo tự do, guideline grid (F2) |
 | Scale sai | Handle resize + log `scale_override` (F1) |
-| Inpaint xấu/fail | **Reveal pixel gốc** (giữ ảnh gốc ở client → xóa đồ KHÔNG hard-fail) + nút "Khôi phục" (F3) |
+| Inpaint xấu/fail | **Hủy lần xóa**: giữ ảnh gốc ở client nên đồ cũ hiện lại, xóa đồ KHÔNG hard-fail; kèm "Thử lại vùng nhỏ hơn" (F3, PRD v2). Đây là hoàn tác, không phải cách sửa vùng đã xóa |
 | AI timeout/ratelimit/budget | Session degrade → manual placement, không block |
 | `.glb` lỗi/404 | Placeholder box đúng dims + retry; validate catalog lúc build (zod) |
 | Thiết bị yếu/không WebGL | Detect → fallback 2D/thông báo; core vẫn chạy (F5) |
@@ -247,7 +247,7 @@ Vercel + Supabase + Upstash + Replicate + Vercel Blob/R2. Tất cả managed, pa
 ## 15. Điểm lệch PRD & mục bỏ ngỏ cần founder
 
 **Lệch PRD có chủ đích:**
-- **Depth = server-side cho M1-web** (PRD §10.7 ghi "depth on-device"). Lý do: depth chỉ **1 lần/ảnh** (không real-time mỗi frame như PRD giả định), web không có NPU, in-browser cần WebGPU (chưa phổ cập) + tải ~25MB. **On-device = M2-mobile / tầm nhìn dài hạn**, đã đặt sau interface `AIGateway.depth()` để swap. → *Cần cập nhật 1 dòng ở PRD §10.7 + Decisions_Log D3 cho khớp.*
+- **Depth = server-side cho M1-web** (PRD §10.7 từng ghi "depth on-device"). Lý do: depth chỉ **1 lần/ảnh** (không real-time mỗi frame như PRD giả định), web không có NPU, in-browser cần WebGPU (chưa phổ cập) + tải ~25MB. **On-device = M2-mobile / tầm nhìn dài hạn**, đã đặt sau interface `AIGateway.depth()` để swap. → ✅ *Đã giải quyết (2026-09-23): ghi nhận thành quyết định `decisions/D3b-depth-server-side.md` (amends D3); PRD §10.7–10.8 đã đồng bộ.*
 
 **Bỏ ngỏ cần founder chốt (không chặn khởi động spike):**
 1. ✅ **3 phong cách:** Japandi · Mid-Century · Bauhaus (chốt 2026-07-24).

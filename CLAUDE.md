@@ -3,12 +3,12 @@
 Nền tảng visual-commerce nội thất: user đặt đồ 3D vào ảnh phòng thật → xem hợp không → mua. Đang xây **M1 — Web Validation** (web-first, ~4–6 tuần, solo).
 
 ## Nguồn chân lý (đọc trước khi làm)
-- **Định hướng sản phẩm:** `decisions/` (D1–D9, mỗi file một quyết định, bất biến). KHÔNG tự ý đảo ngược. Đổi ý = tạo bản ghi mới với `supersedes:`/`amends:`, chạy `pnpm kb:impact <id>` trước để biết tài liệu nào bị ảnh hưởng. `Product_research/Decisions_Log_2026-07-23.md` là snapshot lịch sử, không còn là nguồn chân lý.
+- **Định hướng sản phẩm:** `decisions/` (D1–D10, mỗi file một quyết định, bất biến). KHÔNG tự ý đảo ngược. Đổi ý = tạo bản ghi mới với `supersedes:`/`amends:`, chạy `pnpm kb:impact <id>` trước để biết tài liệu nào bị ảnh hưởng. `Product_research/Decisions_Log_2026-07-23.md` là snapshot lịch sử, không còn là nguồn chân lý.
 - **Spec kỹ thuật M1:** `docs/superpowers/specs/2026-07-24-m1-web-validation-design.md`.
-- **PRD:** `Product/PRD.md`.
+- **PRD:** `Product/PRD.md` (v2.0 — flow chuẩn ở §4.2; user story theo epic ở `Product/prd/epics/`).
 
 ## Design System
-Luôn đọc **`DESIGN.md`** trước mọi quyết định UI/visual. Font (Fraunces + Instrument Sans), màu (warm-neutral + clay accent chỉ ở CTA), spacing, layout, motion đều định nghĩa ở đó. Không lệch nếu chưa được duyệt. Ở chế độ QA, flag code không khớp `DESIGN.md`.
+Luôn đọc **`DESIGN.md`** trước mọi quyết định UI/visual. Hướng "Mềm & chất liệu" (từ 2026-09-25, toàn thương hiệu): font Be Vietnam Pro, màu yến mạch + terracotta cho hành động + sage cho niềm tin, mẫu vật liệu làm chữ ký; spacing, layout, motion đều định nghĩa ở đó. Không lệch nếu chưa được duyệt. Ở chế độ QA, flag code không khớp `DESIGN.md`.
 
 ## Stack M1 (theo spec)
 Next.js (App Router) + TypeScript + React-Three-Fiber. Monorepo: `packages/core` (domain thuần TS, tái dùng M2) + `apps/web`. AI cloud qua Replicate (depth server-side/cache · segmentation · inpainting) sau `AIGateway`. Stateless, không login. Deploy Vercel.

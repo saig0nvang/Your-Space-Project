@@ -1,14 +1,16 @@
 ---
-derives_from: [D1@d0d780f3, D3@7fbc47fb, D4@bb7f1ffe, D7@96011236]
+derives_from: [D1@d0d780f3, D3@7fbc47fb, D4@bb7f1ffe, D7@96011236, D3b@4248a41d, D10@4b681365]
 ---
 # Your Space Project
 
 ## User Flow
-1. **Bước 1:** Chụp ảnh không gian phòng hiện tại.
-2. **Bước 2:** Lựa chọn items có trong ảnh, cái nào giữ, cái nào bỏ.
-3. **Bước 3:** Chọn phong cách nội thất từ các category có sẵn, sau đó thêm vào không gian theo vị trí, góc độ mong muốn.
-4. **Bước 4:** Xem bảng ước tính chi phí và giá cả liên quan.
-5. **Bước 5:** Nhận tư vấn chuyên sâu hoặc tiến hành đặt mua ngay.
+1. **Bước 1:** Bắt đầu bằng chụp ảnh phòng, hoặc khám phá phong cách và Thiết kế có sẵn (Phòng mẫu, Nhà hàng xóm).
+2. **Bước 2:** Trong một màn chỉnh sửa duy nhất, chạm để chọn và xóa đồ cũ, thêm đồ theo phong cách; hai việc dùng xen kẽ.
+3. **Bước 3:** Dự toán luôn hiện. Lưu không gian bất cứ lúc nào, không cần đăng nhập.
+4. **Bước 4:** Mua lẻ hoặc cả bộ (M1: link mua hoặc để lại SĐT; M2: thanh toán giữ tiền), hoặc nhận tư vấn.
+5. **Bước 5:** Đăng không gian lên Nhà hàng xóm để người khác dùng làm mẫu (M2+).
+
+Chi tiết: `Product/PRD.md` §4.2
 
 ## Đặt đồ 3D lên ảnh không gian (2D + Depth)
 Ứng dụng hướng dẫn người dùng chụp/tải một ảnh không gian phòng thật, sau đó đặt các mẫu nội thất 3D **lên chính ảnh 2D đó** với tỉ lệ và phối cảnh đúng nhờ bản đồ độ sâu (Depth Anything V2 — depth suy ra từ 1 ảnh). Ứng dụng **KHÔNG dựng lại toàn bộ căn phòng thành mô hình 3D**; nó chỉ hiểu chiều sâu đủ để đặt đồ đúng scale/góc nhìn. Người dùng có toàn quyền chọn vùng không gian và đánh dấu giữ nguyên trạng các vật thể có sẵn theo ý muốn. Nếu depth-từ-1-ảnh chưa đủ chính xác, hệ thống degrade mượt về **đặt đồ thủ công** (user tự kéo/scale/xoay theo trục Y).

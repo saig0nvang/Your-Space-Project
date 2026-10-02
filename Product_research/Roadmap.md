@@ -1,5 +1,5 @@
 ---
-derives_from: [D4@bb7f1ffe, D5@15cdc73a]
+derives_from: [D4@bb7f1ffe, D5@15cdc73a, D10@4b681365]
 ---
 # Phân tích Giá trị & Roadmap MVP (Day 20)
 
@@ -86,6 +86,9 @@ MVP đã có auto-scale theo depth, nhưng cần tăng độ ổn định trên 
 * **Vấn đề 2: Khan hiếm nguồn dữ liệu sản phẩm 3D bản địa.**
 Dữ liệu 3D ban đầu chỉ là hàng mẫu chung chung, chưa phải hàng thật đang được bán bởi các nhãn hàng Việt Nam, làm giảm tỷ lệ chốt sale đơn giá cao.
 *(→ Giải quyết qua: Mở rộng B2B Supplier Lock-in)*
+* **Vấn đề 3: Người dùng thiếu cảm hứng từ những căn nhà giống nhà mình.**
+Ảnh mẫu trên mạng thường là biệt thự hoặc căn hộ nước ngoài; người ở căn hộ chung cư khó thấy mình trong đó, nên khó bắt đầu tự bày.
+*(→ Giải quyết qua: Thiết kế có sẵn (Phòng mẫu) + cộng đồng Nhà hàng xóm — người dùng dùng không gian của người khác làm mẫu (D10))*
 
 ### 🔴 LATER (Tầm nhìn dài hạn)
 *Chuyển đổi sang trải nghiệm cá nhân hóa tuyệt đối (Done-for-you).*

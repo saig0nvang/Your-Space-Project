@@ -1,5 +1,5 @@
 ---
-derives_from: [D1@d0d780f3, D4@bb7f1ffe, D5@15cdc73a, D7@96011236]
+derives_from: [D1@d0d780f3, D4@bb7f1ffe, D5@15cdc73a, D7@96011236, D10@4b681365]
 ---
 # YourSpace
 
@@ -50,6 +50,7 @@ Sản phẩm được chia theo thang bậc mốc rõ ràng, không gọi chung 
 - **M0 — PoC (đã có):** web prototype hiện tại trong `WebApp/`, tập trung kéo thả đồ 3D thủ công. Đây là proof of concept, không phải MVP.
 - **M1 — Validation (web-first, ~4-6 tuần):** vòng lõi trải nghiệm người dùng mô tả dưới đây; chưa có escrow, bước mua chỉ đo ý định (link/thu-lead).
 - **M2 — MVP thật (~3-4 tháng):** bổ sung escrow/thanh toán, onboard supplier, nâng cao chất lượng inpainting (polish) và mobile native. (Xóa đồ cũ cơ bản đã có ở M1.)
+- **Từ M2 trở đi:** Thiết kế có sẵn gồm Phòng mẫu và cộng đồng Nhà hàng xóm; người dùng đăng không gian để người khác dùng làm mẫu (D10).
 
 M1 tập trung vào một luồng trải nghiệm cốt lõi:
 
@@ -103,7 +104,7 @@ Ghi chú:
 ## Tài Liệu Chính
 
 - [`Product/Product_Brief.md`](Product/Product_Brief.md) - tổng quan sản phẩm, user flow, persona và pain points.
-- [`Product/PRD.md`](Product/PRD.md) - yêu cầu MVP, user stories và acceptance criteria.
+- [`Product/PRD.md`](Product/PRD.md) - PRD v2.0: flow chuẩn, 11 epic theo mốc; user story ở `Product/prd/epics/`.
 - [`Product_research/MVP_Research_and_PMF.md`](Product_research/MVP_Research_and_PMF.md) - giả định MVP và hướng kiểm chứng PMF.
 - [`Product_research/Roadmap.md`](Product_research/Roadmap.md) - roadmap sản phẩm.
 - [`Pitch/Pitch_Memo.md`](Pitch/Pitch_Memo.md) - bản tóm tắt problem, insight, solution, market và ask.

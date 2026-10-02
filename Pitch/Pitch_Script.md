@@ -1,5 +1,5 @@
 ---
-derives_from: [D5@15cdc73a, D6@b921ed46]
+derives_from: [D5@15cdc73a, D6@b921ed46, D3@7fbc47fb, D3b@4248a41d, D10@4b681365]
 ---
 # 🎤 YourSpace — Pitch Script
 
@@ -113,7 +113,7 @@ derives_from: [D5@15cdc73a, D6@b921ed46]
 
 **"Không cần quét phòng. Không cần thuê thiết kế. Chỉ cần một bức ảnh."**
 
-**"Và một điều nữa — không cần tạo tài khoản để bắt đầu. Bạn thêm đồ, bớt đồ, phối phong cách thoải mái ngay từ lần đầu mở app. Đăng nhập chỉ cần khi bạn muốn lưu thiết kế lại hoặc đặt mua."**
+**"Và một điều nữa — không cần tạo tài khoản để bắt đầu. Bạn thêm đồ, bớt đồ, phối phong cách thoải mái ngay từ lần đầu mở app. Muốn lưu thiết kế lại cũng không cần đăng nhập. Chỉ khi thanh toán — từ bản app M2 — bạn mới xác minh số điện thoại một lần."**
 
 **"Vì chúng tôi tin: nếu sản phẩm đủ tốt, bạn sẽ tự muốn quay lại. Chúng tôi không cần 'bẫy' bạn bằng form đăng ký trước khi bạn thấy được giá trị."**
 
@@ -185,7 +185,7 @@ derives_from: [D5@15cdc73a, D6@b921ed46]
 
 **"Break-even chỉ cần 15 đơn/tháng — một con số chúng tôi tự tin đạt ngay trong tuần đầu launch nếu validate được giả thuyết cốt lõi."**
 
-**"Về công nghệ — AI ước lượng độ sâu (Depth Anything V2) chạy on-device, còn phần inpainting xóa đồ cũ chạy trên cloud qua API trả-theo-lượt, nên COGS có một phần chi phí API/lượt (không phải zero). Mô hình vẫn asset-light — chi phí biến đổi nhỏ, tăng dần theo lượng dùng. Tầm nhìn dài hạn: đưa toàn bộ pipeline về 100% on-device để tối ưu privacy khi công nghệ cho phép."**
+**"Về công nghệ — ở M1, cả AI ước lượng độ sâu (Depth Anything V2, tính một lần mỗi ảnh và có cache) lẫn phần inpainting xóa đồ cũ đều chạy trên cloud qua API trả-theo-lượt, nên COGS có chi phí API/lượt (không phải zero). Mô hình vẫn asset-light — chi phí biến đổi nhỏ, tăng dần theo lượng dùng. Tầm nhìn dài hạn: đưa toàn bộ pipeline về 100% on-device để tối ưu privacy khi công nghệ cho phép."**
 
 ---
 ---
@@ -243,7 +243,7 @@ derives_from: [D5@15cdc73a, D6@b921ed46]
 
 **"Chúng tôi đã build working prototype trên web để prove concept nhanh nhất có thể — kéo thả 3D, shadow catcher, transform controls đều hoạt động. Bạn có thể test ngay hôm nay tại localhost."**
 
-**"Chúng tôi build theo thang bậc mốc: M1 là bản validation web-first — tái dùng nhanh PoC, iterate solo, không vướng App Store; mobile native (React Native + Expo GL) để giai đoạn M2 sau. Về AI: depth estimation (Depth Anything V2) chạy on-device, còn inpainting xóa đồ cũ chạy trên cloud qua API trả-theo-lượt — ảnh gửi lên xử lý và xóa ngay."**
+**"Chúng tôi build theo thang bậc mốc: M1 là bản validation web-first — tái dùng nhanh PoC, iterate solo, không vướng App Store; mobile native (React Native + Expo GL) để giai đoạn M2 sau. Về AI: ở M1, depth estimation (Depth Anything V2) và inpainting xóa đồ cũ đều chạy trên cloud qua API trả-theo-lượt — ảnh gửi lên xử lý và xóa ngay."**
 
 **"Điều chúng tôi CHƯA làm — và sẽ làm TRƯỚC KHI viết thêm một dòng code:"**
 
@@ -306,7 +306,7 @@ derives_from: [D5@15cdc73a, D6@b921ed46]
 | **"Nhà cung cấp có chịu ký không?"** | "Unknown #2 của chúng tôi — chưa validate. Hypothesis: họ sẽ thấy ROI khi YourSpace tạo ra qualified leads (user đã phối đồ trong phòng thật) thay vì cold traffic." |
 | **"Catalog 3D lấy từ đâu?"** | "MVP: Sketchfab + CGTrader (free/paid assets). Scale: partner với nhà cung cấp để họ cung cấp 3D scan sản phẩm thật — họ được 'showroom ảo miễn phí', chúng tôi được catalog." |
 | **"Revenue model có phụ thuộc quá vào affiliate không?"** | "Giai đoạn đầu: có. Giai đoạn sau: phí showcase cho nhà cung cấp muốn featured catalog, data licensing cho các sàn TMĐT lớn muốn hiểu gu thẩm mỹ user." |
-| **"App hay web?"** | "M1 chúng tôi build web-first để iterate nhanh, validate rẻ và không vướng App Store; mobile native là giai đoạn M2. Về lâu dài mobile là platform tự nhiên (user chụp ảnh phòng bằng điện thoại, kéo thả bằng ngón tay). Về AI: depth (Depth Anything V2) chạy on-device, còn inpainting xóa đồ cũ qua cloud API trả-theo-lượt (có chi phí/lượt) — ảnh xử lý xong xóa ngay. Tham vọng dài hạn là đưa cả pipeline về on-device để tối ưu privacy." |
+| **"App hay web?"** | "M1 chúng tôi build web-first để iterate nhanh, validate rẻ và không vướng App Store; mobile native là giai đoạn M2. Về lâu dài mobile là platform tự nhiên (user chụp ảnh phòng bằng điện thoại, kéo thả bằng ngón tay). Về AI: ở M1, depth (Depth Anything V2) và inpainting xóa đồ cũ đều qua cloud API trả-theo-lượt (có chi phí/lượt) — ảnh xử lý xong xóa ngay. Tham vọng dài hạn là đưa cả pipeline về on-device để tối ưu privacy." |
 | **"Web hiện tại có phải sản phẩm cuối không?"** | "Web hiện tại là PoC (M0). Sản phẩm kế tiếp là M1 — bản validation web-first; mobile native để M2. Chúng tôi tách rõ ba mốc để không ai hiểu nhầm là đã có app mobile." |
 | **"Các bạn đang gọi vốn bao nhiêu / khi nào?"** | "Hiện tại chúng tôi bootstrap (burn ~11.7tr/tháng) để tự build M1 web-first và chạy RAT — validate ý định mua TRƯỚC. Chỉ gọi vốn seed sau khi có traction thật (RAT pass, supplier pilot đầu tiên); lúc đó vốn dùng cho M2 (escrow, mobile native, onboard supplier). Cách này de-risk cho cả nhà đầu tư: chúng tôi chứng minh trước, đốt tiền sau." |
 

@@ -1,0 +1,783 @@
+<title>Hành trình YourSpace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+:root{
+  --page:#F3EEE6; --raised:#FBF8F3; --sunken:#EAE1D4;
+  --line:#E2D8CA; --line-strong:#8F8373;
+  --ink:#2F2A24; --ink-soft:#5C5349; --ink-muted:#6E6558;
+  --terra:#B25D3A; --terra-strong:#9A4A2B; --terra-soft:#F0DCCF;
+  --sage:#5E6E53; --sage-strong:#4A5841; --sage-soft:#DEE3D5;
+  --on-accent:#FFFFFF;
+  --oak:#CDA878; --walnut:#6E4B34; --linen:#E7DECF; --rattan:#B99257;
+  --stone:#A8A196; --clay:#B8704E; --leather:#A4623A; --steel:#9AA0A6;
+  --shadow-card:0 10px 30px rgba(92,72,50,.10);
+  --shadow-float:0 6px 16px rgba(40,30,20,.14);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --page:#1B1814; --raised:#25211C; --sunken:#2E2923;
+    --line:#3A342C; --line-strong:#7A7064;
+    --ink:#F3EEE6; --ink-soft:#CFC5B7; --ink-muted:#A89E90;
+    --terra:#D98A66; --terra-strong:#E6A07E; --terra-soft:#4A2E22;
+    --sage:#9BAE8C; --sage-strong:#B5C6A7; --sage-soft:#2C3326;
+    --on-accent:#1B1814;
+    --shadow-card:0 10px 30px rgba(0,0,0,.35);
+    --shadow-float:0 6px 16px rgba(0,0,0,.45);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --page:#1B1814; --raised:#25211C; --sunken:#2E2923;
+  --line:#3A342C; --line-strong:#7A7064;
+  --ink:#F3EEE6; --ink-soft:#CFC5B7; --ink-muted:#A89E90;
+  --terra:#D98A66; --terra-strong:#E6A07E; --terra-soft:#4A2E22;
+  --sage:#9BAE8C; --sage-strong:#B5C6A7; --sage-soft:#2C3326;
+  --on-accent:#1B1814;
+  --shadow-card:0 10px 30px rgba(0,0,0,.35);
+  --shadow-float:0 6px 16px rgba(0,0,0,.45);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--page); color:var(--ink);
+  font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px; line-height:1.6;
+  padding-inline:20px; padding-block:40px 72px;
+}
+.wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:64px}
+.over{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);margin:0}
+h1{font-size:clamp(32px,5.2vw,46px);line-height:1.1;letter-spacing:-.02em;font-weight:600;margin:10px 0 14px;text-wrap:balance}
+h2{font-size:24px;line-height:1.25;letter-spacing:-.01em;font-weight:600;margin:0;text-wrap:balance}
+h3{font-size:17px;line-height:1.3;font-weight:600;margin:0;text-wrap:balance}
+p{margin:0}
+.lede{max-width:66ch;color:var(--ink-soft);font-size:16.5px}
+.wordmark{display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:15px}
+.dots{display:inline-flex;gap:4px}
+.dots i{display:block;width:9px;height:9px;border-radius:50%}
+.m-oak{background:var(--oak)} .m-walnut{background:var(--walnut)} .m-linen{background:var(--linen);box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+.m-rattan{background:var(--rattan)} .m-stone{background:var(--stone)} .m-clay{background:var(--clay)}
+.m-leather{background:var(--leather)} .m-steel{background:var(--steel)}
+
+/* giả định */
+.assume{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:28px}
+.box{background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.pills{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.pills li{background:var(--sunken);border-radius:999px;padding:5px 12px;font-size:13.5px;line-height:1.4}
+.box.keep .pills li{background:var(--sage-soft)}
+
+.sec{display:flex;flex-direction:column;gap:20px}
+.sec-head{display:flex;flex-direction:column;gap:8px;max-width:72ch}
+.sec-head p{color:var(--ink-soft)}
+
+/* hành trình */
+.journeys{display:flex;flex-wrap:wrap;gap:8px}
+.jbtn{
+  font:inherit;font-size:14px;font-weight:500;line-height:1.2;
+  padding:9px 15px;min-height:42px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line-strong);background:var(--raised);color:var(--ink);
+}
+.jbtn:hover{border-color:var(--ink-soft)}
+.jbtn[aria-pressed="true"]{background:var(--terra-soft);border-color:var(--terra)}
+.jbtn:focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+.jdesc{color:var(--ink-soft);font-size:14.5px;min-height:24px}
+.map-fig{margin:0;background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:20px}
+.map-scroll{overflow-x:auto}
+.map{display:block;width:100%;min-width:920px;height:auto}
+.map-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:14px;max-width:80ch}
+.legend{display:inline-flex;align-items:center;gap:6px;margin-right:14px;white-space:nowrap}
+.legend svg{display:inline-block;vertical-align:middle}
+
+.node rect{fill:var(--raised);stroke:var(--line-strong);stroke-width:1.2}
+.node .nt{font-size:13px;font-weight:600;fill:var(--ink)}
+.node .ns{font-size:11.5px;fill:var(--ink-muted)}
+.node.hub rect{fill:var(--sunken);stroke:var(--ink);stroke-width:1.6}
+.node.hub .ht{font-size:15px;font-weight:600;fill:var(--ink)}
+.node.hub .hs{font-size:12px;fill:var(--ink-muted)}
+.node.hub .tl{font-size:12px;fill:var(--ink-soft)}
+.node.hub .tl .b{font-weight:600;fill:var(--ink)}
+.node.hub .ai{font-size:12px;font-style:italic;fill:var(--sage)}
+.node.hub .sep{stroke:var(--line-strong);stroke-width:1}
+.node.trust rect{fill:var(--sage-soft);stroke:var(--sage)}
+.edge{fill:none;stroke:var(--ink-soft);stroke-width:1.5;marker-end:url(#arr)}
+.edge.ret{stroke:var(--terra);stroke-dasharray:6 5;marker-end:url(#arrOn)}
+.elabel{font-size:12px;fill:var(--ink-soft)}
+.elabel.ret{fill:var(--terra-strong)}
+.mk{fill:var(--ink-soft)} .mk-on{fill:var(--terra)}
+.node,.edge,.elabel{transition:opacity .2s ease}
+.map[data-active] .node,.map[data-active] .edge,.map[data-active] .elabel{opacity:.15}
+.map[data-active="A"] [data-j~="A"],.map[data-active="B"] [data-j~="B"],
+.map[data-active="D"] [data-j~="D"],.map[data-active="E"] [data-j~="E"],.map[data-active="F"] [data-j~="F"],.map[data-active="G"] [data-j~="G"]{opacity:1}
+.map[data-active="A"] .edge[data-j~="A"],.map[data-active="B"] .edge[data-j~="B"],
+.map[data-active="D"] .edge[data-j~="D"],.map[data-active="E"] .edge[data-j~="E"],.map[data-active="F"] .edge[data-j~="F"],.map[data-active="G"] .edge[data-j~="G"]{stroke:var(--terra);stroke-width:2.2;marker-end:url(#arrOn)}
+.map[data-active="A"] .node[data-j~="A"] rect,.map[data-active="B"] .node[data-j~="B"] rect,
+.map[data-active="D"] .node[data-j~="D"] rect,.map[data-active="E"] .node[data-j~="E"] rect,.map[data-active="F"] .node[data-j~="F"] rect,.map[data-active="G"] .node[data-j~="G"] rect{stroke:var(--terra);stroke-width:2}
+
+/* vòng lan truyền */
+.cycle-fig{margin:0;background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:20px}
+.cycle{display:block;width:100%;min-width:720px;height:auto}
+.cycle-fig figcaption{font-size:13.5px;color:var(--ink-soft);margin-top:12px;max-width:80ch}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:800px){.two{grid-template-columns:1fr}}
+.author{display:flex;align-items:center;gap:6px;color:var(--ink-muted)}
+.author .av{width:14px;height:14px;border-radius:50%;background:var(--clay);flex:none}
+
+.photo.dim::after{content:"";position:absolute;inset:0;background:rgba(27,24,20,.42)}
+.heart{position:absolute;top:8px;right:8px;z-index:1;display:flex;align-items:center;gap:4px;background:var(--raised);color:var(--ink);border-radius:999px;padding:3px 8px;font-size:10px;font-weight:600}
+.heart svg{width:11px;height:11px;fill:var(--terra)}
+.choice{border:1px solid var(--line-strong);border-radius:18px;padding:8px 11px;display:flex;flex-direction:column;gap:2px;background:var(--page)}
+.choice b{font-weight:600;font-size:12px}
+.choice span{color:var(--ink-soft);font-size:10.5px;line-height:1.35}
+
+/* sáu màn */
+.screens{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:1000px){.screens{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.screens{grid-template-columns:1fr}}
+.scard{background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.scard .phone{align-self:center}
+.scard .where{font-size:12.5px;color:var(--ink-muted)}
+.rules{margin:0;padding-left:18px;color:var(--ink-soft);font-size:14px;line-height:1.55;display:flex;flex-direction:column;gap:6px}
+.ref{font-size:12.5px;color:var(--ink-muted);border-top:1px solid var(--line);padding-top:10px;margin-top:auto}
+.sample{font-size:13px;color:var(--ink-muted)}
+
+/* khung điện thoại */
+.phone{
+  width:236px;max-width:100%;aspect-ratio:390/844;border-radius:32px;
+  border:1px solid var(--line-strong);background:var(--page);color:var(--ink);
+  overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:var(--shadow-card);
+  font-size:11.5px;line-height:1.35;
+}
+.ph{flex:1;display:flex;flex-direction:column;gap:8px;padding:26px 14px 16px;min-height:0}
+.ph-h{font-size:17px;font-weight:600;line-height:1.2}
+.ph-h.sm{font-size:14.5px}
+.ph-p{color:var(--ink-soft)}
+.muted{color:var(--ink-muted)}
+.price{font-variant-numeric:tabular-nums;font-weight:600}
+.btn{display:flex;align-items:center;justify-content:center;text-align:center;border-radius:999px;font-weight:600;font-size:11.5px;min-height:34px;padding:0 12px}
+.btn.solid{background:var(--terra);color:var(--on-accent)}
+.btn.line{border:1px solid var(--line-strong);color:var(--ink)}
+.tile{background:var(--raised);border:1px solid var(--line);border-radius:18px;padding:10px 12px;display:flex;flex-direction:column;gap:3px}
+.tile b{font-weight:600;font-size:12.5px}
+.resume{display:flex;justify-content:space-between;align-items:center;gap:6px;border-top:1px solid var(--line);padding-top:8px;margin-top:auto}
+.resume b{font-weight:600}
+.link{color:var(--terra-strong);font-weight:600}
+
+/* ảnh phòng giả lập (ảnh chụp, không đổi theo theme) */
+.photo{position:relative;border-radius:20px;overflow:hidden;aspect-ratio:4/3;flex:none;
+  background:linear-gradient(#E6DCCC 0 60%,#C7A983 60% 100%)}
+.photo .win,.canvas .win{position:absolute;left:12%;top:12%;width:26%;height:36%;background:#F8F4ED;border:3px solid #D6CAB8;border-radius:3px}
+.photo .sofa,.canvas .sofa{position:absolute;left:38%;bottom:22%;width:46%;height:18%;background:#DCCFBC;border-radius:7px 7px 4px 4px;box-shadow:inset 0 -6px 0 #C8B8A0}
+.photo .sofa::before,.canvas .sofa::before{content:"";position:absolute;left:6%;right:6%;top:-55%;height:60%;background:#D3C3AC;border-radius:7px 7px 2px 2px}
+.photo .table,.canvas .table{position:absolute;left:46%;bottom:9%;width:24%;height:6%;background:#6E4B34;border-radius:3px}
+.photo .lamp,.canvas .lamp{position:absolute;right:9%;bottom:22%;width:3px;height:34%;background:#9AA0A6}
+.photo .lamp::before,.canvas .lamp::before{content:"";position:absolute;left:-9px;top:-10px;width:21px;height:14px;background:#B99257;border-radius:10px 10px 3px 3px}
+.photo .rug{position:absolute;left:28%;bottom:3%;width:58%;height:13%;background:#B8704E;opacity:.32;border-radius:50%}
+.badge{position:absolute;font-size:9.5px;font-weight:600;padding:2px 7px;border-radius:999px;background:#DEE3D5;color:#4A5841;white-space:nowrap}
+
+.seg{display:flex;background:var(--sunken);border-radius:999px;padding:3px;gap:2px}
+.seg span{flex:1;text-align:center;border-radius:999px;padding:5px 0;font-weight:500;color:var(--ink-soft)}
+.seg span.on{background:var(--raised);color:var(--ink);font-weight:600}
+.peek{height:44px;border-radius:20px 20px 0 0;background:linear-gradient(#D8CFC2 0 55%,#B89A78 55%);opacity:.9;flex:none}
+
+/* camera: luôn tối */
+.phone.cam{background:#14110E;color:#F3EEE6;border-color:#3A342C}
+.cam-photo{position:relative;flex:1;background:linear-gradient(#6F675C 0 58%,#5B4A38 58% 100%)}
+.cam-photo .win{position:absolute;left:14%;top:14%;width:26%;height:30%;background:#A8A296;border:3px solid #7F776B}
+.cam-photo .sofa{position:absolute;left:38%;bottom:20%;width:46%;height:15%;background:#857A6C;border-radius:6px}
+.level{position:absolute;left:10%;right:10%;top:50%;height:0;border-top:1.5px solid #9BAE8C}
+.level::after{content:"";position:absolute;left:50%;top:-6px;width:12px;height:12px;margin-left:-6px;border:1.5px solid #9BAE8C;border-radius:50%}
+.cchip{position:absolute;left:12px;font-size:10.5px;font-weight:500;padding:4px 9px;border-radius:999px;background:rgba(20,17,14,.72);color:#F3EEE6}
+.cam-sheet{background:#25211C;border-radius:24px 24px 0 0;padding:14px 14px 16px;display:flex;flex-direction:column;gap:8px}
+.cam-sheet p{color:#CFC5B7}
+.cam-sheet .ph-h{color:#F3EEE6}
+.cam-sheet .btn.solid{background:#D98A66;color:#1B1814}
+.cam-sheet .btn.ghost{color:#F3EEE6;border:1px solid #7A7064}
+
+/* trình chỉnh sửa */
+.canvas{position:relative;flex:1;min-height:0;background:linear-gradient(#E6DCCC 0 56%,#C7A983 56% 100%)}
+.canvas .sofa.new{background:#E7DECF;box-shadow:inset 0 -6px 0 #CDA878;outline:1.5px dashed #2F2A24;outline-offset:4px}
+.canvas .sofa.new::before{background:#DDD2C0}
+.erased{position:absolute;left:5%;bottom:14%;width:26%;height:24%;border:1.5px dashed rgba(47,42,36,.55);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9.5px;color:#2F2A24;background:rgba(247,243,236,.35)}
+.fbar{position:absolute;top:22px;left:10px;right:10px;display:flex;justify-content:space-between}
+.fpill{background:var(--raised);color:var(--ink);border-radius:999px;padding:5px 10px;font-weight:600;font-size:10.5px;box-shadow:var(--shadow-float)}
+.aichip{position:absolute;left:10px;top:56px;background:var(--sage-soft);color:var(--sage-strong);border-radius:999px;padding:4px 9px;font-size:10px;font-weight:500;box-shadow:var(--shadow-float)}
+.rail{position:absolute;right:8px;top:96px;display:flex;flex-direction:column;gap:5px}
+.rail span{background:var(--raised);color:var(--ink);border-radius:12px;padding:5px 7px;font-size:9.5px;font-weight:600;text-align:center;box-shadow:var(--shadow-float);border:1px solid transparent}
+.rail span.on{background:var(--terra-soft);border-color:var(--terra)}
+.tray{background:var(--raised);border-radius:24px 24px 0 0;padding:10px 12px 12px;display:flex;flex-direction:column;gap:7px;box-shadow:0 -8px 30px rgba(47,42,36,.12)}
+.tabs{display:flex;gap:12px;border-bottom:1px solid var(--line);font-weight:500;color:var(--ink-muted)}
+.tabs span{padding-bottom:5px}
+.tabs span.on{color:var(--ink);font-weight:600;box-shadow:inset 0 -2px 0 var(--terra)}
+.chips{display:flex;gap:5px;flex-wrap:nowrap;overflow:hidden}
+.chips span{border:1px solid var(--line-strong);border-radius:999px;padding:3px 8px;font-size:10px;white-space:nowrap}
+.chips span.on{background:var(--ink);color:var(--page);border-color:var(--ink)}
+.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.thumb{background:var(--sunken);border-radius:14px;padding:7px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.thumb .sw{width:100%;aspect-ratio:1;border-radius:10px}
+.thumb .nm{font-size:9.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thumb .price{font-size:9.5px}
+.total{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:8px}
+.total .price{font-size:13px}
+.total .btn{min-height:30px;padding:0 16px}
+
+/* sheet mua */
+.dimtop{height:64px;flex:none;position:relative;background:linear-gradient(#E6DCCC 0 56%,#C7A983 56%)}
+.dimtop::after{content:"";position:absolute;inset:0;background:rgba(27,24,20,.45)}
+.sheet{flex:1;background:var(--raised);border-radius:24px 24px 0 0;margin-top:-16px;position:relative;padding:8px 13px 14px;display:flex;flex-direction:column;gap:5px;min-height:0}
+.grab{width:34px;height:4px;border-radius:2px;background:var(--line-strong);align-self:center;margin-bottom:4px}
+.row{display:grid;grid-template-columns:14px 1fr auto;gap:7px;align-items:center;font-size:10.5px}
+.row.all{background:var(--sunken);border-radius:12px;padding:6px 8px}
+.grp{font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted);margin-top:3px}
+.cb{width:14px;height:14px;border-radius:4px;border:1.5px solid var(--line-strong);position:relative}
+.cb.on{background:var(--terra);border-color:var(--terra)}
+.cb.on::after{content:"";position:absolute;left:4px;top:1px;width:3px;height:7px;border:solid var(--on-accent);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.trust{background:var(--sage-soft);color:var(--sage-strong);border-radius:12px;padding:7px 9px;font-size:9.8px;line-height:1.35;margin-top:auto}
+.note{font-size:9.8px;color:var(--ink-muted);text-align:center}
+
+/* xong */
+.ph.center{align-items:stretch;text-align:center}
+.ok{width:46px;height:46px;border-radius:50%;background:var(--sage-soft);align-self:center;position:relative;margin-top:6px}
+.ok::after{content:"";position:absolute;left:17px;top:10px;width:10px;height:19px;border:solid var(--sage-strong);border-width:0 3px 3px 0;transform:rotate(45deg)}
+
+/* thẻ chữ */
+.cards3{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media (max-width:1000px){.cards3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.cards3{grid-template-columns:1fr}}
+.tcard{background:var(--raised);border:1px solid var(--line);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:10px}
+
+/* so sánh */
+.diff{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.diff{grid-template-columns:1fr}}
+.dcol{border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);background:var(--raised)}
+.dcol h3{display:flex;align-items:center;gap:8px}
+.dcol .mark{width:10px;height:10px;border-radius:50%}
+.dcol ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:9px;font-size:14px;color:var(--ink-soft)}
+.dcol li b{color:var(--ink);font-weight:600}
+.arrow{color:var(--ink-muted)}
+
+/* bảng lệch spec */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:24px;background:var(--raised)}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:14px 16px;border-bottom:1px solid var(--line)}
+th{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600;width:17%}
+td.rec{color:var(--ink)}
+td{color:var(--ink-soft)}
+
+.qs{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:12px;max-width:80ch}
+.qs li{padding-left:4px}
+.qs b{font-weight:600}
+.qs span{color:var(--ink-soft)}
+
+footer{display:flex;flex-direction:column;gap:14px;border-top:1px solid var(--line);padding-top:24px;font-size:13.5px;color:var(--ink-soft)}
+footer ul{margin:0;padding-left:18px;columns:2;column-gap:32px}
+@media (max-width:700px){footer ul{columns:1}}
+footer a{color:var(--terra-strong)}
+@media (prefers-reduced-motion:reduce){.node,.edge,.elabel{transition:none}}
+</style>
+
+<div class="wrap">
+
+<header>
+  <span class="wordmark">YourSpace <span class="dots"><i class="m-oak"></i><i class="m-linen"></i><i class="m-clay"></i></span></span>
+  <h1>Hành trình YourSpace</h1>
+  <p class="lede">Flow từ lúc mở app đến khi đồ về nhà, ở trạng thái lý tưởng: mọi ràng buộc kỹ thuật, thanh toán và nội dung coi như đã giải quyết. Khung dựa trên spec app M2 bạn duyệt ngày 25/09, cộng các yêu cầu mới của bạn, chỉnh theo cách IKEA Kreativ, Amazon Room Decorator và Houzz đang làm.</p>
+  <div class="assume">
+    <div class="box">
+      <p class="over">Coi như đã giải quyết</p>
+      <ul class="pills">
+        <li>Thanh toán ngay trong app</li>
+        <li>Tài khoản bằng SĐT và mã OTP</li>
+        <li>Đủ phòng mẫu và thiết kế cộng đồng</li>
+        <li>Kiểm duyệt thiết kế cộng đồng</li>
+        <li>Chuyên gia nhận tư vấn trong app</li>
+      </ul>
+    </div>
+    <div class="box keep">
+      <p class="over">Vẫn giữ nguyên</p>
+      <ul class="pills">
+        <li>AI chỉ gợi ý, bạn quyết</li>
+        <li>Consent thật về ảnh</li>
+        <li>YourSpace không cầm tiền của khách</li>
+        <li>Một nút chính trên mỗi màn</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="ban-do">
+  <div class="sec-head">
+    <h2>Bản đồ toàn cảnh</h2>
+    <p>Thử phòng và Phòng của tôi dẫn về trình chỉnh sửa. Khám phá phong cách dẫn tới thiết kế có sẵn: mua luôn, dùng cả không gian của người đăng, hoặc lấy bộ món về phòng mình. Thiết kế đăng từ trình chỉnh sửa quay lại làm nguồn cho tab Nhà hàng xóm, khép thành vòng lan truyền. Chọn một hành trình để xem đường đi của nó.</p>
+  </div>
+  <div class="journeys" role="group" aria-label="Chọn hành trình">
+    <button class="jbtn" type="button" id="j-all" data-j="" aria-pressed="true">Toàn bộ</button>
+    <button class="jbtn" type="button" id="j-a" data-j="A" aria-pressed="false">Thử phòng rồi mua</button>
+    <button class="jbtn" type="button" id="j-b" data-j="B" aria-pressed="false">Mua theo thiết kế có sẵn</button>
+    <button class="jbtn" type="button" id="j-f" data-j="F" aria-pressed="false">Dùng cả không gian</button>
+    <button class="jbtn" type="button" id="j-g" data-j="G" aria-pressed="false">Lấy bộ món về phòng mình</button>
+    <button class="jbtn" type="button" id="j-d" data-j="D" aria-pressed="false">Lưu lại, quay lại sau</button>
+    <button class="jbtn" type="button" id="j-e" data-j="E" aria-pressed="false">Đăng lên Nhà hàng xóm</button>
+  </div>
+  <p class="jdesc" id="jdesc" aria-live="polite">Tất cả các bước và hai đường quay về sau khi mua.</p>
+  <figure class="map-fig">
+    <div class="map-scroll">
+      <svg class="map" id="map" viewBox="0 -46 1262 668" role="img" aria-label="Sơ đồ flow: màn mở đầu dẫn tới ba cửa vào là Phòng của tôi, Thử phòng và Khám phá phong cách. Thử phòng đi qua chụp ảnh và hiểu phòng vào trình chỉnh sửa. Khám phá đi qua chi tiết phong cách tới thiết kế có sẵn, từ đó mua ngay, dùng cả không gian để vào trình chỉnh sửa, hoặc lấy bộ món rồi chụp phòng mình. Trình chỉnh sửa dẫn tới lưu, nhờ người duyệt, mua, và đăng thiết kế lên tab Nhà hàng xóm, bước duy nhất cần đăng nhập. Mua đi qua xác minh SĐT, thanh toán, đặt hàng xong, rồi quay về đúng nơi xuất phát.">
+        <defs>
+          <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0,0 L10,5 L0,10 z"/></marker>
+          <marker id="arrOn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-on" d="M0,0 L10,5 L0,10 z"/></marker>
+        </defs>
+
+        <!-- cạnh -->
+        <path class="edge" data-j="D" d="M118 185 H136 V40 H150"/>
+        <path class="edge" data-j="A E" d="M118 185 H136 V130 H150"/>
+        <path class="edge" data-j="B F G" d="M118 185 H136 V330 H150"/>
+        <path class="edge" data-j="D" d="M302 40 H690"/>
+        <path class="edge" data-j="A E" d="M302 130 H330"/>
+        <path class="edge" data-j="A E G" d="M482 130 H510"/>
+        <path class="edge" data-j="A E G" d="M662 130 H690"/>
+        <path class="edge" data-j="B F G" d="M302 330 H330"/>
+        <path class="edge" data-j="B F G" d="M482 330 H510"/>
+        <path class="edge" data-j="D" d="M902 50 H930"/>
+        <path class="edge" data-j="E" d="M767 250 V260"/>
+        <path class="edge" data-j="E" d="M692 282 H640 V304"/>
+        <path class="edge" data-j="F" d="M600 306 V230 H690"/>
+        <text class="elabel" data-j="F" x="686" y="222" text-anchor="end">dùng cả không gian</text>
+        <path class="edge" data-j="G" d="M540 306 V200 H407 V156"/>
+        <text class="elabel" data-j="G" x="474" y="192" text-anchor="middle">lấy bộ món</text>
+        <path class="edge" d="M902 130 H930"/>
+        <path class="edge" data-j="A F G" d="M860 250 V284 H997 V304"/>
+        <path class="edge" data-j="B" d="M662 330 H930"/>
+        <text class="elabel" data-j="A B F G" x="797" y="322" text-anchor="middle">mua lẻ hoặc cả bộ</text>
+        <path class="edge" data-j="A B F G" d="M1062 330 H1090"/>
+        <path class="edge" data-j="A B F G" d="M1157 354 V404"/>
+        <path class="edge" data-j="A B F G" d="M1157 454 V504"/>
+        <path class="edge" d="M1092 530 H1064"/>
+        <path class="edge ret" data-j="A F G" d="M1222 530 H1246 V-14 H830 V14"/>
+        <text class="elabel ret" data-j="A F G" x="1038" y="-22" text-anchor="middle">mua từ không gian → quay lại đúng không gian đó</text>
+        <path class="edge ret" data-j="B" d="M1157 554 V604 H587 V356"/>
+        <text class="elabel ret" data-j="B" x="872" y="596" text-anchor="middle">mua từ thiết kế có sẵn → về danh sách thiết kế</text>
+
+        <!-- nút -->
+        <g class="node" data-j="A B D E F G"><rect x="14" y="161" width="104" height="48" rx="14"/><text class="nt" x="66" y="182" text-anchor="middle">Mở đầu</text><text class="ns" x="66" y="198" text-anchor="middle">chọn cửa vào</text></g>
+
+        <g class="node" data-j="D"><rect x="152" y="16" width="150" height="48" rx="14"/><text class="nt" x="227" y="37" text-anchor="middle">Phòng của tôi</text><text class="ns" x="227" y="53" text-anchor="middle">nếu đã lưu</text></g>
+        <g class="node" data-j="A E"><rect x="152" y="106" width="150" height="48" rx="14"/><text class="nt" x="227" y="127" text-anchor="middle">Thử phòng</text><text class="ns" x="227" y="143" text-anchor="middle">chụp hoặc tải ảnh</text></g>
+        <g class="node" data-j="B F G"><rect x="152" y="306" width="150" height="48" rx="14"/><text class="nt" x="227" y="327" text-anchor="middle">Khám phá phong cách</text><text class="ns" x="227" y="343" text-anchor="middle">duyệt theo gu</text></g>
+
+        <g class="node" data-j="A E G"><rect x="332" y="106" width="150" height="48" rx="14"/><text class="nt" x="407" y="127" text-anchor="middle">Chụp có hướng dẫn</text><text class="ns" x="407" y="143" text-anchor="middle">cân bằng · consent</text></g>
+        <g class="node" data-j="B F G"><rect x="332" y="306" width="150" height="48" rx="14"/><text class="nt" x="407" y="327" text-anchor="middle">Chi tiết phong cách</text><text class="ns" x="407" y="343" text-anchor="middle">chất liệu · món</text></g>
+
+        <g class="node" data-j="A E G"><rect x="512" y="106" width="150" height="48" rx="14"/><text class="nt" x="587" y="127" text-anchor="middle">Hiểu phòng</text><text class="ns" x="587" y="143" text-anchor="middle">mặt sàn · tỷ lệ</text></g>
+        <g class="node" data-j="B E F G"><rect x="512" y="306" width="150" height="48" rx="14"/><text class="nt" x="587" y="327" text-anchor="middle">Thiết kế có sẵn</text><text class="ns" x="587" y="343" text-anchor="middle">Phòng mẫu · Nhà hàng xóm</text></g>
+
+        <g class="node hub" data-j="A D E F G">
+          <rect x="692" y="16" width="210" height="234" rx="20"/>
+          <text class="ht" x="710" y="44">Trình chỉnh sửa</text>
+          <text class="hs" x="710" y="62">một màn, công cụ song song</text>
+          <line class="sep" x1="710" y1="76" x2="884" y2="76"/>
+          <text class="tl" x="710" y="100"><tspan class="b">Thêm đồ</tspan> · theo phong cách</text>
+          <text class="tl" x="710" y="124"><tspan class="b">Xóa đồ cũ</tspan> · chạm để chọn</text>
+          <text class="tl" x="710" y="148"><tspan class="b">Chất liệu</tspan> · đổi biến thể</text>
+          <text class="tl" x="710" y="172"><tspan class="b">Dự toán</tspan> · luôn ở đáy màn</text>
+          <text class="tl" x="710" y="196"><tspan class="b">Hoàn tác</tspan> · mọi thao tác</text>
+          <text class="ai" x="710" y="228">AI chỉ gợi ý, bạn quyết</text>
+        </g>
+
+        <g class="node" data-j="E"><rect x="692" y="262" width="150" height="40" rx="12"/><text class="nt" x="767" y="279" text-anchor="middle">Đăng lên cộng đồng</text><text class="ns" x="767" y="294" text-anchor="middle">cần đăng nhập</text></g>
+        <g class="node" data-j="D"><rect x="932" y="26" width="130" height="48" rx="14"/><text class="nt" x="997" y="47" text-anchor="middle">Lưu không gian</text><text class="ns" x="997" y="63" text-anchor="middle">vào Phòng của tôi</text></g>
+        <g class="node"><rect x="932" y="106" width="130" height="48" rx="14"/><text class="nt" x="997" y="127" text-anchor="middle">Nhờ người duyệt</text><text class="ns" x="997" y="143" text-anchor="middle">hỏi ý kiến</text></g>
+        <g class="node" data-j="A B F G"><rect x="932" y="306" width="130" height="48" rx="14"/><text class="nt" x="997" y="327" text-anchor="middle">Mua</text><text class="ns" x="997" y="343" text-anchor="middle">lẻ hoặc cả bộ</text></g>
+        <g class="node"><rect x="932" y="506" width="130" height="48" rx="14"/><text class="nt" x="997" y="527" text-anchor="middle">Đơn hàng</text><text class="ns" x="997" y="543" text-anchor="middle">theo dõi · nhận hàng</text></g>
+
+        <g class="node trust" data-j="A B F G"><rect x="1092" y="306" width="130" height="48" rx="14"/><text class="nt" x="1157" y="327" text-anchor="middle">Xác minh SĐT</text><text class="ns" x="1157" y="343" text-anchor="middle">mã OTP · chỉ lần đầu</text></g>
+        <g class="node trust" data-j="A B F G"><rect x="1092" y="406" width="130" height="48" rx="14"/><text class="nt" x="1157" y="427" text-anchor="middle">Thanh toán</text><text class="ns" x="1157" y="443" text-anchor="middle">tiền giữ tại đối tác</text></g>
+        <g class="node trust" data-j="A B F G"><rect x="1092" y="506" width="130" height="48" rx="14"/><text class="nt" x="1157" y="527" text-anchor="middle">Đặt hàng xong</text><text class="ns" x="1157" y="543" text-anchor="middle">về nơi xuất phát</text></g>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="legend"><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="currentColor" stroke-width="1.5"/></svg>bước tiếp theo</span>
+      <span class="legend" style="color:var(--terra)"><svg width="34" height="10" aria-hidden="true"><line x1="0" y1="5" x2="34" y2="5" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 5"/></svg><span style="color:var(--ink-soft)">quay về sau khi mua</span></span>
+      Ô viền xanh sage là các bước liên quan tới tiền và danh tính. Trên điện thoại, kéo ngang để xem hết sơ đồ.
+    </figcaption>
+  </figure>
+</section>
+
+<section class="sec" id="lan-truyen">
+  <div class="sec-head">
+    <h2>Vòng lan truyền</h2>
+    <p>Mỗi thiết kế được đăng là nội dung để người khác dùng làm mẫu. Mỗi bản dùng lại có thể được đăng tiếp. Một thiết kế tốt vì vậy sinh ra nhiều nhánh, và mỗi nhánh là một lần có thể mua.</p>
+  </div>
+  <figure class="cycle-fig">
+    <div class="map-scroll">
+      <svg class="cycle" viewBox="0 0 960 190" role="img" aria-label="Vòng lan truyền: đăng thiết kế, người khác khám phá, dùng làm mẫu, chỉnh tiếp rồi mua hoặc đăng phiên bản mới có ghi nguồn, phiên bản mới quay lại thành nội dung để người khác khám phá.">
+        <path class="edge" d="M220 58 H263"/>
+        <path class="edge" d="M465 58 H508"/>
+        <path class="edge" d="M710 58 H753"/>
+        <path class="edge ret" d="M855 86 V146 H120 V90"/>
+        <text class="elabel ret" x="487" y="168" text-anchor="middle">phiên bản mới ghi nguồn bản gốc, quay lại vòng</text>
+        <g class="node"><rect x="20" y="30" width="200" height="56" rx="14"/><text class="nt" x="120" y="54" text-anchor="middle">Đăng thiết kế</text><text class="ns" x="120" y="71" text-anchor="middle">ảnh phòng · các món · giá</text></g>
+        <g class="node"><rect x="265" y="30" width="200" height="56" rx="14"/><text class="nt" x="365" y="54" text-anchor="middle">Người khác khám phá</text><text class="ns" x="365" y="71" text-anchor="middle">trong app hoặc qua link chia sẻ</text></g>
+        <g class="node"><rect x="510" y="30" width="200" height="56" rx="14"/><text class="nt" x="610" y="54" text-anchor="middle">Dùng làm mẫu</text><text class="ns" x="610" y="71" text-anchor="middle">cả không gian hoặc bộ món</text></g>
+        <g class="node"><rect x="755" y="30" width="200" height="56" rx="14"/><text class="nt" x="855" y="54" text-anchor="middle">Chỉnh tiếp rồi mua</text><text class="ns" x="855" y="71" text-anchor="middle">hoặc đăng phiên bản của mình</text></g>
+      </svg>
+    </div>
+    <figcaption>Người đăng không nhận hoa hồng, nên vòng chỉ quay khi họ thấy thiết kế của mình được thích và được dùng: mỗi thẻ hiện lượt thả tim, lượt dùng làm mẫu, và mọi bản dùng lại đều ghi nguồn.</figcaption>
+  </figure>
+  <div class="two">
+    <div class="tcard">
+      <p class="over">Làm vòng quay nhanh</p>
+      <ul class="rules">
+        <li>Thả tim, đếm lượt dùng làm mẫu, ghi nguồn. Không có hoa hồng, nên đây là phần thưởng duy nhất của người đăng và phải hiện rõ trên thẻ.</li>
+        <li>Thả tim cũng lưu thiết kế vào tab Yêu thích để xem lại.</li>
+        <li>Link chia sẻ mở được trên web không cần app. Nút dùng làm mẫu đưa người nhận vào app, mở thẳng thiết kế đó.</li>
+        <li>Bản dùng lại đăng được tiếp, hiện là nhánh của bản gốc.</li>
+      </ul>
+    </div>
+    <div class="tcard">
+      <p class="over">Rủi ro cần thiết kế từ đầu</p>
+      <ul class="rules">
+        <li>Dùng cả không gian sao chép ảnh phòng của người đăng. Consent khi đăng phải nói rõ, và người đăng tắt riêng được lựa chọn này.</li>
+        <li>Cùng layout chưa chắc cùng kích thước. Khi mua từ không gian của người khác, nhắc đo lại phòng mình.</li>
+        <li>Hiện ngay nên nội dung xấu có thể lên trước khi bị báo cáo. Nghị định 147/2024 yêu cầu gỡ nội dung vi phạm trong 24 giờ khi cơ quan quản lý yêu cầu, và mạng xã hội phải xác thực người dùng bằng SĐT. Cần kiểm tra YourSpace có thuộc diện phải xin phép thiết lập mạng xã hội không.</li>
+        <li>Lúc đầu tab trống. Mở tab khi đủ thiết kế, Phòng mẫu gánh nội dung giai đoạn đầu.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="man-hinh">
+  <div class="sec-head">
+    <h2>Sáu màn quyết định flow</h2>
+    <p>Mỗi màn kèm quy tắc của nó và chuẩn tham chiếu. Tên nhà cung cấp và giá là dữ liệu mẫu.</p>
+  </div>
+  <div class="screens">
+
+    <article class="scard">
+      <div class="phone" aria-label="Mock màn mở đầu">
+        <div class="ph">
+          <span class="wordmark" style="font-size:12.5px">YourSpace <span class="dots"><i class="m-oak"></i><i class="m-linen"></i><i class="m-clay"></i></span></span>
+          <div class="photo"><div class="win"></div><div class="rug"></div><div class="sofa"></div><div class="table"></div><div class="lamp"></div></div>
+          <p class="ph-h">Phòng bạn hợp với gì?</p>
+          <p class="ph-p">Thử đồ thật ngay trong ảnh phòng của bạn, rồi mới mua.</p>
+          <span class="btn solid">Chụp ảnh phòng</span>
+          <div class="tile">
+            <span class="dots"><i class="m-oak"></i><i class="m-walnut"></i><i class="m-linen"></i><i class="m-steel"></i></span>
+            <b>Khám phá phong cách</b>
+            <span class="muted">Japandi · Mid-Century · Bauhaus</span>
+          </div>
+          <div class="resume"><span><b>Tiếp tục: Phòng khách</b><br><span class="muted">4 món · lưu hôm qua</span></span><span class="link">Mở</span></div>
+        </div>
+      </div>
+      <p class="over">Mở đầu</p>
+      <h3>Hai cửa vào, không có màn đăng nhập</h3>
+      <ul class="rules">
+        <li>Chụp ảnh phòng là nút chính. Khám phá phong cách đứng ngang hàng dưới dạng thẻ.</li>
+        <li>Người quay lại thấy ngay không gian đang dở, mở một chạm.</li>
+        <li>Xin quyền camera đúng lúc bấm chụp, không xin từ màn đầu.</li>
+      </ul>
+      <p class="ref">Chuẩn: gradual engagement, màn đầu không phải form đăng ký (Appcues). IKEA Kreativ cũng cho vào bằng phòng mình hoặc showroom có sẵn.</p>
+    </article>
+
+    <article class="scard">
+      <div class="phone" aria-label="Mock màn thiết kế có sẵn với hai cách dùng làm mẫu">
+        <div class="ph" style="flex:none;padding-bottom:0">
+          <span class="muted">‹ Japandi</span>
+          <div class="seg"><span>Phòng mẫu</span><span class="on">Nhà hàng xóm</span></div>
+          <div class="photo dim"><div class="win"></div><div class="rug"></div><div class="sofa"></div><div class="table"></div><div class="lamp"></div>
+            <span class="heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5 4.2 12.9a4.7 4.7 0 0 1 6.6-6.7L12 7.4l1.2-1.2a4.7 4.7 0 0 1 6.6 6.7Z"/></svg>1,2k</span>
+          </div>
+        </div>
+        <div class="sheet" style="margin-top:-28px">
+          <div class="grab"></div>
+          <p class="ph-h sm">Dùng thiết kế này thế nào?</p>
+          <div class="author"><i class="av"></i><span>@nha.cua.linh · căn hộ 2 phòng ngủ, 68 m²</span></div>
+          <div class="choice"><b>Dùng cả không gian</b><span>Nhà bạn cùng layout. Mở ảnh phòng và cách bày của người đăng để chỉnh tiếp.</span></div>
+          <div class="choice"><b>Lấy bộ món</b><span>5 món vào khay. Bạn tự đặt vào ảnh phòng của mình.</span></div>
+          <span class="btn line">Mua cả bộ · 21.600.000 ₫</span>
+        </div>
+      </div>
+      <p class="over">Khám phá</p>
+      <h3>Hai cách dùng làm mẫu, hoặc mua luôn</h3>
+      <ul class="rules">
+        <li>Hai tab: Phòng mẫu do YourSpace tuyển chọn, Nhà hàng xóm do người dùng đăng. Thiết kế cộng đồng có nút thả tim, ghi loại căn hộ và diện tích để biết có cùng layout không.</li>
+        <li>Dùng cả không gian: nhà cùng layout, mở bản sao ảnh phòng và cách bày của người đăng để chỉnh tiếp. Lấy bộ món: các món vào khay, bạn tự đặt vào phòng của mình. Bản gốc không bị đổi.</li>
+        <li>Mua cả bộ mở sheet mua, bỏ chọn để mua lẻ. Giá luôn là giá hiện tại. Mua xong quay về đúng tab đang xem.</li>
+      </ul>
+      <p class="ref">Chuẩn: IKEA cho bắt đầu thiết kế từ hơn 50 showroom 3D. Canva và Figma Community cho nhân bản mẫu của người khác để sửa tiếp.</p>
+    </article>
+
+    <article class="scard">
+      <div class="phone cam" aria-label="Mock màn xem lại ảnh và consent">
+        <div class="cam-photo">
+          <div class="win"></div><div class="sofa"></div>
+          <div class="level"></div>
+          <span class="cchip" style="top:24px">Máy đã cân bằng · 0,8°</span>
+          <span class="cchip" style="top:52px">Thấy rõ sàn nhà</span>
+        </div>
+        <div class="cam-sheet">
+          <p class="ph-h sm">Dùng ảnh này?</p>
+          <p>Ảnh được gửi lên hệ thống để xử lý và xóa ngay sau đó.</p>
+          <span class="btn solid">Dùng ảnh này</span>
+          <span class="btn ghost">Chụp lại</span>
+        </div>
+      </div>
+      <p class="over">Thử phòng</p>
+      <h3>Chụp có hướng dẫn, rồi để app hiểu phòng</h3>
+      <ul class="rules">
+        <li>Thước cân bằng từ cảm biến lúc chụp. Gợi ý lùi lại khi chưa thấy sàn.</li>
+        <li>Consent trước lần gửi ảnh đầu, đúng câu chữ trong hệ thiết kế.</li>
+        <li>Sau đó xác nhận mặt sàn và chiều cao máy. Ảnh khó phân tích thì chuyển sang tự chỉnh, không chặn.</li>
+      </ul>
+      <p class="ref">Theo spec M2: màn 03-2 đến 03-7. Màn camera luôn tối.</p>
+    </article>
+
+    <article class="scard">
+      <div class="phone" aria-label="Mock trình chỉnh sửa không gian">
+        <div class="canvas">
+          <div class="win"></div>
+          <div class="erased">đã xóa ghế cũ</div>
+          <div class="sofa new"></div>
+          <div class="table"></div>
+          <div class="lamp"></div>
+          <div class="fbar"><span class="fpill">‹ Phòng khách</span><span class="fpill">Lưu</span></div>
+          <span class="aichip">Đã tự căn theo mặt sàn · kéo để chỉnh</span>
+          <div class="rail"><span class="on">Thêm</span><span>Xóa</span><span>Chất<br>liệu</span><span>Hoàn<br>tác</span></div>
+        </div>
+        <div class="tray">
+          <div class="tabs"><span class="on">Japandi</span><span>Mid-Century</span><span>Bauhaus</span></div>
+          <div class="chips"><span class="on">Tất cả</span><span>Sofa</span><span>Bàn</span><span>Đèn</span><span>Kệ</span></div>
+          <div class="thumbs">
+            <div class="thumb"><div class="sw" style="background:var(--linen)"></div><span class="nm">Sofa vải lanh</span><span class="price">12.400.000 ₫</span></div>
+            <div class="thumb"><div class="sw" style="background:var(--oak)"></div><span class="nm">Bàn trà sồi</span><span class="price">3.200.000 ₫</span></div>
+            <div class="thumb"><div class="sw" style="background:var(--rattan)"></div><span class="nm">Đèn sàn mây</span><span class="price">1.850.000 ₫</span></div>
+          </div>
+          <div class="total"><span><span class="price">27.900.000 ₫</span><br><span class="muted">4 món trong phòng</span></span><span class="btn solid">Mua</span></div>
+        </div>
+      </div>
+      <p class="over">Trình chỉnh sửa</p>
+      <h3>Một màn, thêm và xóa dùng xen kẽ</h3>
+      <ul class="rules">
+        <li>Thêm đồ và xóa đồ cũ là hai công cụ cùng màn, không bắt làm theo thứ tự. Xóa bắt đầu bằng một chạm vào vật thể, như IKEA Kreativ.</li>
+        <li>Phong cách là tab, loại đồ là chip lọc. Đổi tab không mất đồ đã đặt, nên mix được nhiều phong cách. Bộ món lấy từ thiết kế khác hiện thành một tab riêng.</li>
+        <li>Sau mỗi việc AI làm, một chip nói nó đã làm gì và cách sửa. Tổng tiền luôn ở đáy màn.</li>
+      </ul>
+      <p class="ref">Chuẩn: IKEA Kreativ xóa và thêm đồ trong cùng cảnh. Amazon Room Decorator đặt nhiều món cùng lúc.</p>
+    </article>
+
+    <article class="scard">
+      <div class="phone" aria-label="Mock sheet mua">
+        <div class="dimtop"></div>
+        <div class="sheet">
+          <div class="grab"></div>
+          <p class="ph-h sm">Mua đồ trong phòng này</p>
+          <div class="row all"><span class="cb on"></span><b>Chọn cả bộ</b><span class="muted">4 món</span></div>
+          <p class="grp">Xưởng gỗ A · giao 5–7 ngày</p>
+          <div class="row"><span class="cb on"></span><span>Sofa vải lanh</span><span class="price">12.400.000 ₫</span></div>
+          <div class="row"><span class="cb on"></span><span>Bàn trà sồi</span><span class="price">3.200.000 ₫</span></div>
+          <div class="row"><span class="cb on"></span><span>Kệ óc chó</span><span class="price">10.450.000 ₫</span></div>
+          <p class="grp">Xưởng đèn B · giao 2–3 ngày</p>
+          <div class="row"><span class="cb on"></span><span>Đèn sàn mây</span><span class="price">1.850.000 ₫</span></div>
+          <p class="trust">YourSpace không cầm tiền của bạn. Khoản thanh toán được giữ tại đối tác thanh toán được cấp phép đến khi bạn nhận hàng.</p>
+          <span class="btn solid">Tiếp tục · 27.900.000 ₫</span>
+          <p class="note">Lần đầu mua: xác minh SĐT bằng mã OTP</p>
+        </div>
+      </div>
+      <p class="over">Mua</p>
+      <h3>Mua lẻ hay cả bộ trong cùng một sheet</h3>
+      <ul class="rules">
+        <li>Mặc định chọn mọi món đang có trong không gian. Bỏ chọn để mua lẻ.</li>
+        <li>Nhóm theo nhà cung cấp vì mỗi bên giao một ngày khác. Thanh toán một lần, hệ thống tự tách đơn.</li>
+        <li>Đăng nhập là xác minh SĐT bằng OTP ngay trong luồng, chỉ lần đầu. Không có form tạo tài khoản.</li>
+      </ul>
+      <p class="ref">Chuẩn: bắt tạo tài khoản khiến 19% người mua bỏ ngang (Baymard). Amazon cho thêm vào giỏ ngay trong cảnh AR.</p>
+    </article>
+
+    <article class="scard">
+      <div class="phone" aria-label="Mock màn đặt hàng xong">
+        <div class="ph center">
+          <div class="ok"></div>
+          <p class="ph-h">Đã đặt 4 món</p>
+          <p class="ph-p">2 đơn từ 2 nhà cung cấp. Khoản thanh toán được giữ tại đối tác đến khi bạn xác nhận đã nhận hàng.</p>
+          <div class="photo"><div class="win"></div><div class="rug"></div><div class="sofa"></div><div class="table"></div><div class="lamp"></div>
+            <span class="badge" style="left:52%;bottom:44%">Đã mua</span>
+            <span class="badge" style="right:3%;bottom:60%">Đã mua</span>
+          </div>
+          <span class="btn solid" style="margin-top:auto">Quay lại phòng khách</span>
+          <span class="btn line">Xem đơn hàng</span>
+        </div>
+      </div>
+      <p class="over">Đặt hàng xong</p>
+      <h3>Về đúng nơi bạn vừa rời đi</h3>
+      <ul class="rules">
+        <li>Nút chính đưa về không gian đang sửa. Mua từ thiết kế có sẵn thì nút đổi thành quay lại danh sách thiết kế.</li>
+        <li>Món vừa mua mang nhãn Đã mua trong không gian. Các món còn lại giữ nguyên để mua tiếp.</li>
+        <li>Xem đơn hàng là lựa chọn phụ.</li>
+      </ul>
+      <p class="ref">Theo flow bạn đưa ra, ghép với màn 07-7 của spec M2.</p>
+    </article>
+
+  </div>
+</section>
+
+<section class="sec" id="phan-con-lai">
+  <div class="sec-head">
+    <h2>Bốn nhánh phụ</h2>
+  </div>
+  <div class="cards3">
+    <div class="tcard">
+      <p class="over">Lưu</p>
+      <h3>Lưu được bất cứ lúc nào</h3>
+      <ul class="rules">
+        <li>Lưu không cần đăng nhập. Không gian lưu gồm ảnh đã dọn, các món đã đặt, chất liệu đã chọn và dự toán.</li>
+        <li>Đồng bộ lên tài khoản thì xác minh SĐT và có consent riêng, vì ảnh nằm trên máy chủ.</li>
+        <li>Lưu cả khi đã mua một phần. Không gian là của bạn, không phải giỏ hàng.</li>
+      </ul>
+    </div>
+    <div class="tcard">
+      <p class="over">Nhờ người duyệt</p>
+      <h3>Hỏi người thân trước khi chốt</h3>
+      <ul class="rules">
+        <li>Gửi link xem phối cảnh, người nhận mở trên web không cần app.</li>
+        <li>Hỏi chuyên gia theo đúng phong cách đang dùng, đặt lịch và chat trong app.</li>
+        <li>Phản hồi quay về đúng không gian đó.</li>
+      </ul>
+    </div>
+    <div class="tcard">
+      <p class="over">Đăng thiết kế</p>
+      <h3>Đăng lên Nhà hàng xóm</h3>
+      <ul class="rules">
+        <li>Không bắt buộc. Đây là bước duy nhất cần đăng nhập.</li>
+        <li>Xem trước đúng ảnh sẽ công khai. Consent riêng nói rõ ảnh phòng sẽ hiện cho người khác và có thể được dùng làm mẫu. Cắt hoặc che được chỗ riêng tư.</li>
+        <li>Người đăng tắt riêng được lựa chọn dùng cả không gian, vì chỉ nó sao chép ảnh phòng của họ. Lấy bộ món không chạm tới ảnh. Mọi bản dùng lại ghi nguồn.</li>
+        <li>Hiện ngay khi đăng. Đủ vài lượt báo cáo từ các tài khoản khác nhau thì ẩn chờ xem xét, rồi khôi phục hoặc gỡ hẳn. Cơ quan quản lý yêu cầu thì gỡ trong 24 giờ. Tab chỉ mở khi đã đủ thiết kế.</li>
+      </ul>
+    </div>
+    <div class="tcard">
+      <p class="over">Sau khi mua</p>
+      <h3>Tiền chỉ đi khi bạn nhận hàng</h3>
+      <ul class="rules">
+        <li>Dòng thời gian: đã thanh toán, đang giao, đã nhận. Nhà cung cấp nhận tiền khi bạn bấm xác nhận đã nhận hàng.</li>
+        <li>Báo sự cố thì khoản thanh toán tiếp tục được giữ.</li>
+        <li>Đánh giá từng món. Có thể chụp lại phòng thật để so với bản thử.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="so-sanh">
+  <div class="sec-head">
+    <h2>So với flow bạn đưa ra</h2>
+    <p>Phần lớn được giữ. Chỉnh chủ yếu ở chỗ lúc được lưu và cách quay về sau khi mua.</p>
+  </div>
+  <div class="diff">
+    <div class="dcol">
+      <h3><span class="mark" style="background:var(--sage)"></span>Giữ nguyên</h3>
+      <ul>
+        <li>Hai cửa vào: chụp ảnh luôn hoặc khám phá phong cách</li>
+        <li>Xóa đồ cũ và thêm đồ song song</li>
+        <li>Thẻ phong cách rồi tới bàn, ghế và các loại đồ</li>
+        <li>Mua lẻ từng món hoặc mua cả bộ đã thử</li>
+        <li>Lưu thành không gian đã thử, chứa các món đã đặt</li>
+        <li>Thiết kế có sẵn gồm Phòng mẫu và thiết kế cộng đồng</li>
+        <li>Dùng làm mẫu rẽ hai nhánh: dùng cả không gian, hoặc lấy bộ món về phòng mình</li>
+        <li>Mua cả bộ: thanh toán một lần, tách đơn theo nhà cung cấp</li>
+        <li>Thiết kế cộng đồng hiện ngay, ẩn khi đủ vài lượt báo cáo, có nút thả tim</li>
+        <li>Chỉ đăng thiết kế lên cộng đồng mới cần đăng nhập</li>
+        <li>Chạm để chọn đồ cũ cần xóa, như IKEA Kreativ</li>
+        <li>Mua xong về màn chỉnh sửa, hoặc về màn chọn thiết kế</li>
+      </ul>
+    </div>
+    <div class="dcol">
+      <h3><span class="mark" style="background:var(--terra)"></span>Điều chỉnh</h3>
+      <ul>
+        <li><b>Mua</b> <span class="arrow">→</span> không đăng nhập, nhưng xác minh SĐT bằng OTP ngay trong luồng, chỉ lần đầu, vì cần SĐT để giao hàng và giữ tiền.</li>
+        <li><b>Chỉ lưu khi không mua</b> <span class="arrow">→</span> lưu được bất cứ lúc nào, kể cả sau khi mua một phần.</li>
+        <li><b>Quay về sau khi mua</b> <span class="arrow">→</span> quay về là nút chính, món đã mua mang nhãn trong không gian.</li>
+      </ul>
+    </div>
+    <div class="dcol">
+      <h3><span class="mark" style="background:var(--ink-muted)"></span>Bổ sung</h3>
+      <ul>
+        <li>Cửa thứ ba cho người quay lại: Phòng của tôi</li>
+        <li>Consent và bước hiểu phòng trước khi chỉnh</li>
+        <li>Dự toán luôn hiện ở đáy màn</li>
+        <li>Nhờ người duyệt và hỏi chuyên gia</li>
+        <li>Sau mua: giữ tiền đến khi nhận hàng</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="lech-spec">
+  <div class="sec-head">
+    <h2>Chỗ lệch với spec app M2 đã duyệt ngày 25/09</h2>
+    <p>Flow mới khác spec ở ba điểm. Chạm để chọn đồ cũ giờ đã khớp spec nên không còn trong bảng.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Chủ đề</th><th>Spec M2</th><th>Flow này</th><th>Đề xuất</th></tr></thead>
+      <tbody>
+        <tr><td>Dọn phòng và đặt đồ</td><td>Tuần tự: dọn phòng (nhóm 04) xong mới sang đặt đồ (nhóm 05).</td><td>Song song trong một màn.</td><td class="rec">Theo flow này. Gộp nhóm 04 vào canvas 05 thành một công cụ.</td></tr>
+        <tr><td>Thiết kế có sẵn</td><td>Không có. Khám phá chỉ duyệt phong cách và món.</td><td>Hai tab: Phòng mẫu và Nhà hàng xóm. Dùng làm mẫu theo hai nhánh (cả không gian, bộ món), mua lẻ hoặc cả bộ, thả tim.</td><td class="rec">Thêm vào spec, kèm luồng đăng thiết kế, hai nhánh dùng làm mẫu, consent công khai ảnh, báo cáo và gỡ.</td></tr>
+        <tr><td>Đăng nhập</td><td>Không có màn đăng nhập. OTP chỉ khi thanh toán hoặc đặt lịch chuyên gia. Phòng lưu trên máy.</td><td>Lưu không cần đăng nhập. Đăng thiết kế lên Nhà hàng xóm thì cần.</td><td class="rec">Khớp spec, thêm một điểm cần đăng nhập: đăng thiết kế.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="sec" id="can-chot">
+  <div class="sec-head">
+    <h2>Đã chốt</h2>
+    <p>Mọi câu hỏi của flow đã được founder chốt ngày 02/10/2026 (quyết định D10). Câu hỏi còn mở của sản phẩm nằm ở PRD §8.</p>
+  </div>
+</section>
+
+<footer>
+  <p>Đây là flow đích. Web M1 dùng một phần của nó: mua bằng link affiliate hoặc để lại SĐT, lưu bằng SĐT nhận link, chưa có thanh toán trong app (D5).</p>
+  <p class="over">Nguồn tham chiếu</p>
+  <ul>
+    <li><a href="https://www.ingka.com/newsroom/ikea-launches-new-ai-powered-experience-empowering-customers-to-create-lifelike-room-designs/">IKEA Kreativ, Ingka newsroom</a></li>
+    <li><a href="https://newatlas.com/around-the-home/ikea-kreativ-ai-room-design-app/">IKEA Kreativ, New Atlas</a></li>
+    <li><a href="https://techcrunch.com/2020/08/25/amazon-rolls-out-a-new-ar-shopping-feature-for-viewing-multiple-items-at-once/">Amazon Room Decorator, TechCrunch</a></li>
+    <li><a href="https://investor.wayfair.com/news/news-details/2023/Wayfair-Launches-Decorify-a-Virtual-Room-Styler-Powered-by-Generative-AI/default.aspx">Wayfair Decorify</a></li>
+    <li><a href="https://www.houzz.co.uk/magazine/inside-houzz-introducing-view-in-my-room-stsetivw-vs~103238920">Houzz View in My Room</a></li>
+    <li><a href="https://baymard.com/research-articles/current-state-of-checkout-ux">Baymard, Checkout UX</a></li>
+    <li><a href="https://baymard.com/research-articles/make-guest-checkout-prominent">Baymard, Guest checkout</a></li>
+    <li><a href="https://www.appcues.com/blog/gradual-engagement-mobile-app-first-screen">Appcues, Gradual engagement</a></li>
+    <li><a href="https://baochinhphu.vn/nhung-diem-moi-trong-quan-ly-cung-cap-su-dung-dich-vu-internet-thong-tin-tren-mang-102241128112139376.htm">Nghị định 147/2024, Báo Chính phủ</a></li>
+    <li><a href="https://mic.gov.vn/thong-cao-bao-chi-chinh-phu-ban-hanh-nghi-dinh-147-2024-nd-cp-ngay-09-11-2024-ve-quan-ly-cung-cap-su-dung-dich-vu-internet-va-thong-tin-tren-mang-197241128090616239.htm">Nghị định 147/2024, Bộ TT&amp;TT</a></li>
+  </ul>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var map = document.getElementById('map');
+  var desc = document.getElementById('jdesc');
+  var btns = document.querySelectorAll('.jbtn');
+  var texts = {
+    '': 'Tất cả các bước và hai đường quay về sau khi mua.',
+    'A': 'Chụp ảnh, dọn và đặt đồ, mua lẻ hoặc cả bộ, rồi quay lại đúng không gian đang sửa.',
+    'B': 'Chọn phong cách, chọn một thiết kế, mua ngay, rồi về lại danh sách thiết kế.',
+    'D': 'Lưu không gian đang dở, lần sau mở app vào thẳng nó.',
+    'F': 'Nhà bạn cùng layout với nhà người đăng: dùng cả ảnh phòng và cách bày của họ, chỉnh tiếp rồi mua. Mua xong quay về chính không gian đó.',
+    'G': 'Thích bộ món của người đăng: lấy cả bộ vào khay, chụp hoặc chọn ảnh phòng của bạn, tự đặt từng món rồi mua.',
+    'E': 'Thử xong trong phòng mình, đăng thiết kế lên Nhà hàng xóm. Chỉ bước đăng mới cần đăng nhập.'
+  };
+  function setJourney(j){
+    if (j) { map.setAttribute('data-active', j); } else { map.removeAttribute('data-active'); }
+    desc.textContent = texts[j] || texts[''];
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-j') === j ? 'true' : 'false'); });
+    try { localStorage.setItem('ys-journey', j); } catch (e) {}
+  }
+  btns.forEach(function(b){ b.addEventListener('click', function(){ setJourney(b.getAttribute('data-j')); }); });
+  var saved = '';
+  try { saved = localStorage.getItem('ys-journey') || ''; } catch (e) {}
+  if (texts.hasOwnProperty(saved)) setJourney(saved);
+})();
+</script>
