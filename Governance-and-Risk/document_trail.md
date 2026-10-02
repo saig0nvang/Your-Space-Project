@@ -1,5 +1,5 @@
 ---
-derives_from: [D3@7fbc47fb, D6@b921ed46]
+derives_from: [D3@7fbc47fb, D6@b921ed46, D3b@4248a41d]
 ---
 # BẢO HIỂM PHÁP LÝ (Document Trail) - YourSpace
 *Tình huống giả định & Bài tập Workshop 3*
@@ -30,16 +30,16 @@ Cục An ninh mạng (A05) và Cơ quan Cảnh sát điều tra mời Founder l�
 
 **🔥 TOP 1 Ưu tiên:** **Hồ sơ số (4) - DPIA / CTIA (Đánh giá tác động xử lý & chuyển dữ liệu cá nhân).**
 
-**Lý do:** YourSpace đã **chốt quyết định chính thức (D3, 2026-07-23)** chuyển tính năng AI Inpainting từ On-device (chạy local) sang **Cloud API hosted trả-theo-lượt** (Replicate hoặc tương đương) cho MVP để tối ưu chất lượng; "100% on-device" là tầm nhìn dài hạn, revisit khi công nghệ cho phép. Việc lấy hình ảnh phòng ngủ riêng tư của user đẩy qua biên giới mà không làm hồ sơ đánh giá NĐ13/2023/NĐ-CP là vi phạm luật sờ sờ, nguy cơ bị cấm hoạt động và phạt cực nặng ngay tắp lự nếu bị lộ ảnh.
+**Lý do:** YourSpace đã **chốt quyết định chính thức (D3, 2026-07-23)** chuyển tính năng AI Inpainting từ On-device (chạy local) sang **Cloud API hosted trả-theo-lượt** (Replicate hoặc tương đương) cho MVP để tối ưu chất lượng; "100% on-device" là tầm nhìn dài hạn, revisit khi công nghệ cho phép. Bổ sung **D3b (2026-07-24):** depth estimation cho M1-web **cũng chạy server-side/cloud** (1 lần/ảnh, cache theo hash) — tức ảnh phòng lên cloud cho CẢ depth lẫn inpainting. Việc lấy hình ảnh phòng ngủ riêng tư của user đẩy qua biên giới mà không làm hồ sơ đánh giá NĐ13/2023/NĐ-CP là vi phạm luật sờ sờ, nguy cơ bị cấm hoạt động và phạt cực nặng ngay tắp lự nếu bị lộ ảnh.
 
 ---
 
 ## 4. Hành động 1 tuần (Cho TOP 1)
 
-**Template tài liệu sẽ xây (DPIA/CTIA cho tính năng Cloud Inpainting):**
-1. **Sơ đồ luồng dữ liệu:** Ảnh thiết bị user ➝ App YourSpace ➝ API Server (LaMa Refiner) ➝ Trả kết quả ➝ **Cơ chế Xóa lập tức (Zero Retention)**.
-2. **Cam kết Vendor:** Tài liệu chứng minh API Endpoint cung cấp dịch vụ inpainting không được phép lưu trữ hoặc dùng ảnh của user YourSpace để train AI của họ.
-3. **Cơ chế Opt-in (Consent):** Ảnh chụp màn hình popup yêu cầu user cấp quyền camera/thư viện kèm dòng chữ: *"Ảnh của bạn sẽ được gửi lên hệ thống đám mây để xử lý xóa nền và KHÔNG lưu trữ lại."*
+**Template tài liệu sẽ xây (DPIA/CTIA cho các tính năng AI chạy cloud: depth + inpainting):**
+1. **Sơ đồ luồng dữ liệu:** Ảnh thiết bị user ➝ App YourSpace ➝ API hosted (Replicate hoặc tương đương: depth + inpainting) ➝ Trả kết quả ➝ **Cơ chế Xóa lập tức (Zero Retention)**.
+2. **Cam kết Vendor:** Tài liệu chứng minh API Endpoint cung cấp dịch vụ depth và inpainting không được phép lưu trữ hoặc dùng ảnh của user YourSpace để train AI của họ.
+3. **Cơ chế Opt-in (Consent):** Ảnh chụp màn hình popup yêu cầu user cấp quyền camera/thư viện kèm dòng chữ: *"Ảnh của bạn sẽ được gửi lên hệ thống đám mây để xử lý và xóa ngay, KHÔNG lưu trữ lại."*
 
 **Phân công thực hiện:**
 * **Người chịu trách nhiệm:** Phạm Việt Anh (Founder).

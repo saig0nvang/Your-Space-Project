@@ -1,5 +1,5 @@
 ---
-derives_from: [D3@7fbc47fb]
+derives_from: [D3@7fbc47fb, D3b@4248a41d]
 ---
 # 3 R's Startup Governance — YourSpace
 
@@ -15,7 +15,7 @@ derives_from: [D3@7fbc47fb]
 - **Lộ tài sản của Supplier:** KHÔNG hardcode API Keys hoặc bộ dữ liệu 3D Model độc quyền của các nhà cung cấp nội thất vào mã nguồn hở hoặc chia sẻ qua các kênh không bảo mật.
 
 ### ✅ Được làm (Giải pháp thay thế)
-- **Xử lý hình ảnh (cập nhật D3, 2026-07-23):** Kiến trúc MVP = **Depth on-device + Inpainting trên Cloud API hosted** (Replicate/AWS). Ảnh phòng CÓ được gửi lên server để xử lý → **BẮT BUỘC consent thật** ở onboarding ("ảnh của bạn được gửi lên hệ thống để xử lý và **xóa ngay**"), **cơ chế zero-retention** (vendor không lưu trữ/không train trên ảnh user) + DPIA theo NĐ13. **KHÔNG** dùng câu "không upload ảnh / 100% on-device" trong khi đang chạy cloud (tuyên bố sai → rủi ro Điều 198). Mục tiêu **inpainting on-device là tầm nhìn dài hạn**, revisit khi công nghệ (model nhẹ hơn, NPU mobile mạnh hơn) cho phép.
+- **Xử lý hình ảnh (cập nhật D3 2026-07-23 + D3b 2026-07-24):** Kiến trúc M1 = **Depth VÀ Inpainting đều chạy trên Cloud API hosted** (Replicate hoặc tương đương; depth tính 1 lần/ảnh, cache theo hash, sau interface `AIGateway.depth()` để M2-mobile có thể swap on-device). Ảnh phòng CÓ được gửi lên server để xử lý → **BẮT BUỘC consent thật** ở onboarding ("ảnh của bạn được gửi lên hệ thống để xử lý và **xóa ngay**"), **cơ chế zero-retention** (vendor không lưu trữ/không train trên ảnh user) + DPIA theo NĐ13. **KHÔNG** dùng câu "không upload ảnh / 100% on-device" trong khi đang chạy cloud (tuyên bố sai → rủi ro Điều 198). Mục tiêu **inpainting on-device là tầm nhìn dài hạn**, revisit khi công nghệ (model nhẹ hơn, NPU mobile mạnh hơn) cho phép.
 - **Phân tích dữ liệu nội bộ:** Nếu cần phân tích data hành vi hoặc debug, CHỈ sử dụng môi trường bảo mật (như OpenAI Enterprise, Claude for Work) hoặc các công cụ local đã được setup tính năng "Do not train on my data".
 
 ### ⚠️ Hậu quả vi phạm

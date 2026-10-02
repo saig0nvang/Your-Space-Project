@@ -1,5 +1,5 @@
 ---
-derives_from: [D2@499c7e4d, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46]
+derives_from: [D2@499c7e4d, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46, D3b@4248a41d]
 ---
 # Risk Register v2 — YourSpace (AI-Augmented)
 **Ngày lập:** 07/05/2026 | **Người lập:** Phạm Việt Anh (qua AI CRO Audit Lab 4)
@@ -40,19 +40,19 @@ derives_from: [D2@499c7e4d, D3@7fbc47fb, D5@15cdc73a, D6@b921ed46]
 - **Likelihood (1-5):** 3 (Apple thường xuyên xiết chặt quyền camera/AI).
 - **Impact (1-5):** 3. Score: **9**.
 - **Mitigation:**
-  1. **Lưu ý kiến trúc (D3):** Với INPAINTING (xóa đồ cũ), cloud inference qua API hosted (Replicate/AWS) đã là **hướng MVP CHÍNH THỨC**, KHÔNG còn là "fallback" — chấp nhận API cost/lượt để đảm bảo chất lượng. Rủi ro này chỉ còn áp cho phần DEPTH chạy on-device; nếu OS phá depth on-device thì cloud inference cũng là phương án chuyển tạm sẵn có.
+  1. **Lưu ý kiến trúc (D3):** Với INPAINTING (xóa đồ cũ), cloud inference qua API hosted (Replicate/AWS) đã là **hướng MVP CHÍNH THỨC**, KHÔNG còn là "fallback" — chấp nhận API cost/lượt để đảm bảo chất lượng. **Bổ sung D3b (2026-07-24):** ở M1-web, DEPTH cũng chạy server-side/cloud (1 lần/ảnh, cache theo hash, sau interface `AIGateway.depth()`) → rủi ro này **KHÔNG áp cho M1**. Nó chỉ áp cho M2-mobile nếu swap depth sang on-device; khi đó cloud depth sẵn có là phương án chuyển tạm.
   2. Tham gia Apple Developer Beta để test trước các OS update 3 tháng.
   3. Log kỹ các API deprecation warnings trên Expo.
 
 ### RISK 3: Camera Privacy App Store Ban
 - **Type:** Regulatory
-- **If:** Policy của App Store/Play Store hoặc Luật bảo vệ dữ liệu (Nghị định 13 VN / GDPR) quét thấy YourSpace dùng camera VÀ gửi ảnh phòng lên cloud để inpainting (D3) mà không có popup consent giải thích rõ ràng việc xử lý & xóa ảnh.
+- **If:** Policy của App Store/Play Store hoặc Luật bảo vệ dữ liệu (Nghị định 13 VN / GDPR) quét thấy YourSpace dùng camera VÀ gửi ảnh phòng lên cloud để tính depth và inpainting (D3/D3b) mà không có popup consent giải thích rõ ràng việc xử lý & xóa ảnh.
 - **Then:** App bị gỡ khỏi store (delisted) không báo trước. Toàn bộ tiền quảng cáo đang chạy đổ xuống sông.
 - **Leading to:** Mất $10,000 tiền Ads + 3 tuần không có doanh thu ($5,000) = **1.8 tháng runway**.
 - **Likelihood (1-5):** 4 (Reviewer Apple rất khắt khe với app có chữ "AI" và quyền Camera).
 - **Impact (1-5):** 2. Score: **8**.
 - **Mitigation:**
-  1. Thêm màn hình Onboarding **consent thật** (KHÔNG dùng câu "không upload ảnh" vì sai sự thật → dính rủi ro Điều 198): "Ảnh phòng của bạn được gửi lên hệ thống để xử lý (xóa đồ cũ) và **xóa ngay** sau khi hoàn tất — không lưu trữ, không dùng để train AI." Ghi rõ mục tiêu on-device trong tương lai. Checkbox opt-in bắt buộc.
+  1. Thêm màn hình Onboarding **consent thật** (KHÔNG dùng câu "không upload ảnh" vì sai sự thật → dính rủi ro Điều 198): "Ảnh phòng của bạn được gửi lên hệ thống để xử lý (ước lượng chiều sâu & xóa đồ cũ) và **xóa ngay** sau khi hoàn tất — không lưu trữ, không dùng để train AI." Ghi rõ mục tiêu on-device trong tương lai. Checkbox opt-in bắt buộc.
   2. Bổ sung chính sách bảo mật (Privacy Policy) chuẩn GDPR/NĐ13 + DPIA cho luồng ảnh lên cloud (có thể xuyên biên giới) + cơ chế zero-retention.
   3. Không gắn các SDK analytics bên thứ 3 vào màn hình chụp ảnh.
 

@@ -1,5 +1,5 @@
 ---
-derives_from: [D2@499c7e4d, D3@7fbc47fb, D6@b921ed46]
+derives_from: [D2@499c7e4d, D3@7fbc47fb, D6@b921ed46, D3b@4248a41d]
 ---
 # Tab 1 — ASSUMPTIONS / Giả định đầu vào
 
@@ -22,11 +22,11 @@ derives_from: [D2@499c7e4d, D3@7fbc47fb, D6@b921ed46]
 
 ## 2. COGS / Chi phí biến đổi trên mỗi khách hàng
 
-> ⚠️ **Lưu ý quan trọng:** YourSpace dùng **depth on-device** (Depth Anything V2) NHƯNG **inpainting chạy trên cloud qua API hosted trả-theo-lượt** (Replicate/tương đương — D3) để xóa đồ cũ trong ảnh phòng thật → **có chi phí API per-request, KHÔNG còn zero-cost**. Hosting dùng Vercel/Netlify free tier. Mô hình vẫn tương đối asset-light nhưng phải tính chi phí API inpainting vào COGS.
+> ⚠️ **Lưu ý quan trọng:** Ở M1, **cả depth (Depth Anything V2, 1 lần/ảnh, cache theo hash — D3b) lẫn inpainting đều chạy trên cloud qua API hosted trả-theo-lượt** (Replicate/tương đương — D3) để ước lượng chiều sâu và xóa đồ cũ trong ảnh phòng thật → **có chi phí API per-request, KHÔNG còn zero-cost**. Hosting dùng Vercel/Netlify free tier. Mô hình vẫn tương đối asset-light nhưng phải tính chi phí API inpainting vào COGS.
 
 | Chi phí | Optimistic | Base | Pessimistic | Đơn vị | Ghi chú / Note |
 |---|---|---|---|---|---|
-| **API inpainting / tháng** | `100,000` | `500,000` | `1,500,000` | VND/tháng | Cloud inpainting trả-theo-lượt (Replicate/tương đương) để xóa đồ cũ. Depth vẫn on-device. Ước tính = số lượt inpaint × đơn giá/lượt; tăng theo lượng user |
+| **API inpainting / tháng** | `100,000` | `500,000` | `1,500,000` | VND/tháng | Cloud inpainting trả-theo-lượt (Replicate/tương đương) để xóa đồ cũ. **Depth cũng chạy cloud từ M1 (D3b) — con số ở hàng này CHƯA tính lượt depth, cần ước lại.** Ước tính = số lượt inpaint × đơn giá/lượt; tăng theo lượng user |
 | **Domain và email service / tháng** | `0` | `300,000` | `700,000` | VND/tháng | Vercel/Netlify free tier cho MVP. Tăng khi vượt giới hạn free |
 | **Hidden costs (3D asset curation, QA) / tháng** | `0` | `100,000` | `500,000` | VND/tháng | Đừng quên! Curate + QA metadata 3D (kích thước thật, origin point) tốn công |
 | **Infrastructure (server/cloud) / tháng** | `200,000` | `300,000` | `500,000` | VND/tháng | Domain, CDN, analytics. Vercel free = $0; con số này là dự phòng khi scale |
@@ -165,7 +165,7 @@ ARPU = GMV/đơn × Commission Rate
 | TAM 65,000/tháng | Thị trường online HCM+HN segment trung cấp ~650 tỷ/tháng ÷ 10tr/đơn | Tính từ market size + GMV/đơn |
 | SOM 300 đơn/tháng | Giới hạn bởi capacity founder — organic marketing 1 người. Từ Day16: 5,000–10,000 đơn/24 tháng | Day16 Submission — SOM estimate |
 | Adoption 0.46%/tháng | = SOM (300) ÷ TAM (65,000). Thấp là đúng — startup mới chiếm phần nhỏ thị trường lớn | Day16 Submission — SOM estimate |
-| COGS thấp nhưng ≠ 0 | Depth on-device (Depth Anything V2) + inpainting cloud trả-theo-lượt (D3) → có chi phí API inpainting/lượt | Day16 PRD — Model Selection Rationale |
+| COGS thấp nhưng ≠ 0 | Depth (Depth Anything V2, 1 lần/ảnh, cache — D3b) + inpainting đều chạy cloud trả-theo-lượt (D3) → có chi phí API/lượt cho cả hai | Day16 PRD — Model Selection Rationale |
 
 **Break-even analysis (Base case):**
 ```
