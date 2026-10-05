@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { makeCachedDepth } from "./gateway";
+import { makeCachedCall, makeCachedDepth } from "./gateway";
 import type { DepthResult } from "./types";
 
 const fakeDepth = (): DepthResult => ({
@@ -38,4 +38,22 @@ test("lỗi vendor 429 → RateLimited", async () => {
   const r = await depth(new Uint8Array());
   expect(r.ok).toBe(false);
   if (!r.ok) expect(r.error.kind).toBe("RateLimited");
+});
+
+test("makeCachedCall: kiểu đầu ra tuỳ ý, cache theo key", async () => {
+  const run = vi.fn().mockResolvedValue(new Uint8Array([7]));
+  const call = makeCachedCall<{ k: string }, Uint8Array>({ run, cache: new Map(), keyOf: (i) => i.k });
+  const a = await call({ k: "x" });
+  await call({ k: "x" });
+  expect(run).toHaveBeenCalledTimes(1);
+  expect(a.ok && a.value[0]).toBe(7);
+});
+
+test("makeCachedCall: lỗi không vào cache, thông báo timeout theo label", async () => {
+  const call = makeCachedCall<string, number>({
+    run: () => new Promise<number>(() => {}), cache: new Map(), keyOf: (s) => s, timeoutMs: 10, label: "inpaint",
+  });
+  const r = await call("k");
+  expect(r.ok).toBe(false);
+  if (!r.ok) expect(r.error).toEqual({ kind: "Timeout", message: "inpaint timed out" });
 });

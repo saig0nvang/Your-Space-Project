@@ -17,3 +17,10 @@ export type DepthResult = { depth: DepthMap };
 export interface DepthService<I> {
   depth(input: I): Promise<Result<DepthResult, AIError>>;
 }
+
+export type InpaintResult = { png: Uint8Array };
+
+/** Interface đổi được adapter xóa đồ: Replicate LaMa (M1) hoặc on-device sau này (D3). */
+export interface InpaintService<I> {
+  inpaint(input: I): Promise<Result<InpaintResult, AIError>>;
+}
