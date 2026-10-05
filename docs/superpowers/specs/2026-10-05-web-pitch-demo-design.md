@@ -61,7 +61,8 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 ### 2.5. Thao tác với món
 - Chọn món trong khay → chạm lên sàn để đặt (`placeOnFloor`). Chạm phía trên đường chân trời → chip "Chạm vào sàn, thấp hơn đường chân trời".
 - Kéo món để di chuyển (raycast xuống mặt sàn y=0, tức F2: món luôn bám sàn).
-- Món đang chọn có tay cầm **xoay trục Y** và **chỉnh tỷ lệ** (0,5×–1,5×, F1), nút xóa món.
+- Món đang chọn có thanh tác vụ (MASTER.md · Thanh tác vụ của món): **Mua** | Nhân bản · **Bỏ**, và thước **xoay trục Y** (hít vào 0°, ±45°, ±90° khi thả trong ±5°). Panel đáy hiện tên, giá, "rộng × sâu × cao cm".
+- **Không có tỷ lệ cho từng món** (founder quyết 2026-10-04 trong MASTER.md: món luôn đúng kích thước thật, để người dùng không lầm tưởng món vừa không gian). F1 làm ở mức phòng: nút **Chỉnh cỡ phòng** đổi chiều cao máy (0,8–2,0 m) — mọi món cùng to/nhỏ theo, đúng nguyên nhân sai tỷ lệ mà spike chỉ ra.
 - Hoàn tác / Làm lại nhiều bước cho mọi thao tác trên canvas, kể cả xóa đồ cũ (F6).
 - Sau lần đặt đầu, chip: "Đã căn theo mặt sàn · kéo để chỉnh".
 
@@ -79,6 +80,11 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 - Ảnh gửi lên thu về cạnh dài ≤ 1600 px. Kết quả được dán lại chỉ trong vùng mask (viền mềm) lên ảnh làm việc.
 - Route `POST /api/ai/inpaint` (Next.js, runtime Node): nhận ảnh + mask PNG, gọi nhà cung cấp Replicate `allenhooo/lama` qua `AIGateway`. Hiện `packages/core/src/ai/gateway.ts` chỉ có `makeCachedDepth` (cache theo key, timeout, `AIError` có kiểu); tổng quát nó thành `makeCachedCall<I, O>` dùng chung cho depth và inpaint (giữ `makeCachedDepth` làm lớp mỏng để test cũ không đổi), thêm `InpaintService` vào `ai/types.ts`. Cache theo hash ảnh + mask. Token `REPLICATE_API_TOKEN` ở `.env.local`, không bao giờ xuống client.
 - Giới hạn trong bộ nhớ: 30 lượt / IP / giờ, trả lỗi có kiểu khi vượt.
+- **Kiểm soát chi phí và đầu vào** (theo audit bảo mật 2026-10-05):
+  - Ngân sách theo ngày và trần số lượt chạy đồng thời được **giữ chỗ trước khi gọi Replicate**, hoàn lại khi lỗi. Đọc → gọi → trừ sau sẽ để nhiều request song song cùng lọt trần. Trong một tiến trình Node, giữ chỗ phải xong trước `await` đầu tiên; khi chạy nhiều instance thì dùng `INCRBY` nguyên tử của Redis.
+  - Đọc kích thước ảnh từ header **trước khi giải mã**: từ chối nếu cạnh dài > 2048 px hoặc mask khác kích thước ảnh. Kiểm loại file bằng magic bytes, không tin `Content-Type`.
+  - Route AI **không bao giờ nhận URL**, chỉ nhận dữ liệu ảnh và mask, nên không có bề mặt SSRF.
+  - Không ghi ảnh, mask, token hay SĐT vào log. Log chỉ có request id, độ trễ, cache hit/miss, lý do bị chặn (giới hạn lượt, hết ngân sách, Replicate lỗi). Không secret nào mang tiền tố `NEXT_PUBLIC_*`.
 - Sau khi lấp: thanh so sánh **Trước / Sau** (giữ để xem ảnh gốc). Kết quả xấu → Hoàn tác, hoặc chọn vùng nhỏ hơn rồi xóa lại (F3). Lỗi mạng/timeout → giữ nguyên ảnh, chip lỗi, cho thử lại.
 - Sau mỗi lượt lấp thành công: chạy lại depth (§2.3).
 
@@ -127,7 +133,7 @@ Mỗi file một việc; component canvas không gọi model trực tiếp mà q
 
 | Mã | Tình huống | Hành vi trong demo |
 |---|---|---|
-| F1 | Tỷ lệ sai | Tay cầm chỉnh tỷ lệ luôn có trên món đang chọn |
+| F1 | Tỷ lệ sai | Nút Chỉnh cỡ phòng (chiều cao máy) trong trình chỉnh sửa; không có tỷ lệ từng món |
 | F2 | Đặt lơ lửng | Món luôn bám mặt sàn khi đặt và kéo |
 | F3 | Xóa ra xấu | Hoàn tác; chọn vùng nhỏ hơn rồi xóa lại; xem Trước/Sau |
 | F4 | Ảnh khó (không thấy sàn) | Không chặn; nếu `confidence` depth thấp thì tắt che khuất và báo bằng chip |
@@ -139,7 +145,7 @@ Mỗi file một việc; component canvas không gọi model trực tiếp mà q
 ## 8. Kiểm thử
 
 - **TDD** cho mọi hàm thuần mới trong `packages/core` (vitest, như các test hiện có): `fitDepthToFloor` trên depth tổng hợp từ một camera biết trước (phải khôi phục khoảng cách sàn sai số < 5%), có nhiễu và có vật thể nổi; `prepareEraseMask` (gộp, nới, nới xuống); `fovFromExif35mm`; `lightingFromImageStats`; `estimate`.
-- **Route inpaint:** test với Replicate được giả lập — đúng đầu vào, cache, timeout ra `AIError`, giới hạn lượt.
+- **Route inpaint:** test với Replicate được giả lập — đúng đầu vào, cache, timeout ra `AIError`, giới hạn lượt. Thêm: N request song song khi ngân sách chỉ còn K lượt thì đúng K lượt gọi vendor, phần còn lại ra `BudgetExceeded`; lượt lỗi được hoàn ngân sách; ảnh vượt 2048 px hoặc mask lệch kích thước bị từ chối trước khi giải mã.
 - **Kiểm tay:** đi trọn vòng P0 trên 4–6 ảnh mẫu và ít nhất một ảnh chụp bằng điện thoại thật, trên Chrome máy tính và Safari/Chrome điện thoại.
 - `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm --filter web build` đều phải qua.
 
@@ -147,6 +153,6 @@ Mỗi file một việc; component canvas không gọi model trực tiếp mà q
 
 1. **SlimSAM chưa được đo.** Spike đo SAM ViT-B (47,7% đạt sau 1 chạm). SlimSAM là bản nén, có thể kém hơn. Nếu kém rõ khi kiểm tay, phương án là chạy encoder SAM ViT-B trên server và decoder trong trình duyệt (research §2.9) — việc của vòng sau.
 2. **Xóa đồ lớn hay xấu** (spike: 30,6% vùng đồ lớn dùng được). Khi pitch dùng ảnh mẫu đã chọn, ghi rõ là ảnh mẫu; với ảnh người dùng, F3 là đường chính.
-3. **Ảnh điện thoại thật và ảnh tối** cho kết quả đặt đồ kém trong spike (0/4, 0/5). Demo không giải được phần này; tay cầm tỷ lệ và hỏi tư thế chụp là cách giảm.
+3. **Ảnh điện thoại thật và ảnh tối** cho kết quả đặt đồ kém trong spike (0/4, 0/5). Demo không giải được phần này; hỏi tư thế chụp và nút Chỉnh cỡ phòng là cách giảm.
 4. **Dung lượng tải lần đầu:** Depth Anything V2 Small (~25 MB) và SlimSAM (~40 MB) tải về trình duyệt; trên 4G có thể mất nửa phút. Tải nền ngay khi vào `/thu-phong`.
 5. Thời gian lưu ảnh của Replicate cần kiểm trước khi đưa demo cho người ngoài, để câu consent "xóa ngay" đúng sự thật.
