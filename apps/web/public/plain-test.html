@@ -46,10 +46,48 @@
     <div id="env">đang đọc…</div>
   </div>
 
+  <div class="box">
+    <div style="color:#8A8275">PHÉP THỬ TẢI SCRIPT RỜI</div>
+    <div>1· thẻ &lt;script src&gt;: <span id="extjs" class="bad">⏳ đang thử…</span></div>
+    <div>2· fetch() file .js: <span id="fetchjs" class="bad">⏳ đang thử…</span></div>
+    <div>3· fetch() chunk Next: <span id="fetchchunk" class="bad">⏳ đang thử…</span></div>
+  </div>
+
   <div class="box err" id="errwrap" style="display:none">
     <div style="color:#9E4B3F;font-weight:700">LỖI JS</div>
     <pre id="errs" style="white-space:pre-wrap;margin:0"></pre>
   </div>
+
+  <script src="/ext-test.js" onerror="var e=document.getElementById('extjs'); e.textContent='❌ BỊ CHẶN — trình duyệt không tải được script rời'; e.className='bad';"></script>
+  <script>
+  (function(){
+    var $=function(id){return document.getElementById(id)};
+    // nếu thẻ script chạy nhưng file rỗng/không thực thi
+    setTimeout(function(){
+      if(!window.__EXT_OK && $('extjs').textContent.indexOf('⏳')===0){
+        $('extjs').textContent='❌ KHÔNG thực thi (tải được nhưng không chạy?)'; $('extjs').className='bad';
+      }
+    }, 2500);
+
+    fetch('/ext-test.js').then(function(r){
+      $('fetchjs').textContent='✅ HTTP '+r.status+' — mạng OK, tải file .js được';
+      $('fetchjs').className='ok';
+    }).catch(function(err){
+      $('fetchjs').textContent='❌ fetch lỗi: '+err; $('fetchjs').className='bad';
+    });
+
+    fetch('/sensor-test').then(function(r){return r.text()}).then(function(html){
+      var m=html.match(/\/_next\/static\/[^"']+\.js/);
+      if(!m){ $('fetchchunk').textContent='(không tìm thấy chunk trong HTML)'; return; }
+      return fetch(m[0]).then(function(r2){
+        $('fetchchunk').textContent='✅ HTTP '+r2.status+' — chunk Next tải được: '+m[0].slice(0,50);
+        $('fetchchunk').className='ok';
+      });
+    }).catch(function(err){
+      $('fetchchunk').textContent='❌ '+err; $('fetchchunk').className='bad';
+    });
+  })();
+  </script>
 
 <script>
 (function(){

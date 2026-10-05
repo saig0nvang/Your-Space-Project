@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-store">
+<title>Tap test v4</title>
+<style>
+  body{font-family:-apple-system,system-ui,sans-serif;max-width:700px;margin:0 auto;padding:16px;background:#EDE8E0;color:#111}
+  h1{font-size:18px;margin:0 0 2px}
+  .ver{display:inline-block;background:#B0654A;color:#fff;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:700;margin-bottom:12px}
+  button{font-size:22px;padding:26px;width:100%;background:#B0654A;color:#fff;border:0;border-radius:12px;margin-bottom:10px}
+  .box{font-family:ui-monospace,Menlo,monospace;font-size:15px;background:#F5F1EA;border:1px solid #D8D0C4;border-radius:10px;padding:14px;line-height:2}
+  b.n{font-size:20px}
+  .ok{color:#060}.bad{color:#b00}
+</style>
+</head>
+<body>
+  <h1>Tap test</h1>
+  <div class="ver" id="ver">v4 · URL mới, không cache</div>
+
+  <!-- 1) onclick inline: đơn giản nhất có thể -->
+  <button id="btn" onclick="bump('inline')">BẤM VÀO ĐÂY</button>
+
+  <div class="box">
+    <div>inline onclick: <b class="n bad" id="c-inline">0</b></div>
+    <div>addEventListener click: <b class="n bad" id="c-al">0</b></div>
+    <div>document click (bất kỳ đâu): <b class="n bad" id="c-doc">0</b></div>
+    <div>pointerdown: <b class="n bad" id="c-pd">0</b></div>
+    <div>touchstart: <b class="n bad" id="c-ts">0</b></div>
+    <div style="font-size:13px;color:#8A8275;margin-top:6px">Bấm nút, rồi bấm cả vào vùng trống của trang.</div>
+  </div>
+
+<script>
+  var n = { inline:0, al:0, doc:0, pd:0, ts:0 };
+  function show(k){
+    var el = document.getElementById('c-'+k);
+    if(el){ el.textContent = n[k]; el.className = 'n ' + (n[k] > 0 ? 'ok' : 'bad'); }
+  }
+  function bump(k){ n[k]++; show(k); }
+
+  document.getElementById('btn').addEventListener('click', function(){ bump('al'); });
+  document.addEventListener('click',       function(){ bump('doc'); });
+  document.addEventListener('pointerdown', function(){ bump('pd'); });
+  document.addEventListener('touchstart',  function(){ bump('ts'); });
+
+  // dấu thời gian để chắc chắn đây là bản mới, không phải cache
+  document.getElementById('ver').textContent =
+    'v4 · nạp lúc ' + new Date().toLocaleTimeString('vi-VN');
+</script>
+</body>
+</html>

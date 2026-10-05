@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>YourSpace Spike — đặt sofa vào ảnh phòng</title>
+<style>
+  body{font-family:-apple-system,system-ui,sans-serif;max-width:860px;margin:0 auto;padding:12px;background:#EDE8E0;color:#1A1A1A}
+  h1{font-size:18px;margin:0 0 2px}
+  .ver{display:inline-block;background:#B0654A;color:#fff;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+  button{font-size:16px;padding:14px 16px;background:#B0654A;color:#fff;border:0;border-radius:10px;flex:1;min-width:120px}
+  button.sec{background:#fff;color:#1A1A1A;border:1px solid #D8D0C4}
+  button:disabled{opacity:.4}
+  .box{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:#F5F1EA;border:1px solid #D8D0C4;border-radius:10px;padding:10px;line-height:1.8;margin:8px 0}
+  .ok{color:#060;font-weight:700}.bad{color:#b00;font-weight:700}
+  video,canvas{width:100%;border-radius:10px;background:#111;display:block}
+  label{font-size:13px;display:flex;align-items:center;gap:6px;flex:1;min-width:150px}
+  input[type=range]{flex:1}
+  .hint{font-size:12px;color:#8A8275;margin-top:6px}
+</style>
+</head>
+<body>
+<h1>YourSpace Spike — đặt sofa vào ảnh phòng</h1>
+<div class="ver" id="ver">v1</div>
+
+<div class="row">
+  <button id="bSensor">1 · Bật cảm biến</button>
+  <button id="bCam">2 · Mở camera</button>
+  <button id="bShot" disabled>3 · Chụp</button>
+</div>
+<div class="row">
+  <button class="sec" id="bDemo">Dùng ảnh mẫu (không cần camera)</button>
+  <button class="sec" id="bReset">Chụp lại</button>
+</div>
+
+<div class="box">
+  <div>cảm biến: <span id="sst" class="bad">chưa bật</span></div>
+  <div>sự kiện: <b id="cnt" class="bad">0</b> · beta=<span id="beta">–</span> · pitch=<b id="pitch">–</b></div>
+  <div>sofa: <span id="pos">–</span></div>
+</div>
+
+<video id="vid" playsinline muted style="display:none"></video>
+<canvas id="cv" style="display:none"></canvas>
+
+<div id="ctl" style="display:none">
+  <div class="row">
+    <label>cao máy <input type="range" id="sH" min="0.9" max="1.9" step="0.05" value="1.45"><span id="vH">1.45</span>m</label>
+    <label>FOV <input type="range" id="sF" min="40" max="95" step="1" value="55"><span id="vF">55</span>°</label>
+  </div>
+  <div class="row">
+    <label>xoay <input type="range" id="sR" min="-180" max="180" step="5" value="0"><span id="vR">0</span>°</label>
+    <label>pitch tay <input type="range" id="sP" min="-10" max="60" step="1" value="15"><span id="vP">15</span>°</label>
+  </div>
+  <div class="hint">Bấm vào SÀN trong ảnh để dời sofa. "pitch tay" chỉ dùng khi không có cảm biến.</div>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  $('ver').textContent='v1 · '+new Date().toLocaleTimeString('vi-VN');
+
+  var SOFA={w:2.19,h:0.79,d:1.02};      // kích thước THẬT (m) — Khronos Glam Velvet Sofa
+  var st={img:null,W:0,H:0,pitch:null,manualPitch:15,camH:1.45,fovY:55,rot:0,nx:0,ny:-0.45,cnt:0};
+
+  // ── cảm biến ───────────────────────────────────────────────
+  function onOrient(e){
+    if(e.beta==null) return;
+    st.cnt++; $('cnt').textContent=st.cnt; $('cnt').className='ok';
+    $('beta').textContent=e.beta.toFixed(0);
+    var ang=(screen.orientation&&screen.orientation.angle)||0;
+    var p = (ang===90||ang===270) ? 90-Math.abs(e.gamma||0) : 90-e.beta;
+    st.pitch=Math.max(-25,Math.min(85,p));
+    $('pitch').textContent=st.pitch.toFixed(0)+'°';
+    draw();
+  }
+  $('bSensor').addEventListener('click',function(){
+    try{
+      if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+        DeviceOrientationEvent.requestPermission().then(function(r){
+          $('sst').textContent=r; $('sst').className=(r==='granted')?'ok':'bad';
+          if(r==='granted'){window.addEventListener('deviceorientation',onOrient);}
+        }).catch(function(err){$('sst').textContent='lỗi: '+err;});
+      }else{
+        window.addEventListener('deviceorientation',onOrient);
+        $('sst').textContent='đã đăng ký'; $('sst').className='ok';
+      }
+    }catch(err){$('sst').textContent='lỗi: '+err;}
+  });
+
+  // ── camera ─────────────────────────────────────────────────
+  $('bCam').addEventListener('click',function(){
+    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920}},audio:false})
+    .then(function(s){
+      var v=$('vid'); v.srcObject=s; v.style.display='block'; $('cv').style.display='none';
+      v.play(); $('bShot').disabled=false; window.__stream=s;
+    }).catch(function(err){$('sst').textContent='camera lỗi: '+err;});
+  });
+
+  $('bShot').addEventListener('click',function(){
+    var v=$('vid'); if(!v.videoWidth) return;
+    var c=document.createElement('canvas'); c.width=v.videoWidth; c.height=v.videoHeight;
+    c.getContext('2d').drawImage(v,0,0);
+    var im=new Image(); im.onload=function(){ setImg(im); };
+    im.src=c.toDataURL('image/jpeg',0.92);
+    if(window.__stream){window.__stream.getTracks().forEach(function(t){t.stop()});}
+    v.style.display='none'; $('bShot').disabled=true;
+  });
+
+  $('bDemo').addEventListener('click',function(){
+    var im=new Image(); im.onload=function(){setImg(im)}; im.src='/golden/rooms/room-02.jpg';
+  });
+  $('bReset').addEventListener('click',function(){
+    st.img=null; $('cv').style.display='none'; $('ctl').style.display='none'; $('vid').style.display='none';
+  });
+
+  function setImg(im){
+    st.img=im;
+    var maxW=Math.min(860,window.innerWidth-24);
+    st.W=maxW; st.H=Math.round(maxW*im.height/im.width);
+    var cv=$('cv'); cv.width=st.W; cv.height=st.H; cv.style.display='block';
+    $('ctl').style.display='block';
+    st.nx=0; st.ny=-0.45;
+    draw();
+  }
+
+  // ── hình học (port từ packages/core) ────────────────────────
+  function pitchRad(){ return ((st.pitch==null?st.manualPitch:st.pitch)*Math.PI)/180; }
+  function tanF(){ return Math.tan((st.fovY*Math.PI/180)/2); }
+  function aspect(){ return st.W/st.H; }
+
+  function worldRay(nx,ny){                       // tia thế giới qua điểm NDC
+    var t=tanF(),p=pitchRad(),c=Math.cos(-p),s=Math.sin(-p);
+    var lx=nx*t*aspect(), ly=ny*t, lz=-1;
+    var x=lx, y=ly*c-lz*s, z=ly*s+lz*c;
+    var L=Math.hypot(x,y,z)||1; return {x:x/L,y:y/L,z:z/L};
+  }
+  function placeOnFloor(nx,ny){                   // giao tia với sàn y=0
+    var d=worldRay(nx,ny); if(d.y>=-1e-4) return null;
+    var tt=-st.camH/d.y;
+    return {x:d.x*tt, y:0, z:d.z*tt};
+  }
+  function project(X,Y,Z){                        // 3D → pixel
+    var t=tanF(),p=pitchRad(),c=Math.cos(p),s=Math.sin(p);
+    var yy=Y-st.camH;
+    var yc=yy*c-Z*s, zc=yy*s+Z*c, fwd=-zc;
+    if(fwd<=0.05) return null;
+    var nx=(X/fwd)/(t*aspect()), ny=(yc/fwd)/t;
+    return {x:(nx+1)/2*st.W, y:(1-ny)/2*st.H};
+  }
+
+  // ── vẽ ─────────────────────────────────────────────────────
+  function poly(g,pts,fill,stroke,lw){
+    if(!pts||pts.some(function(p){return !p}))return;
+    g.beginPath(); pts.forEach(function(p,i){i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y)}); g.closePath();
+    if(fill){g.fillStyle=fill;g.fill()} if(stroke){g.strokeStyle=stroke;g.lineWidth=lw||2;g.stroke()}
+  }
+
+  function draw(){
+    if(!st.img) return;
+    var g=$('cv').getContext('2d');
+    g.clearRect(0,0,st.W,st.H);
+    g.drawImage(st.img,0,0,st.W,st.H);
+
+    // lưới sàn 0.5m
+    g.strokeStyle='rgba(255,255,255,.35)'; g.lineWidth=1;
+    for(var X=-4;X<=4.01;X+=0.5){ g.beginPath(); var on=false;
+      for(var Z=-0.5;Z>=-8.01;Z-=0.25){var q=project(X,0,Z); if(!q)continue; on?g.lineTo(q.x,q.y):(g.moveTo(q.x,q.y),on=true);} g.stroke(); }
+    for(var Z2=-0.5;Z2>=-8.01;Z2-=0.5){ g.beginPath(); var on2=false;
+      for(var X2=-4;X2<=4.01;X2+=0.25){var q2=project(X2,0,Z2); if(!q2)continue; on2?g.lineTo(q2.x,q2.y):(g.moveTo(q2.x,q2.y),on2=true);} g.stroke(); }
+
+    // đường chân trời
+    var hz=Math.tan(pitchRad())/tanF();
+    var yH=(1-hz)/2*st.H;
+    g.setLineDash([8,6]); g.strokeStyle='rgba(176,101,74,.9)'; g.lineWidth=2;
+    g.beginPath(); g.moveTo(0,yH); g.lineTo(st.W,yH); g.stroke(); g.setLineDash([]);
+
+    // sofa
+    var pos=placeOnFloor(st.nx,st.ny);
+    if(!pos){ $('pos').textContent='bấm DƯỚI đường chân trời'; return; }
+    var dist=Math.hypot(pos.x,pos.z,st.camH);
+    $('pos').textContent='x='+pos.x.toFixed(2)+' z='+pos.z.toFixed(2)+' · cách '+dist.toFixed(1)+'m';
+
+    var r=st.rot*Math.PI/180, cr=Math.cos(r), sr=Math.sin(r);
+    function corner(dx,dz,y){
+      var X=pos.x+dx*cr-dz*sr, Z=pos.z+dx*sr+dz*cr;
+      return project(X,y,Z);
+    }
+    var w=SOFA.w/2, d=SOFA.d/2, h=SOFA.h;
+    var b=[corner(-w,-d,0),corner(w,-d,0),corner(w,d,0),corner(-w,d,0)];
+    var tp=[corner(-w,-d,h),corner(w,-d,h),corner(w,d,h),corner(-w,d,h)];
+
+    poly(g,b,'rgba(0,0,0,.28)',null);                       // bóng tiếp đất
+    poly(g,b,'rgba(92,115,85,.35)','rgba(92,115,85,.95)',2); // đế
+    poly(g,tp,'rgba(124,132,113,.45)','rgba(92,115,85,.95)',2); // mặt trên
+    g.strokeStyle='rgba(92,115,85,.95)'; g.lineWidth=2;
+    for(var i=0;i<4;i++){ if(b[i]&&tp[i]){g.beginPath();g.moveTo(b[i].x,b[i].y);g.lineTo(tp[i].x,tp[i].y);g.stroke();} }
+  }
+
+  // ── tương tác ──────────────────────────────────────────────
+  $('cv').addEventListener('click',function(e){
+    var r=this.getBoundingClientRect();
+    st.nx=((e.clientX-r.left)/r.width)*2-1;
+    st.ny=1-((e.clientY-r.top)/r.height)*2;
+    draw();
+  });
+  function bind(id,vid,key,fmt){
+    $(id).addEventListener('input',function(){
+      st[key]=parseFloat(this.value); $(vid).textContent=fmt?fmt(this.value):this.value; draw();
+    });
+  }
+  bind('sH','vH','camH'); bind('sF','vF','fovY'); bind('sR','vR','rot'); bind('sP','vP','manualPitch');
+})();
+</script>
+</body>
+</html>
