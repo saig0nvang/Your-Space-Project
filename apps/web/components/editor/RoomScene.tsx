@@ -1,6 +1,6 @@
 "use client";
 import { ContactShadows, Line, PerspectiveCamera, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame, useLoader, useStore, type ThreeEvent } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useStore, useThree, type ThreeEvent } from "@react-three/fiber";
 import { cameraToThree, type CameraModel, type FurnitureModel, type PhotoLighting } from "@yourspace/core";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -90,17 +90,18 @@ function OccluderQuad({ occluder, heightM }: { occluder: NonNullable<Occluder>; 
   // lưu qua ref (cùng cách Lights() ở dưới dùng store.getState() thay vì destructure từ hook) rồi chỉ set
   // uniform.value qua ref đó — KHÔNG dựng lại material/texture — mỗi khi heightM đổi (kéo thanh "Chỉnh cỡ phòng").
   //
-  // Cập nhật qua useFrame (vòng lặp render riêng của r3f, chạy TRƯỚC mỗi lần gl.render(), ngoài chu kỳ
-  // commit/effect của React) thay vì useEffect: đã quan sát thực tế useEffect([heightM]) KHÔNG đưa giá trị mới
-  // tới GPU ổn định (occluder luôn che như heightM = 1, tỉ lệ sai ≈ 1/heightM thật) — rất có thể do Canvas của
-  // r3f render độc lập với chu kỳ commit của cây React ở ngoài nó, nên effect chạy "sau" không đảm bảo chạy
-  // trước frame kế tiếp được vẽ. useFrame không có vấn đề này: callback truyền vào luôn đóng gói closure của lần
-  // render GẦN NHẤT (r3f tự đồng bộ qua ref nội bộ của nó), và chạy lại ở MỌI khung hình nên luôn đúng giá trị
-  // heightM hiện tại trước khi GPU vẽ — không phụ thuộc thứ tự effect.
+  // Canvas chạy frameloop="demand" (chỉ vẽ khi có invalidate()), nên đặt uniform rồi invalidate() NGAY trong
+  // effect khi heightM/material đổi: frame được yêu cầu chắc chắn vẽ SAU khi uniform đã mang giá trị mới.
+  // useFrame giữ lại làm lưới an toàn — chạy trước mỗi frame được vẽ (vì lý do khác) với closure heightM mới nhất.
   const materialRef = useRef(material);
+  const invalidate = useThree((st) => st.invalidate);
   useEffect(() => {
     materialRef.current = material;
   }, [material]);
+  useEffect(() => {
+    materialRef.current.uniforms.heightM!.value = heightM;
+    invalidate();
+  }, [material, heightM, invalidate]);
   useFrame(() => {
     materialRef.current.uniforms.heightM!.value = heightM;
   });
@@ -125,8 +126,9 @@ function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture:
   const store = useStore();
   const target = useMemo(() => new THREE.Object3D(), []);
   useEffect(() => {
-    const { gl } = store.getState();
+    const { gl, invalidate } = store.getState();
     gl.toneMappingExposure = lighting.exposure;
+    invalidate();
   }, [store, lighting.exposure]);
   useEffect(() => {
     const { gl, scene } = store.getState();
@@ -134,6 +136,7 @@ function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture:
     const rt = pmrem.fromEquirectangular(envTexture);
     scene.environment = r3f(rt.texture);
     scene.environmentIntensity = 0.5;
+    store.getState().invalidate();
     return () => {
       scene.environment = null;
       rt.dispose();
@@ -151,7 +154,7 @@ function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture:
         intensity={lighting.keyIntensity}
         position={[2.5, 6, 3]}
         target={r3f(target)}
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-8}
         shadow-camera-right={8}
         shadow-camera-top={8}
@@ -193,6 +196,9 @@ function Furniture({
     lights.forEach((l) => l.parent?.remove(l)); // đèn nhúng trong GLB (mô hình đèn) không được chiếu cảnh
     return c;
   }, [scene]);
+  // frameloop="demand": GLB tải xong (Suspense mở) → vẽ lại một frame để món hiện ra.
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => invalidate(), [object, invalidate]);
   const { widthM: w, depthM: d } = model.dimsM;
   const outline = useMemo<[number, number, number][]>(
     () => [
@@ -240,6 +246,13 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
     },
     [background, env],
   );
+  // frameloop="demand": mọi đầu vào của cảnh đổi (kéo món → store đổi → items mới, camera/cỡ phòng, occluder,
+  // ánh sáng, ảnh/texture vừa tải xong) → yêu cầu vẽ một frame. Effect của con (Lights/OccluderQuad) chạy trước
+  // effect này nên uniform/exposure đã cập nhật trước frame được yêu cầu.
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    invalidate();
+  }, [props.items, props.camera, props.occluder, props.lighting, props.selectedUid, background, env, invalidate]);
   const cam = cameraToThree(props.camera);
   return (
     <>
@@ -251,7 +264,7 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
         <planeGeometry args={[40, 40]} />
         <shadowMaterial opacity={0.35} />
       </mesh>
-      <ContactShadows position={[0, 0.005, -5]} scale={20} far={1.5} blur={2.5} opacity={0.5} resolution={1024} />
+      <ContactShadows position={[0, 0.005, -5]} scale={20} far={1.5} blur={2.5} opacity={0.5} resolution={512} />
       {props.items.map((item) => {
         const model = modelById(item.productId);
         return model ? (
@@ -262,7 +275,10 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
   );
 }
 
-/** Canvas đúng tỷ lệ ảnh: ảnh phòng → (độ sâu vật thật) → đồ 3D + bóng, camera ảo trùng camera ảnh. */
+/**
+ * Canvas đúng tỷ lệ ảnh: ảnh phòng → (độ sâu vật thật) → đồ 3D + bóng, camera ảo trùng camera ảnh.
+ * Cảnh tĩnh nên frameloop="demand" (chỉ vẽ khi invalidate — xem Scene) và dpr ≤ 1,5 để nhẹ cho điện thoại tầm trung.
+ */
 export function RoomScene(props: {
   photoUrl: string;
   aspect: number;
@@ -274,7 +290,7 @@ export function RoomScene(props: {
   onItemPointerDown: (uid: string, pointer: { x: number; y: number }) => void;
 }) {
   return (
-    <Canvas shadows dpr={[1, 2]} gl={{ antialias: true }} style={{ position: "absolute", inset: 0 }}>
+    <Canvas shadows frameloop="demand" dpr={[1, 1.5]} gl={{ antialias: true }} style={{ position: "absolute", inset: 0 }}>
       <Suspense fallback={null}>
         <Scene {...props} />
       </Suspense>
