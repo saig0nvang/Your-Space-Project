@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/Button";
 import { SAMPLE_ROOMS } from "@/lib/catalog";
 import { preparePhoto } from "@/lib/image";
@@ -15,20 +16,26 @@ const POSTURES = [{ label: "Đứng", heightM: 1.5 }, { label: "Ngồi", heightM
 
 export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
   const router = useRouter();
-  const { photo, setPhoto, setStyle, startEditing } = useEditor();
+  const { photo, setup, resumable } = useEditor(
+    useShallow((st) => ({ photo: st.photo, setup: st.setup, resumable: !!(st.photo && st.setup && st.history) })),
+  );
+  const { setPhoto, setStyle, startEditing, resumeEditing, clearPhoto } = useEditor.getState();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [horizon, setHorizon] = useState(0);
-  const [heightM, setHeightM] = useState<number>(POSTURES[0].heightM);
+  // Quay lại từ trình sửa (nút ← ở TopBar): lấy chân trời/tư thế đang dùng thay vì về mặc định.
+  const [horizon, setHorizon] = useState(setup?.horizonNdcY ?? 0);
+  const [heightM, setHeightM] = useState<number>(setup?.heightM ?? POSTURES[0].heightM);
 
   useEffect(() => {
     if (initialStyle) setStyle(initialStyle);
   }, [initialStyle, setStyle]);
 
-  async function choose(blob: Blob) {
+  async function choose(source: Blob | string) {
+    if (busy) return;
     setBusy(true);
     setError(null);
     try {
+      const blob = typeof source === "string" ? await (await fetch(source)).blob() : source;
       setPhoto(await preparePhoto(blob));
     } catch {
       setError("Không mở được ảnh này. Thử một ảnh JPEG hoặc PNG khác.");
@@ -42,6 +49,18 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
     const fovYRad = fovYFromFocal35(photo.focal35, photo.width / photo.height) ?? DEFAULT_FOV;
     startEditing({ horizonNdcY: horizon, heightM, fovYRad });
     router.push("/chinh-sua");
+  }
+
+  /** Giữ nguyên đồ đã bày + lịch sử hoàn tác; chỉ áp chân trời/tư thế (nếu vừa chỉnh). */
+  function resume() {
+    resumeEditing({ horizonNdcY: horizon, heightM });
+    router.push("/chinh-sua");
+  }
+
+  function pickAnother() {
+    clearPhoto();
+    setHorizon(0);
+    setHeightM(POSTURES[0].heightM);
   }
 
   if (!photo) {
@@ -62,7 +81,7 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
         <div className="grid grid-cols-3 gap-2">
           {SAMPLE_ROOMS.map((r) => (
             <button key={r.url} type="button" disabled={busy} aria-label={r.label}
-              onClick={async () => void choose(await (await fetch(r.url)).blob())}
+              onClick={() => void choose(r.url)}
               className="relative aspect-[4/3] overflow-hidden rounded-md2 bg-muted">
               <Image src={r.url} alt={r.label} fill className="object-cover" sizes="33vw" />
             </button>
@@ -75,7 +94,7 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
 
   return (
     <main className="flex-1 w-full max-w-xl mx-auto px-4 py-6 flex flex-col gap-4">
-      <Button variant="text" className="self-start" onClick={() => useEditor.setState({ photo: null })}>← Chọn ảnh khác</Button>
+      <Button variant="text" className="self-start" onClick={pickAnother}>← Chọn ảnh khác</Button>
       <h1 className="font-display font-bold text-[28px] leading-[34px] tracking-[-0.6px]">Kéo đường ngang tầm mắt</h1>
       <p className="text-[15px] leading-5 text-muted-foreground">Đặt đường nét đứt ở độ cao mắt bạn lúc chụp — thường là nơi các đường của tường và sàn hội tụ.</p>
       <div className="relative w-full overflow-hidden rounded-md2 bg-muted" style={{ aspectRatio: `${photo.width} / ${photo.height}` }}>
@@ -94,7 +113,14 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
           ))}
         </div>
       </fieldset>
-      <Button full onClick={start}>Bắt đầu bày</Button>
+      {resumable ? (
+        <>
+          <Button full onClick={resume}>Tiếp tục bày</Button>
+          <Button variant="text" className="self-center" onClick={start}>Bày lại từ đầu</Button>
+        </>
+      ) : (
+        <Button full onClick={start}>Bắt đầu bày</Button>
+      )}
     </main>
   );
 }
