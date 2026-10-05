@@ -11,6 +11,7 @@ Epic này mô tả mục Thiết kế có sẵn theo D10: hai tab Phòng mẫu (
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.1 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -70,7 +71,7 @@ Epic này mô tả mục Thiết kế có sẵn theo D10: hai tab Phòng mẫu (
 - AC2: Giá từng món và tổng giá là giá hiện tại tại thời điểm xem.
 - AC3: Món hết hàng mang nhãn "Hết hàng" có icon và chữ, và không chọn mua được.
 - AC4: Thiết kế là bản dùng lại của thiết kế khác thì hiện dòng ghi nguồn bản gốc, bấm vào mở bản gốc (E09).
-- AC5: Màn có đúng một nút đặc terracotta; "Dùng làm mẫu", "Mua" và thả tim là các hành động còn lại theo DESIGN.md.
+- AC5: Màn có đúng một nút chính (nền `accent`); "Dùng làm mẫu", "Mua" và thả tim là các hành động còn lại, theo `design-system/yourspace/MASTER.md`.
 - AC6: Có lối "Báo cáo" cho thiết kế ở tab Nhà hàng xóm (E09); lối này không nằm cạnh nút chính.
 
 #### Corner Cases

@@ -13,6 +13,8 @@ AI Spatial Placement theo hướng Kreativ-lite (D4): một ảnh, depth tương
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.2 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
+| 1.1 | 02 Oct 2026 | Phạm Việt Anh | E4-US1: 05-0 chỉ hiện khi tạo không gian mới từ ảnh mới; bỏ bộ đếm bước; ba đường vào thẳng 05-1. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -33,7 +35,7 @@ AI Spatial Placement theo hướng Kreativ-lite (D4): một ảnh, depth tương
 
 **Màn:** 05-0
 
-**Pre-condition:** Người dùng vừa hiểu phòng xong (E03) và chưa chọn phong cách nào trong luồng này.
+**Pre-condition:** Người dùng đang tạo một không gian MỚI từ ảnh vừa chụp hoặc vừa chọn từ thư viện, và vừa xác nhận mặt sàn (03-5) hoặc đường chân trời (03-6). 05-0 chỉ hiện trong trường hợp này (founder chốt 02/10/2026).
 
 **Post-condition:** Trình chỉnh sửa mở với tab phong cách đã chọn đang hiện trong khay.
 
@@ -42,11 +44,14 @@ AI Spatial Placement theo hướng Kreativ-lite (D4): một ảnh, depth tương
 - AC1: Màn 05-0 hiện mỗi phong cách bằng một ô ảnh vuông kèm tên; M1 có 2–3 phong cách.
 - AC2: Người dùng đến từ chi tiết phong cách (E01) thì phong cách đó đã được chọn sẵn; vẫn đổi được.
 - AC3: Chọn phong cách ghi sự kiện `StyleSelected` (bước đầu của Activation, E11).
+- AC4: 05-0 không có bộ đếm bước và không giả định người dùng đã dọn phòng. Dọn phòng là công cụ trong canvas, dùng được bất cứ lúc nào sau đó (E05).
 
 #### Corner Cases
 
 - CC1: Người dùng mở lại một không gian đã lưu → bỏ qua 05-0, mở thẳng trình chỉnh sửa với các tab như lúc lưu.
 - CC2: Ảnh phong cách chưa tải được do mất mạng (13-1) → hiện ô giữ chỗ có tên phong cách, vẫn chọn được.
+- CC3: Vào từ "Dùng cả không gian" (E02) → bỏ qua 05-0, mở thẳng 05-1 với các tab như không gian gốc.
+- CC4: Vào từ "Lấy bộ món" (E02) → bỏ qua 05-0 dù ảnh phòng là ảnh mới; mở thẳng 05-1 với tab Bộ món đang hiện.
 
 ## E4-US2 — Canvas, khay đồ và thanh dự toán
 
@@ -64,7 +69,7 @@ AI Spatial Placement theo hướng Kreativ-lite (D4): một ảnh, depth tương
 
 #### Acceptance Criteria
 
-- AC1: Ảnh phòng tràn màn; điều khiển nổi trên canvas: thanh công cụ Thêm · Xóa · Chất liệu · Hoàn tác, nút Lưu ở đầu màn, nút Mua trên thanh dự toán, và lối vào Nhờ duyệt, Đăng. Chỉ một nút đặc terracotta trên màn (`DESIGN.md`).
+- AC1: Ảnh phòng tràn màn; điều khiển nổi trên canvas: thanh công cụ Thêm · Xóa · Chất liệu · Hoàn tác, nút Lưu ở đầu màn, nút Mua trên thanh dự toán, và lối vào Nhờ duyệt, Đăng. Chỉ một nút chính (nền `accent`) trên màn (`design-system/yourspace/MASTER.md`).
 - AC2: Khay có một tab cho mỗi phong cách và chip lọc loại đồ (ví dụ Tất cả · Sofa · Bàn · Đèn · Kệ). Mỗi món hiện ảnh, tên, giá dạng `12.400.000 ₫`.
 - AC3: Đổi tab phong cách không xóa, không đổi món đã đặt; một phòng có thể chứa món của nhiều phong cách.
 - AC4: Thanh dự toán luôn hiện ở đáy màn với tổng tiền và số món đang có trong không gian; cập nhật ngay khi thêm, xóa món hoặc hoàn tác. Chạm vào thanh mở danh sách món nhóm theo nhà cung cấp (06-1, chi tiết mua ở E07).

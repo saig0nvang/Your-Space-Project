@@ -11,6 +11,8 @@ Epic này đưa người dùng từ "thấy đồ hợp trong phòng mình" đ�
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.2 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
+| 1.1 | 02 Oct 2026 | Phạm Việt Anh | E7-US1 CC5: nút Mua khi không gian trống hiện mờ thay vì ẩn, khớp E04. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -52,7 +54,7 @@ Epic này đưa người dùng từ "thấy đồ hợp trong phòng mình" đ�
 - CC2: Người dùng bỏ chọn hết — nút chính bị vô hiệu kèm chữ "Chọn ít nhất một món".
 - CC3: Một món đã ngừng bán — hiện nhãn "Ngừng bán", không chọn được, không tính vào tổng.
 - CC4: Mất mạng (13-1) — sheet hiện giá lần cập nhật gần nhất kèm ghi chú; bước mua tiếp theo báo cần mạng.
-- CC5: Không gian chưa có món nào (13-4) — nút Mua trên thanh dự toán không hiện; thanh dự toán gợi ý thêm đồ.
+- CC5: Không gian chưa có món nào (13-4) — nút Mua trên thanh dự toán hiện mờ, không bấm được; thanh dự toán gợi ý thêm đồ (khớp E4-US2 CC1).
 
 ### Mốc M1
 
@@ -160,9 +162,9 @@ Epic này đưa người dùng từ "thấy đồ hợp trong phòng mình" đ�
 - AC1: 07-3 nhận một địa chỉ giao hàng chung và cho chọn lịch lắp đặt theo từng nhà cung cấp, vì mỗi bên giao một ngày khác.
 - AC2: Người dùng thanh toán đúng MỘT lần cho mọi món đã chọn; sau khi thanh toán, hệ thống tách thành một đơn cho mỗi nhà cung cấp.
 - AC3: 07-4 chỉ có hai nhóm phương thức: trả đủ qua đối tác thanh toán được cấp phép (gồm VietQR ở 07-6) và trả góp 0% qua đối tác (07-5), trong đó đối tác trả góp trả đủ vào khoản giữ tiền. Không có COD, không có đặt cọc.
-- AC4: Câu escrow hiện trên 07-4 và trên màn xác nhận trước khi trả: "YourSpace không cầm tiền của bạn. Khoản thanh toán được giữ tại đối tác thanh toán được cấp phép đến khi bạn nhận hàng." Câu này dùng màu sage (niềm tin) theo `DESIGN.md`.
+- AC4: Câu escrow hiện trên 07-4 và trên màn xác nhận trước khi trả: "YourSpace không cầm tiền của bạn. Khoản thanh toán được giữ tại đối tác thanh toán được cấp phép đến khi bạn nhận hàng." Câu này hiện kèm icon, không dùng màu làm tín hiệu duy nhất, theo token trong `design-system/yourspace/MASTER.md`.
 - AC5: Không có màn nào trong luồng hiện tên hay logo đối tác thanh toán khi đối tác chưa chốt; không hiện phí hay hoa hồng của YourSpace.
-- AC6: Mỗi màn có tối đa một nút đặc màu terracotta; vùng chạm ≥ 44px.
+- AC6: Mỗi màn có tối đa một nút chính (nền `accent`); vùng chạm ≥ 44px.
 
 #### Corner Cases
 

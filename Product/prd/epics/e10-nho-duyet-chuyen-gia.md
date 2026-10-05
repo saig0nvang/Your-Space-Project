@@ -11,6 +11,7 @@ Mua nội thất hiếm khi là quyết định của một người. Epic này 
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.1 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -39,7 +40,7 @@ Mua nội thất hiếm khi là quyết định của một người. Epic này 
 
 #### Acceptance Criteria
 
-- AC1: Nút "Tôi muốn tư vấn" nằm cạnh nút mua trong dự toán, ở kiểu nút phụ. Màn không có hai nút terracotta đặc (DESIGN.md).
+- AC1: Nút "Tôi muốn tư vấn" nằm cạnh nút mua trong dự toán, ở kiểu nút phụ. Màn không có hai nút chính (`design-system/yourspace/MASTER.md`).
 - AC2: Form có một ô nhập SĐT hoặc Zalo, một ô tick "Đồng ý để YourSpace liên hệ lại qua số này để tư vấn" **không được tick sẵn**. Nút gửi chỉ bật khi số hợp lệ theo định dạng SĐT Việt Nam và ô consent đã tick.
 - AC3: Lead gửi qua `/api/lead` gồm: SĐT/Zalo, thời điểm consent, phong cách đang chọn, danh sách món và tổng dự toán. Lead **không kèm ảnh phòng, ảnh phối cảnh hay hash ảnh**, vì ảnh chỉ được giữ để xử lý rồi xóa ngay.
 - AC4: Đích lưu lead chưa chốt (spec M1 §3 dự kiến Supabase; xem PRD §8 "Đích của lead và link affiliate ở M1"). Story chưa sẵn sàng build cho tới khi đích lưu và người nhận lead được chốt.

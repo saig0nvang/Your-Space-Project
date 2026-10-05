@@ -11,6 +11,7 @@ Epic này gom phần đầu của hành trình: màn mở đầu với hai cửa
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.1 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -37,7 +38,7 @@ Epic này gom phần đầu của hành trình: màn mở đầu với hai cửa
 
 #### Acceptance Criteria
 
-- AC1: Màn mở đầu có đúng một nút đặc terracotta là "Chụp ảnh phòng"; "Khám phá phong cách" hiện ngang hàng dưới dạng thẻ, ghi tên các phong cách đang có (M1: Japandi · Mid-Century · Bauhaus).
+- AC1: Màn mở đầu có đúng một nút chính (nền `accent`, `design-system/yourspace/MASTER.md`) là "Chụp ảnh phòng"; "Khám phá phong cách" hiện ngang hàng dưới dạng thẻ, ghi tên các phong cách đang có (M1: Japandi · Mid-Century · Bauhaus).
 - AC2: Màn mở đầu không có form đăng ký, đăng nhập hay ô nhập SĐT; người dùng đi hết luồng thử phòng mà không gặp bước tạo tài khoản nào.
 - AC3: Màn mở đầu không xin quyền camera, thông báo hay vị trí; quyền camera chỉ được xin theo E1-US3.
 - AC4: Bấm "Chụp ảnh phòng" mở luồng chụp (03-1/03-2); bấm thẻ "Khám phá phong cách" mở 02-1.

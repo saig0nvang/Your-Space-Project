@@ -8,7 +8,7 @@ derives_from: [D1@d0d780f3, D2@499c7e4d, D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe,
 > và báo cáo (nhóm màn 15, M2+); đăng thiết kế là chỗ thứ ba cần xác minh SĐT; dọn phòng gộp thành công cụ trong canvas 05, dùng xen kẽ
 > với thêm đồ; mua cả bộ một lần thanh toán, tách đơn theo nhà cung cấp; mua xong về đúng nơi xuất phát; lưu không cần đăng nhập;
 > giả định mở 4 (tự nhận diện đồ vật) đã chốt là chạm để chọn. Sửa ở mục 1, 2, 3, 4, 7.
-> **Mock trên canvas Claude Design (mục 8) CHƯA được cập nhật theo các thay đổi này** — vẫn theo luồng và danh sách màn ngày 2026-09-25.
+> **Mock đã dựng lại theo flow 02/10** (72 màn + 4 màn theme tối, 15 trang; bản dùng hiện hành nằm ở project Claude Design, mục 8).
 > Nguồn: `decisions/` D1–D10, `Product/PRD.md`, spec M1 `2026-07-24-m1-web-validation-design.md`.
 > Mock và hệ thiết kế là artifact trên claude.ai (mục 8). Spec này ghi lại quyết định và cấu trúc để build M2 không phải đoán.
 
@@ -45,8 +45,8 @@ Mọi hình ảnh AI trong mock là đầu ra thật của pipeline (Depth Anyth
 - Tab bar 5 ô: **Khám phá · Phòng · [＋ Thử phòng] · Yêu thích · Tôi**. Giỏ hàng ở góc trên các màn mua sắm. Đơn hàng nằm trong Tôi;
   đơn cần xác nhận nhận hàng hiện nhắc ở thông báo và trong Tôi.
 - Ba cửa vào: **Thử phòng** (chụp ảnh luôn) · **Khám phá phong cách** · **Phòng của tôi** (người quay lại).
-- Luồng chính (viết lại 2026-10-02; mock trên canvas vẫn chạy luồng cũ, dọn phòng trước rồi mới đặt đồ): Khám phá → chi tiết phong cách →
-  chụp → xem lại + consent → quét phòng → xác nhận mặt sàn → chọn phong cách cho phòng → **canvas đặt đồ: thêm đồ và dọn phòng (chạm để
+- Luồng chính (viết lại 2026-10-02): Khám phá → chi tiết phong cách →
+  chụp → xem lại + consent → quét phòng → xác nhận mặt sàn → chọn phong cách cho phòng (`05-0` chỉ hiện khi tạo không gian mới từ ảnh mới; không có bộ đếm bước. Mở lại không gian đã lưu, "Dùng cả không gian", "Lấy bộ món" → vào thẳng `05-1`, riêng "Lấy bộ món" mở với tab Bộ món) → **canvas đặt đồ: thêm đồ và dọn phòng (chạm để
   chọn) dùng xen kẽ**, đổi chất liệu, hoàn tác, thanh dự toán luôn hiện → dự toán → sheet mua lẻ hoặc cả bộ → OTP (chỉ lần đầu) →
   giao hàng → thanh toán → VietQR → thành công → **nút chính quay về nơi xuất phát** (không gian đang sửa). Đơn hàng theo dõi trong Tôi:
   chi tiết đơn → xác nhận nhận hàng → đánh giá.
@@ -58,27 +58,27 @@ Mọi hình ảnh AI trong mock là đầu ra thật của pipeline (Depth Anyth
 - Luồng đăng thiết kế: canvas → lưu & chia sẻ (`05-7`) → Đăng lên Nhà hàng xóm → xác minh SĐT nếu chưa (`07-1`, `07-2`) → xem trước ảnh
   công khai + consent + công tắc cho phép dùng cả không gian (`15-4`) → hiện ngay trong tab Nhà hàng xóm. Người xem báo cáo từ `15-2` → `15-5`.
 
-## 3. Danh sách màn (66 màn + 4 màn theme tối)
+## 3. Danh sách màn (72 màn + 4 màn theme tối)
 
-> Cập nhật 2026-10-02: thêm 5 màn nhóm 15 (trước đó 61 màn + 4 màn theme tối).
+> Cập nhật 2026-10-02: thêm nhóm 15 (`15-1`, `15-1b`, `15-2`…`15-5`) và các màn `01-1`, `05-8`, `06-1b`, `07-7b`, `10-1b`; làm lại `Main`, nhóm `04`, `05-1`…`05-7`, `06-1`, `07-7` theo flow mới (trước đó 61 màn + 4 màn theme tối).
 
 | Nhóm | Màn (file trên canvas) | M1 |
 |---|---|---|
-| 1 · Mở đầu | Màn chào (`Main`), giới thiệu 3 bước (`01-2a` Tìm gu, `01-2b` Thử phòng, `01-2c` Mua an toàn), xin quyền camera (`01-3`) | — |
+| 1 · Mở đầu | Mở đầu 3 cửa vào (`Main`: nút chính "Chụp ảnh phòng", thẻ "Khám phá phong cách"), biến thể có khối "Tiếp tục" khi đã có không gian lưu (`01-1`), xin quyền camera chỉ ở lần đầu bấm chụp, kèm "Chọn ảnh có sẵn" (`01-3`), giới thiệu 3 bước tùy chọn (`01-2a`…`01-2c`, chưa có story) | `Main` (trang chủ web, chưa tab bar) |
 | 2 · Khám phá | Trang phong cách (`02-1`), chi tiết phong cách (`02-2`), danh sách món có lọc (`02-3`), chi tiết sản phẩm có xem 3D (`02-4`), tìm kiếm (`02-5`) | 02-1…02-4 |
 | 3 · Chụp & hiểu phòng | Phòng của tôi (`03-0`), chọn nguồn ảnh (`03-1`), camera có thước cân bằng gyro (`03-2`), xem lại + consent (`03-3`), quét phòng (`03-4`), xác nhận mặt sàn + chiều cao máy (`03-5`), ảnh thư viện: kéo đường chân trời (`03-6`), ảnh khó phân tích F4 (`03-7`) | 03-1…03-7 |
 | 4 · Dọn phòng | *Từ 2026-10-02 là công cụ trong canvas `05`, dùng xen kẽ với thêm đồ — không còn là bước riêng.* Chạm chọn (`04-1`), đã chọn (`04-2`), đang xóa (`04-3`), so sánh trước/sau + khôi phục F3 (`04-4`) | cả nhóm |
-| 5 · Đặt đồ | **Chọn phong cách cho phòng bằng ô ảnh vuông** (`05-0`, thêm 2026-09-28), canvas + danh mục đã lọc theo phong cách (`05-1`), đang kéo (`05-2`), món đang chọn (`05-3`), xoay trục Y + chỉnh tay F1 (`05-4`), đổi chất liệu (`05-5`), chế độ thủ công F5 (`05-6`), lưu & chia sẻ (`05-7`) | 05-0…05-4, 05-6, 05-7 |
-| 6 · Dự toán & giỏ | Dự toán theo nhà cung cấp (`06-1`), giỏ hàng (`06-2`) | 06-1 (nút affiliate/để lại SĐT) |
-| 7 · Thanh toán | SĐT (`07-1`), OTP (`07-2`), giao hàng & lịch lắp đặt (`07-3`), chọn phương thức (`07-4`), trả góp (`07-5`), VietQR (`07-6`), thành công (`07-7`, nút chính quay về nơi xuất phát: không gian đang sửa hoặc tab thiết kế đang xem) | — |
+| 5 · Trình chỉnh sửa | **Chọn phong cách bằng ô ảnh vuông** (`05-0`, chỉ khi tạo không gian mới), trình chỉnh sửa chưa có món — thanh công cụ Thêm · Xóa · Chất liệu, Lưu ở đầu màn, khay tab phong cách → chip loại đồ, thanh dự toán + Mua luôn ở đáy (`05-1`), đang kéo F2 (`05-2`), món đang chọn (`05-3`), xoay trục Y + chỉnh tay F1 (`05-4`), công cụ Chất liệu (`05-5`), chế độ thủ công F5 (`05-6`), lưu & chia sẻ + Đăng lên Nhà hàng xóm (`05-7`), sau khi mua — nhãn "Đã mua" (`05-8`) | 05-0…05-4, 05-6, 05-7 |
+| 6 · Sheet mua & giỏ | Sheet mua lẻ hoặc cả bộ (mặc định chọn hết, nhóm theo nhà cung cấp, một lần thanh toán → tách đơn) mở từ không gian (`06-1`) và từ thiết kế có sẵn, có nhắc đo lại phòng (`06-1b`), giỏ hàng (`06-2`) | 06-1 (nút affiliate/để lại SĐT) |
+| 7 · Thanh toán | SĐT (`07-1`), OTP (`07-2`), giao hàng & lịch lắp đặt (`07-3`), chọn phương thức (`07-4`), trả góp (`07-5`), VietQR (`07-6`), thành công về không gian (`07-7` → `05-8`) và về tab thiết kế đang xem (`07-7b` → `15-1b`); "Xem đơn hàng" là nút phụ (→ `08-1`) | — |
 | 8 · Đơn hàng | Danh sách (`08-1`), chi tiết + dòng thời gian escrow (`08-2`), xác nhận nhận hàng (`08-3`), báo sự cố (`08-4`), theo dõi khiếu nại (`08-5`), đánh giá (`08-6`) | — |
 | 9 · Chuyên gia | Danh sách (`09-1`), hồ sơ (`09-2`), đặt lịch (`09-3`), chat (`09-4`) | — (M1 chỉ thu lead, D7) |
-| 10 · Yêu thích | Yêu thích + báo giảm giá (`10-1`, gồm cả thiết kế đã thả tim), thông báo (`10-2`) | — |
+| 10 · Yêu thích | Yêu thích + báo giảm giá — Món đồ (`10-1`), Thiết kế đã thả tim (`10-1b`), thông báo (`10-2`) | — |
 | 11 · Gửi duyệt | Tạo link có consent (`11-1`), trang web cho người nhận không cần app (`11-2`), phản hồi trong app (`11-3`) | — |
 | 12 · Tôi | Tôi (`12-1`, có chọn giao diện Ban ngày/Buổi tối/Theo máy), quyền riêng tư & dữ liệu (`12-2`), đồng bộ phòng (`12-3`) | — |
 | 13 · Trạng thái | Mất mạng (`13-1`), AI tạm ngưng → đặt tay (`13-2`), máy yếu → xem 2D (`13-3`), màn trống (`13-4`) | cả nhóm |
 | 14 · Theme tối | Khám phá, Đặt đồ, Thanh toán, Tôi ở theme Buổi tối | — |
-| 15 · Thiết kế có sẵn & cộng đồng (thêm 2026-10-02, D10, M2+) | Thiết kế có sẵn, 2 tab Phòng mẫu · Nhà hàng xóm (`15-1`), chi tiết thiết kế: ảnh, tác giả, thả tim, danh sách món, tổng giá (`15-2`), sheet "Dùng thiết kế này thế nào?" 2 nhánh Dùng cả không gian · Lấy bộ món (`15-3`), đăng thiết kế: xem trước ảnh công khai + consent + công tắc cho phép dùng cả không gian (`15-4`), báo cáo thiết kế (`15-5`) | — |
+| 15 · Thiết kế có sẵn & cộng đồng (thêm 2026-10-02, D10, M2+) | Thiết kế có sẵn, 2 tab Phòng mẫu (`15-1`) · Nhà hàng xóm (`15-1b`), chi tiết thiết kế: ảnh, tác giả, thả tim, danh sách món, tổng giá (`15-2`), sheet "Dùng thiết kế này thế nào?" 2 nhánh Dùng cả không gian · Lấy bộ món (`15-3`), đăng thiết kế: xem trước ảnh công khai + consent + công tắc cho phép dùng cả không gian (`15-4`), báo cáo thiết kế (`15-5`) | — |
 
 ## 4. Nguyên tắc UX xuyên suốt
 
@@ -138,6 +138,7 @@ Chạy trên CPU máy dev (onnxruntime-node, fp32), **một ảnh phòng** — l
 
 - So 4 hướng thị giác (đã chọn C): https://claude.ai/artifact/FLxL7mLnjNUAnagZjhKm2a
 - Design System "YourSpace": https://claude.ai/artifact/914LiXuh4cqEqDVq5kCZp2
-- App M2 (65 màn, bấm được ở chế độ Play): https://claude.ai/artifact/66TcMVGN97kfCCfmBxkdkj
+- App M2 — mock hiện hành (72 màn + 4 màn tối, 15 trang, flow 02/10), project Claude Design: https://claude.ai/design/p/fec4efd9-c30e-410d-8ee3-8c1031f6db1c
+- Canvas artifact cũ https://claude.ai/artifact/66TcMVGN97kfCCfmBxkdkj chỉ còn kho ảnh, không dùng nữa (từ 27/09 tài khoản không còn ghi được loại Design từ Claude Code).
 
 **Bước tiếp:** thay `DESIGN.md` theo hệ C (có ghi Decisions Log); chuyển web M1 sang Be Vietnam Pro và token C; chốt các giả định mục 7.

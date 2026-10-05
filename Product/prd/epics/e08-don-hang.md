@@ -11,6 +11,7 @@ Epic này giữ lời hứa "mua an toàn" sau khi người dùng đã trả ti�
 
 | Version | Date | Updated by | Note |
 | --- | --- | --- | --- |
+| 1.1 | 03 Oct 2026 | Phạm Việt Anh | Đổi tham chiếu màu của hệ thiết kế cũ (terracotta, sage) sang vai trò trong `design-system/yourspace/MASTER.md`. |
 | 1.0 | 02 Oct 2026 | Phạm Việt Anh | Tạo epic từ PRD v2.0 và flow chốt 02/10/2026. |
 
 ## Scope
@@ -65,7 +66,7 @@ Epic này giữ lời hứa "mua an toàn" sau khi người dùng đã trả ti�
 #### Acceptance Criteria
 
 - AC1: Dòng thời gian có các bước: đã thanh toán (khoản được giữ tại đối tác), đang giao, đã nhận (nhà cung cấp nhận tiền); bước hiện tại được đánh dấu bằng icon + chữ.
-- AC2: Màn nhắc câu escrow: "YourSpace không cầm tiền của bạn. Khoản thanh toán được giữ tại đối tác thanh toán được cấp phép đến khi bạn nhận hàng." Khối này dùng màu sage theo `DESIGN.md`.
+- AC2: Màn nhắc câu escrow: "YourSpace không cầm tiền của bạn. Khoản thanh toán được giữ tại đối tác thanh toán được cấp phép đến khi bạn nhận hàng." Khối này hiện kèm icon, theo token trong `design-system/yourspace/MASTER.md`.
 - AC3: Hiện danh sách món, ngày giao và lịch lắp đặt đã chọn ở 07-3, địa chỉ giao hàng và cách liên hệ nhà cung cấp.
 - AC4: Khi đơn ở bước đang giao hoặc đã giao, màn có một nút chính "Xác nhận đã nhận hàng" và một lựa chọn phụ "Báo sự cố".
 
