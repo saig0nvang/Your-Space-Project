@@ -26,15 +26,6 @@
     },
     "credit": "\"LightsPunctualLamp\" — DGG (CC-BY-4.0), Khronos glTF Sample Assets"
   },
-  "sofa-vai-be": {
-    "file": "/models/sofa-vai-be.glb",
-    "dimsM": {
-      "widthM": 2.731,
-      "heightM": 1.118,
-      "depthM": 0.925
-    },
-    "credit": "\"Sofa 03\" — Fran Calvente, Poly Haven (CC0)"
-  },
   "sofa-ni-xam": {
     "file": "/models/sofa-ni-xam.glb",
     "dimsM": {

@@ -2,7 +2,7 @@
 // nén texture WebP ≤ 1024px), đặt gốc ở tâm mặt đáy, rồi ghi public/models/<id>.glb + lib/models.json
 // (kích thước thật) + CREDITS.md.
 // Chạy lại được: bỏ qua bước tải nếu file nguồn đã có trong thư mục tạm.
-import { mkdir, writeFile, readFile, access } from "node:fs/promises";
+import { mkdir, writeFile, access } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
@@ -21,7 +21,6 @@ const SOURCES = [
   { id: "sofa-nhung-xanh", khronos: "GlamVelvetSofa" },
   { id: "ghe-nhung-cam", khronos: "SheenChair" },
   { id: "den-san-xoan", khronos: "LightsPunctualLamp" },
-  { id: "sofa-vai-be", polyhaven: "sofa_03" },
   { id: "sofa-ni-xam", polyhaven: "sofa_02" },
   { id: "ban-tra-tron-thep", polyhaven: "coffee_table_round_01" },
   { id: "tu-go-thap", polyhaven: "modern_wooden_cabinet" },
@@ -109,7 +108,7 @@ await writeFile(
     `Texture đã được nén lại sang WebP, giới hạn tối đa 1024×1024px để giảm dung lượng .glb.\n\n` +
     `${credits.join("\n")}\n\n` +
     `## Ghi chú kích thước\n\n` +
-    `- \`sofa-vai-be\` (rộng 2,73 m) và \`ban-tra-cong-nghiep\` (cao 0,64 m) hơi vượt khoảng gợi ý ` +
-    `(sofa 1,8–2,4 m; bàn trà cao 0,3–0,5 m) nhưng vẫn là kích thước nội thất hợp lý trong thực tế ` +
-    `(không lệch đơn vị kiểu cm/m), nên được giữ lại sau khi kiểm tra.\n`,
+    `- \`ban-tra-cong-nghiep\` (cao 0,64 m) hơi vượt khoảng gợi ý (bàn trà cao 0,3–0,5 m) ` +
+    `nhưng vẫn là kích thước nội thất hợp lý trong thực tế (không lệch đơn vị kiểu cm/m), ` +
+    `nên được giữ lại sau khi kiểm tra.\n`,
 );

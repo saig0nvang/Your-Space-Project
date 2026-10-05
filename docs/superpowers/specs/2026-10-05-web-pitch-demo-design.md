@@ -3,7 +3,7 @@ derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a, D7@96011236,
 ---
 # YourSpace — Demo web cho pitch: vòng lõi M1 với AI thật — Design Spec
 
-> Ngày: 2026-10-05 · Branch: `demo/web-pitch` (tách từ `m1-build`) · Trạng thái: **người dùng đã duyệt thiết kế trong brainstorm**
+> Ngày: 2026-10-05 · Branch: `demo/web-pitch` (tách từ `m1-build`) · Trạng thái: **đã triển khai trên `demo/web-pitch` (2026-10-05); xóa đồ qua Replicate chưa thử với token thật**
 > Nguồn: PRD v2.0 §4.2 và §5 (E01, E03, E04, E05, E07) · spec M1 `2026-07-24-m1-web-validation-design.md` §4, §5, §7, §9 ·
 > spike `docs/spikes/2026-10-04-ai-pipeline-real-photos.md` · research `docs/research/2026-10-04-mock-thanh-chuc-nang-that.md`.
 

@@ -6,7 +6,6 @@ Texture đã được nén lại sang WebP, giới hạn tối đa 1024×1024px 
 - `sofa-nhung-xanh.glb` — "GlamVelvetSofa" — Eric Chadwick (CC-BY-4.0), Khronos glTF Sample Assets
 - `ghe-nhung-cam.glb` — "SheenChair" — Eric Chadwick (CC0-1.0), Khronos glTF Sample Assets
 - `den-san-xoan.glb` — "LightsPunctualLamp" — DGG (CC-BY-4.0), Khronos glTF Sample Assets
-- `sofa-vai-be.glb` — "Sofa 03" — Fran Calvente, Poly Haven (CC0)
 - `sofa-ni-xam.glb` — "Sofa 02" — Kirill Sannikov, Poly Haven (CC0)
 - `ban-tra-tron-thep.glb` — "Coffee Table Round 01" — Ulan Cabanilla, Poly Haven (CC0)
 - `tu-go-thap.glb` — "Modern Wooden Cabinet" — Patrik Pangerl, Poly Haven (CC0)
@@ -22,4 +21,4 @@ Texture đã được nén lại sang WebP, giới hạn tối đa 1024×1024px 
 
 ## Ghi chú kích thước
 
-- `sofa-vai-be` (rộng 2,73 m) và `ban-tra-cong-nghiep` (cao 0,64 m) hơi vượt khoảng gợi ý (sofa 1,8–2,4 m; bàn trà cao 0,3–0,5 m) nhưng vẫn là kích thước nội thất hợp lý trong thực tế (không lệch đơn vị kiểu cm/m), nên được giữ lại sau khi kiểm tra.
+- `ban-tra-cong-nghiep` (cao 0,64 m) hơi vượt khoảng gợi ý (bàn trà cao 0,3–0,5 m) nhưng vẫn là kích thước nội thất hợp lý trong thực tế (không lệch đơn vị kiểu cm/m), nên được giữ lại sau khi kiểm tra.

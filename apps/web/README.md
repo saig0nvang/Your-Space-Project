@@ -1,3 +1,41 @@
+# YourSpace — demo web (pitch)
+
+Vòng lõi M1: Phong cách → Thử phòng (ảnh + chân trời) → Trình chỉnh sửa (xóa đồ, đặt đồ 3D, dự toán) → Mua (để lại SĐT).
+Spec: `docs/superpowers/specs/2026-10-05-web-pitch-demo-design.md`.
+
+## Chạy
+
+    pnpm install
+    cp apps/web/.env.example apps/web/.env.local   # điền REPLICATE_API_TOKEN để dùng Xóa đồ
+    pnpm dev                                        # http://localhost:3000
+
+- Depth (Depth Anything V2 Small) và chạm chọn (SlimSAM) chạy trong trình duyệt; lần đầu tải ~65 MB model.
+- Xóa đồ gọi LaMa trên Replicate qua `/api/ai/inpaint` (giới hạn 30 lượt/IP/giờ).
+- Dựng lại mô hình 3D: `pnpm --filter web build:models`. Nguồn và giấy phép: `public/models/CREDITS.md`.
+- Trang thử nghiệm cũ: `/dev`.
+
+Bản demo: giá, nhà cung cấp là dữ liệu mẫu; form SĐT không gửi đi đâu.
+
+## Trạng thái kiểm thử
+
+Đã kiểm trên Chrome desktop: đặt đồ, kéo đồ, che khuất đúng sau đồ thật trong phòng, ánh sáng theo ảnh
+chụp, undo/redo, chỉnh tỷ lệ phòng, chạm chọn bằng SlimSAM, sheet Mua + form để lại SĐT.
+
+Chưa kiểm: xóa đồ thật qua Replicate (chưa có token để thử), trình duyệt trên điện thoại, ảnh phòng chụp
+từ điện thoại thật.
+
+## Lint
+
+`pnpm lint` còn 2 lỗi đã có từ trước trên nhánh gốc (`m1-build`), không thuộc phạm vi bản demo này, không
+sửa ở đây:
+
+- `apps/web/app/capture/page.tsx` — `react-hooks/set-state-in-effect`
+- `apps/web/app/sensor-test/page.tsx` — `react-hooks/set-state-in-effect`
+
+Cả hai là trang dev đang làm (WIP) đọc cảm biến thiết bị, phi mục tiêu của bản demo pitch.
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
