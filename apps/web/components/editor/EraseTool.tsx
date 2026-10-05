@@ -15,8 +15,9 @@ const ERROR_TEXT: Record<string, string> = {
 };
 
 export function useEraseSession(active: boolean) {
-  const { history, photo, applyErase, notify } = useEditor();
-  const workingUrl = history?.present.workingUrl ?? null;
+  // Selector hẹp: không render lại khi kéo món (history.present.items đổi liên tục).
+  const workingUrl = useEditor((s) => s.history?.present.workingUrl ?? null);
+  const { applyErase, notify } = useEditor.getState();
   const [status, setStatus] = useState<"loading" | "encoding" | "ready" | "erasing">("loading");
   const [progress, setProgress] = useState<number | null>(null);
   const [objects, setObjects] = useState<EraseObject[]>([]);
@@ -70,6 +71,7 @@ export function useEraseSession(active: boolean) {
 
   const erase = useCallback(async () => {
     const masks = objects.flatMap((o) => (o.mask ? [o.mask] : []));
+    const { photo, history } = useEditor.getState();
     if (!photo || masks.length === 0) return;
     setStatus("erasing");
     try {
@@ -87,7 +89,7 @@ export function useEraseSession(active: boolean) {
       notify("Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
       setStatus("ready");
     }
-  }, [objects, photo, history, applyErase, notify]);
+  }, [objects, applyErase, notify]);
 
   return { status, progress, objects, mode, setMode, addPoint, nextObject, removeObject, erase };
 }
@@ -115,8 +117,9 @@ export function EraseTool({ session, onHoldOriginal }: { session: ReturnType<typ
           ))}
         </div>
         <Button variant="secondary" onClick={nextObject} disabled={!objects.length || !objects[objects.length - 1]!.mask}>Chọn món khác</Button>
-        <button type="button" className="min-h-[44px] px-3 rounded-pill bg-muted text-[15px] font-semibold"
-          onPointerDown={() => onHoldOriginal(true)} onPointerUp={() => onHoldOriginal(false)} onPointerLeave={() => onHoldOriginal(false)}>
+        <button type="button" className="min-h-[44px] px-3 rounded-pill bg-muted text-[15px] font-semibold select-none touch-none"
+          onPointerDown={() => onHoldOriginal(true)} onPointerUp={() => onHoldOriginal(false)} onPointerLeave={() => onHoldOriginal(false)}
+          onPointerCancel={() => onHoldOriginal(false)} onContextMenu={(e) => e.preventDefault()}>
           Trước
         </button>
       </div>

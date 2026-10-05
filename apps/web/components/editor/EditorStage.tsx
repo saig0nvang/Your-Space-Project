@@ -2,7 +2,8 @@
 import { placeOnFloor, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
-import { cameraOf, useEditor } from "@/lib/store";
+import { useShallow } from "zustand/react/shallow";
+import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -12,6 +13,7 @@ export const floorCalib = (camera: CameraModel): Calibration => ({
 });
 
 type Occluder = Parameters<typeof RoomScene>[0]["occluder"];
+const NO_ITEMS: PlacedItem[] = [];
 
 export function EditorStage({
   mode,
@@ -28,12 +30,21 @@ export function EditorStage({
   onErasePoint: (p: { x: number; y: number }) => void;
   children?: ReactNode;
 }) {
-  const { photo, setup, history, selectedUid, armedProductId } = useEditor();
+  const { photo, setup, items, workingUrl, selectedUid, armedProductId } = useEditor(
+    useShallow((st) => ({
+      photo: st.photo,
+      setup: st.setup,
+      items: st.history?.present.items ?? null,
+      workingUrl: st.history?.present.workingUrl ?? null,
+      selectedUid: st.selectedUid,
+      armedProductId: st.armedProductId,
+    })),
+  );
   const s = useEditor.getState;
   const boxRef = useRef<HTMLDivElement>(null);
   const hitItem = useRef(false);
   const drag = useRef<{ uid: string; dx: number; dz: number } | null>(null);
-  if (!photo || !setup || !history) return null;
+  if (!photo || !setup || !items || !workingUrl) return null;
   const aspect = photo.width / photo.height;
   const camera = cameraOf(setup, aspect);
   const calib = floorCalib(camera);
@@ -109,10 +120,10 @@ export function EditorStage({
       onPointerCancel={onPointerUp}
     >
       <RoomScene
-        photoUrl={showOriginal ? photo.url : history.present.workingUrl}
+        photoUrl={showOriginal ? photo.url : workingUrl}
         aspect={aspect}
         camera={camera}
-        items={mode === "erase" ? [] : history.present.items}
+        items={mode === "erase" ? NO_ITEMS : items}
         selectedUid={selectedUid}
         occluder={occluder}
         lighting={lighting}

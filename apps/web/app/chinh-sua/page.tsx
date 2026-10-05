@@ -12,32 +12,41 @@ import { Tray } from "@/components/editor/Tray";
 import { Chip } from "@/components/ui/Chip";
 import { useSceneDepth } from "@/lib/hooks/useSceneDepth";
 import { usePhotoLighting } from "@/lib/hooks/usePhotoLighting";
+import { useShallow } from "zustand/react/shallow";
 import { useEditor } from "@/lib/store";
 
 export default function EditorPage() {
   const router = useRouter();
-  const { photo, history, notice, selectedUid } = useEditor();
+  // Selector hẹp: kéo món chỉ đổi history.present.items — trang không cần render lại vì thế.
+  const { ready, workingUrl, notice, selectedUid } = useEditor(
+    useShallow((s) => ({
+      ready: !!(s.photo && s.history),
+      workingUrl: s.history?.present.workingUrl ?? null,
+      notice: s.notice,
+      selectedUid: s.selectedUid,
+    })),
+  );
   const [mode, setMode] = useState<"place" | "erase">("place");
   const [buyIds, setBuyIds] = useState<string[] | null>(null);
   const [holdOriginal, setHoldOriginal] = useState(false);
   const { occluder, status, progress } = useSceneDepth();
-  const lighting = usePhotoLighting(history?.present.workingUrl ?? null);
+  const lighting = usePhotoLighting(workingUrl);
   const erase = useEraseSession(mode === "erase");
 
   useEffect(() => {
-    if (!photo || !history) router.replace("/thu-phong");
-  }, [photo, history, router]);
+    if (!ready) router.replace("/thu-phong");
+  }, [ready, router]);
   useEffect(() => {
     if (!notice) return;
     const t = setTimeout(() => useEditor.setState({ notice: null }), 3500);
     return () => clearTimeout(t);
   }, [notice]);
-  if (!photo || !history) return null;
+  if (!ready) return null;
 
-  const allIds = history.present.items.map((i) => i.productId);
+  const openAll = () => setBuyIds(useEditor.getState().history?.present.items.map((i) => i.productId) ?? []);
   return (
     <main className="flex-1 flex flex-col">
-      <TopBar mode={mode} onModeChange={setMode} />
+      <TopBar mode={mode} onModeChange={setMode} historyLocked={erase.status === "erasing"} />
       <div className="relative flex justify-center bg-black">
         <EditorStage mode={mode} occluder={occluder} lighting={lighting} showOriginal={holdOriginal}
           onErasePoint={(p) => void erase.addPoint(p)}>
@@ -51,7 +60,7 @@ export default function EditorPage() {
       <section className="w-full max-w-xl mx-auto px-4 py-4 flex-1">
         {mode === "erase" ? <EraseTool session={erase} onHoldOriginal={setHoldOriginal} /> : selectedUid ? <ItemPanel onBuy={setBuyIds} /> : <Tray />}
       </section>
-      {mode === "place" && <EstimateBar onOpen={() => setBuyIds(allIds)} />}
+      {mode === "place" && <EstimateBar onOpen={openAll} />}
       <BuySheet productIds={buyIds} onClose={() => setBuyIds(null)} />
     </main>
   );

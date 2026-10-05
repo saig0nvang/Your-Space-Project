@@ -8,8 +8,11 @@ import { RoomScalePopover } from "./RoomScalePopover";
 
 const round = "size-11 inline-flex items-center justify-center rounded-pill bg-card disabled:opacity-40";
 
-export function TopBar({ mode, onModeChange }: { mode: "place" | "erase"; onModeChange: (m: "place" | "erase") => void }) {
-  const { history, undo, redo } = useEditor();
+/** `historyLocked`: đang gửi xóa đồ — chặn hoàn tác/làm lại để kết quả xóa không đè lên một trạng thái khác. */
+export function TopBar({ mode, onModeChange, historyLocked = false }: { mode: "place" | "erase"; onModeChange: (m: "place" | "erase") => void; historyLocked?: boolean }) {
+  const undoable = useEditor((s) => !!s.history && canUndo(s.history));
+  const redoable = useEditor((s) => !!s.history && canRedo(s.history));
+  const { undo, redo } = useEditor.getState();
   const [scaleOpen, setScaleOpen] = useState(false);
   return (
     <div className="relative flex items-center justify-between gap-2 px-4 py-2 bg-background border-b border-border">
@@ -23,8 +26,8 @@ export function TopBar({ mode, onModeChange }: { mode: "place" | "erase"; onMode
         ))}
       </div>
       <div className="flex gap-1">
-        <button type="button" aria-label="Hoàn tác" className={round} disabled={!history || !canUndo(history)} onClick={undo}><ArrowCounterClockwise size={20} /></button>
-        <button type="button" aria-label="Làm lại" className={round} disabled={!history || !canRedo(history)} onClick={redo}><ArrowClockwise size={20} /></button>
+        <button type="button" aria-label="Hoàn tác" className={round} disabled={historyLocked || !undoable} onClick={undo}><ArrowCounterClockwise size={20} /></button>
+        <button type="button" aria-label="Làm lại" className={round} disabled={historyLocked || !redoable} onClick={redo}><ArrowClockwise size={20} /></button>
         <button type="button" aria-label="Chỉnh cỡ phòng" aria-expanded={scaleOpen} className={round} onClick={() => setScaleOpen((o) => !o)}><Ruler size={20} /></button>
       </div>
       {scaleOpen && <RoomScalePopover onClose={() => setScaleOpen(false)} />}
