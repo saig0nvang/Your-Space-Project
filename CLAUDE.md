@@ -8,7 +8,7 @@ Nền tảng visual-commerce nội thất: user đặt đồ 3D vào ảnh phòn
 - **PRD:** `Product/PRD.md` (v2.0 — flow chuẩn ở §4.2; user story theo epic ở `Product/prd/epics/`).
 
 ## Design System
-Luôn đọc **`DESIGN.md`** trước mọi quyết định UI/visual. Hướng "Mềm & chất liệu" (từ 2026-09-25, toàn thương hiệu): font Be Vietnam Pro, màu yến mạch + terracotta cho hành động + sage cho niềm tin, mẫu vật liệu làm chữ ký; spacing, layout, motion đều định nghĩa ở đó. Không lệch nếu chưa được duyệt. Ở chế độ QA, flag code không khớp `DESIGN.md`.
+Luôn đọc **`design-system/yourspace/MASTER.md`** trước mọi quyết định UI/visual (`DESIGN.md` chỉ trỏ tới đó). Hướng hiện hành từ 2026-10-03: **A · Phòng trưng bày** (Exaggerated Minimalism — đen/trắng, vàng đồng cho giá trị, Bricolage Grotesque cho tiêu đề, ảnh dẫn dắt) do ui-ux-pro-max sinh, founder chọn sau khi xem preview 3 hướng; token màu, chữ, spacing, component đều định nghĩa trong MASTER.md. Không lệch nếu chưa được duyệt. Ở chế độ QA, flag code không khớp MASTER.md.
 
 ## Stack M1 (theo spec)
 Next.js (App Router) + TypeScript + React-Three-Fiber. Monorepo: `packages/core` (domain thuần TS, tái dùng M2) + `apps/web`. AI cloud qua Replicate (depth server-side/cache · segmentation · inpainting) sau `AIGateway`. Stateless, không login. Deploy Vercel.
@@ -18,3 +18,35 @@ Next.js (App Router) + TypeScript + React-Three-Fiber. Monorepo: `packages/core`
 - Rủi ro #1 = độ thật của compositing → **spike tuần 1**, fallback đặt đồ thủ công.
 - AI chỉ **gợi ý**; mọi thay đổi canvas cần thao tác chủ động của user; low-confidence → manual mode.
 - Privacy: consent thật ("ảnh gửi lên xử lý & xóa ngay"), KHÔNG dùng câu "không upload ảnh".
+
+## UI/UX skills — phân vai
+Stack: react-native
+
+**Nguồn sự thật duy nhất cho visual system:** design-system/yourspace/MASTER.md (do ui-ux-pro-max sinh ra).
+DESIGN.md chỉ tham chiếu tới MASTER.md, không định nghĩa lại token màu, font hay spacing.
+
+**ui-ux-pro-max = giai đoạn QUYẾT ĐỊNH**
+- Dùng khi: tạo màn hình hoặc component mới; chọn style, palette, font; cần guideline theo stack.
+- Luôn truyền --stack react-native.
+- Không chạy --persist --force nếu tôi chưa đồng ý.
+
+**impeccable = giai đoạn REVIEW / POLISH**
+- CHỈ dùng khi tôi gọi /impeccable <lệnh>. Không tự kích hoạt impeccable khi build màn hình mới.
+- Mọi lệnh refine phải giữ nguyên token trong MASTER.md. Không thay DESIGN.md hay đổi visual system, trừ khi tôi yêu cầu redesign rõ ràng.
+- Trên native, dùng reference bản native cho audit và adapt.
+
+**Khi detector của Impeccable báo lỗi** ở một lựa chọn có chủ đích trong MASTER.md (font, màu, style):
+- KHÔNG revert.
+- Thêm vào danh sách ignore kèm lý do (npx impeccable ignores add-value ... --reason "...") và báo tôi.
+
+**Không chạy full flow của cả 2 skill trong cùng một task.**
+
+**Quy trình theo công đoạn (founder duyệt 2026-10-03; mục tiêu: UI đủ để launch, quảng cáo, pitching).** Founder lo flow (PRD §4.2 + flow HTML); thiết kế UI giao cho skill. Mỗi công đoạn chỉ một skill chạy trọn quy trình, skill kia chỉ dùng làm checklist:
+1. Chốt hệ nhìn — ui-ux-pro-max (`--design-system`, `--domain`, `--stack react-native`); founder chọn preview rồi mới `--persist --force` thay MASTER.
+2. Áp hệ mới vào app — ui-ux-pro-max `--stack react-native` (+ page override).
+3. Nâng màn chủ lực — impeccable (`onboard`, `bolder`, `distill`, `layout`, `typeset`, `delight`), giữ token MASTER.
+4. Chuyển động — impeccable `animate`.
+5. Kiểm chất lượng — impeccable `critique`, `audit` (native), `harden`, `polish`.
+Ở công đoạn 3–5, Claude được tự gọi lệnh impeccable. Không dùng new-work / concept-seed của impeccable (đụng vai của ui-ux-pro-max); không để impeccable ghi token vào DESIGN.md.
+
+**Font** phải hỗ trợ đầy đủ tiếng Việt (có subset vietnamese). Kiểm tra trước khi chọn.
