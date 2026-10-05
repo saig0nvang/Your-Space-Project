@@ -2,15 +2,26 @@
 import { buildOccluderDepth, fitDepthToFloor } from "@yourspace/core";
 import { useEffect, useMemo, useState } from "react";
 import { getDisparity, onDepthProgress, warmupDepth } from "@/lib/ai/depthClient";
-import { cameraOf, useEditor } from "@/lib/store";
+import { useShallow } from "zustand/react/shallow";
+import { cameraOf, useEditor, type DepthState } from "@/lib/store";
 
 const MIN_CONFIDENCE = 0.3;
+const FAILED_TEXT = "Chưa tính được chiều sâu · đồ sẽ luôn nằm trên";
+
+/**
+ * F4: depth đã chạy xong CHO ĐÚNG ảnh đang hiển thị mà vẫn không dựng được occluder. Phải kiểm `forUrl`: ngay sau
+ * xóa/hoàn tác, `depth` vẫn là "ready" của ảnh CŨ trong khi occluder đã về null (vì lệch url) — không phải lỗi.
+ */
+export const floorFitFailed = (depth: Pick<DepthState, "status" | "forUrl">, url: string | null, hasOccluder: boolean): boolean =>
+  depth.status === "ready" && url !== null && depth.forUrl === url && !hasOccluder;
 
 /** Chạy depth cho ảnh đang sửa (lại sau mỗi lần xóa), khớp theo mặt sàn, dựng ảnh độ sâu che khuất. */
 export function useSceneDepth() {
-  const { photo, setup, history, depth, setDepth, notify } = useEditor();
+  const { photo, setup, url, depth } = useEditor(
+    useShallow((s) => ({ photo: s.photo, setup: s.setup, url: s.history?.present.workingUrl ?? null, depth: s.depth })),
+  );
+  const { setDepth, notify } = useEditor.getState();
   const [progress, setProgress] = useState<number | null>(null);
-  const url = history?.present.workingUrl ?? null;
 
   useEffect(() => onDepthProgress((p) => setProgress(p.total ? p.loaded / p.total : null)), []);
 
@@ -19,16 +30,23 @@ export function useSceneDepth() {
     let cancelled = false;
     (async () => {
       setDepth({ status: "running", forUrl: url, disparity: null });
-      await warmupDepth();
-      const r = await getDisparity(url);
-      if (cancelled) return;
-      setProgress(null);
-      if (!r.ok) {
+      try {
+        await warmupDepth(); // có thể ném (mạng, model lỗi) — getDisparity thì trả Result
+        const r = await getDisparity(url);
+        if (cancelled) return;
+        setProgress(null);
+        if (!r.ok) {
+          setDepth({ status: "failed", forUrl: url, disparity: null });
+          notify(FAILED_TEXT);
+          return;
+        }
+        setDepth({ status: "ready", forUrl: url, disparity: r.value });
+      } catch {
+        if (cancelled) return;
+        setProgress(null);
         setDepth({ status: "failed", forUrl: url, disparity: null });
-        notify("Chưa tính được chiều sâu · đồ sẽ luôn nằm trên");
-        return;
+        notify(FAILED_TEXT);
       }
-      setDepth({ status: "ready", forUrl: url, disparity: r.value });
     })();
     return () => { cancelled = true; };
   }, [url, setDepth, notify]);
@@ -53,9 +71,10 @@ export function useSceneDepth() {
   }, [aspect, horizonNdcY, fovYRad, depth, url]);
 
   // F4: depth chạy được nhưng không khớp nổi mặt sàn (ảnh không thấy sàn, cận cảnh…).
+  const fitFailed = floorFitFailed(depth, url, occluder !== null);
   useEffect(() => {
-    if (depth.status === "ready" && occluder === null) notify("Ảnh khó phân tích chiều sâu · đồ sẽ luôn nằm trên");
-  }, [depth.status, occluder, notify]);
+    if (fitFailed) notify("Ảnh khó phân tích chiều sâu · đồ sẽ luôn nằm trên");
+  }, [fitFailed, notify]);
 
   return { occluder, status: depth.status, progress };
 }
