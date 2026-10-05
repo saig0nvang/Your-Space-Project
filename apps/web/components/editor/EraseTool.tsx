@@ -1,6 +1,6 @@
 "use client";
 import { prepareEraseMask, type Mask } from "@yourspace/core";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { decodePoints, encodeImage, onSamProgress, warmupSam, type SamPoint } from "@/lib/ai/samClient";
 import { eraseWithLama } from "@/lib/erase";
@@ -21,6 +21,15 @@ export function useEraseSession(active: boolean) {
   const [progress, setProgress] = useState<number | null>(null);
   const [objects, setObjects] = useState<EraseObject[]>([]);
   const [mode, setMode] = useState<"add" | "remove">("add");
+  const [wasActive, setWasActive] = useState(active);
+  const decoding = useRef(false); // chặn chạm chồng lên khi SAM còn đang giải mã điểm trước
+
+  // Rời chế độ Xóa đồ → dọn lựa chọn ngay trong lúc render (mẫu "adjusting state" của React, không qua
+  // effect) để không bao giờ thấy lại món cũ, dù chỉ một khung hình, khi vào lại.
+  if (active !== wasActive) {
+    setWasActive(active);
+    if (!active) { setObjects([]); setMode("add"); }
+  }
 
   useEffect(() => onSamProgress((p) => setProgress(p.total ? p.loaded / p.total : null)), []);
 
@@ -40,15 +49,20 @@ export function useEraseSession(active: boolean) {
   }, [active, workingUrl, notify]);
 
   const addPoint = useCallback(async (p: { x: number; y: number }) => {
-    if (status !== "ready") return;
+    if (status !== "ready" || decoding.current) return; // bỏ chạm khi chưa sẵn sàng hoặc đang giải mã điểm trước
     const positive = mode === "add";
     const list = objects.length === 0 ? [{ points: [], mask: null }] : objects;
     const idx = list.length - 1;
     const current = list[idx]!;
     if (!positive && current.points.length === 0) return; // điểm Bớt cần một món đang chọn
     const points = [...current.points, { ...p, positive }];
-    const mask = await decodePoints(points);
-    setObjects([...list.slice(0, idx), { points, mask }]);
+    decoding.current = true;
+    try {
+      const mask = await decodePoints(points);
+      setObjects([...list.slice(0, idx), { points, mask }]);
+    } finally {
+      decoding.current = false;
+    }
   }, [status, mode, objects]);
 
   const nextObject = () => setObjects((o) => (o.length && o[o.length - 1]!.mask ? [...o, { points: [], mask: null }] : o));
@@ -58,15 +72,21 @@ export function useEraseSession(active: boolean) {
     const masks = objects.flatMap((o) => (o.mask ? [o.mask] : []));
     if (!photo || masks.length === 0) return;
     setStatus("erasing");
-    const union = prepareEraseMask(masks, history?.present.eraseMask ?? null);
-    const r = await eraseWithLama(photo.url, union);
-    if (!r.ok) {
-      notify(ERROR_TEXT[r.error.kind] ?? "Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
+    try {
+      const union = prepareEraseMask(masks, history?.present.eraseMask ?? null);
+      const r = await eraseWithLama(photo.url, union);
+      if (!r.ok) {
+        notify(ERROR_TEXT[r.error.kind] ?? "Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
+        setStatus("ready");
+        return;
+      }
+      applyErase(r.value, union); // workingUrl đổi → depth và SAM tự chạy lại
+      notify("Đã xóa · giữ nút Trước để so sánh");
+    } catch {
+      // Lỗi bất ngờ khi cắt ảnh/dán lại (ví dụ tải ảnh hoặc toBlob thất bại) — ảnh giữ nguyên.
+      notify("Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
       setStatus("ready");
-      return;
     }
-    applyErase(r.value, union); // workingUrl đổi → depth và SAM tự chạy lại
-    notify("Đã xóa · giữ nút Trước để so sánh");
   }, [objects, photo, history, applyErase, notify]);
 
   return { status, progress, objects, mode, setMode, addPoint, nextObject, removeObject, erase };
@@ -89,7 +109,7 @@ export function EraseTool({ session, onHoldOriginal }: { session: ReturnType<typ
         <div className="inline-flex bg-muted rounded-pill p-1">
           {(["add", "remove"] as const).map((m) => (
             <button key={m} type="button" aria-pressed={mode === m} onClick={() => setMode(m)}
-              className={`min-h-[40px] px-4 rounded-pill text-[15px] font-semibold ${mode === m ? "bg-accent text-on-accent" : ""}`}>
+              className={`min-h-[44px] px-4 rounded-pill text-[15px] font-semibold ${mode === m ? "bg-accent text-on-accent" : ""}`}>
               {m === "add" ? "Thêm" : "Bớt"}
             </button>
           ))}
@@ -103,7 +123,7 @@ export function EraseTool({ session, onHoldOriginal }: { session: ReturnType<typ
       {objects.length > 0 && (
         <ul className="flex gap-2 flex-wrap">
           {objects.map((o, i) => o.mask && (
-            <li key={i}><button type="button" onClick={() => removeObject(i)} className="min-h-[36px] px-3 rounded-pill bg-muted text-[13px] font-semibold">Món {i + 1} ×</button></li>
+            <li key={i}><button type="button" onClick={() => removeObject(i)} className="min-h-[44px] px-3 rounded-pill bg-muted text-[13px] font-semibold">Món {i + 1} ×</button></li>
           ))}
         </ul>
       )}
