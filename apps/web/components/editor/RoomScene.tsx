@@ -41,6 +41,11 @@ function BackgroundQuad({ texture }: { texture: THREE.Texture }) {
     [texture],
   );
   useEffect(() => () => material.dispose(), [material]);
+  // frameloop="demand": texture ảnh (tải xong trong Suspense) vừa có material → yêu cầu vẽ.
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    invalidate();
+  }, [material, invalidate]);
   return (
     <mesh frustumCulled={false} renderOrder={-2} material={r3f(material)}>
       <planeGeometry args={[2, 2]} />
@@ -253,6 +258,15 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
   useEffect(() => {
     invalidate();
   }, [props.items, props.camera, props.occluder, props.lighting, props.selectedUid, background, env, invalidate]);
+  // Tab ẩn thì trình duyệt dừng requestAnimationFrame: frame đã yêu cầu lúc ẩn chỉ vẽ khi tab hiện lại — vẽ lại
+  // chủ động khi hiện lại cho chắc (không có vòng lặp liên tục nào khác để "tự sửa" như frameloop="always").
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === "visible") invalidate();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    return () => document.removeEventListener("visibilitychange", onVisible);
+  }, [invalidate]);
   const cam = cameraToThree(props.camera);
   return (
     <>
@@ -267,8 +281,11 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
       <ContactShadows position={[0, 0.005, -5]} scale={20} far={1.5} blur={2.5} opacity={0.5} resolution={512} />
       {props.items.map((item) => {
         const model = modelById(item.productId);
+        // Suspense riêng từng món: GLB đang tải chỉ treo món đó, không ẩn cả ảnh phòng + các món khác.
         return model ? (
-          <Furniture key={item.uid} item={item} model={model} selected={item.uid === props.selectedUid} onPointerDown={props.onItemPointerDown} />
+          <Suspense key={item.uid} fallback={null}>
+            <Furniture item={item} model={model} selected={item.uid === props.selectedUid} onPointerDown={props.onItemPointerDown} />
+          </Suspense>
         ) : null;
       })}
     </>
@@ -290,7 +307,14 @@ export function RoomScene(props: {
   onItemPointerDown: (uid: string, pointer: { x: number; y: number }) => void;
 }) {
   return (
-    <Canvas shadows frameloop="demand" dpr={[1, 1.5]} gl={{ antialias: true }} style={{ position: "absolute", inset: 0 }}>
+    <Canvas
+      shadows
+      frameloop="demand"
+      dpr={[1, 1.5]}
+      gl={{ antialias: true }}
+      style={{ position: "absolute", inset: 0 }}
+      onCreated={(st) => st.invalidate()} // frame đầu tiên ngay khi renderer sẵn sàng
+    >
       <Suspense fallback={null}>
         <Scene {...props} />
       </Suspense>
