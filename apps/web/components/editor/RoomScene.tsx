@@ -40,6 +40,7 @@ function BackgroundQuad({ texture }: { texture: THREE.Texture }) {
       }),
     [texture],
   );
+  useEffect(() => () => material.dispose(), [material]);
   return (
     <mesh frustumCulled={false} renderOrder={-2} material={r3f(material)}>
       <planeGeometry args={[2, 2]} />
@@ -55,7 +56,10 @@ function OccluderQuad({ occluder }: { occluder: NonNullable<Occluder> }) {
     tex.magFilter = THREE.NearestFilter;
     tex.needsUpdate = true;
     return new THREE.ShaderMaterial({
-      glslVersion: THREE.GLSL3,
+      // KHÔNG đặt glslVersion: THREE.GLSL3 — WebGLProgram.js (not RawShaderMaterial) luôn biên dịch ở
+      // '#version 300 es' và chỉ chèn lớp tương thích (#define varying in / gl_FragColor → pc_fragColor /
+      // texture2D → texture) khi glslVersion !== GLSL3; đặt GLSL3 tắt lớp đó nên gl_FragColor/varying/texture2D
+      // trong shader dưới sẽ không biên dịch được. gl_FragDepth vẫn là builtin GLSL ES 3.00 nên không cần GLSL3.
       uniforms: { depthMap: { value: tex }, near: { value: NEAR }, far: { value: FAR } },
       vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
       fragmentShader: `uniform sampler2D depthMap; uniform float near; uniform float far; varying vec2 vUv;
@@ -199,6 +203,15 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
     env.needsUpdate = true;
     return { background, env };
   }, [loaded]);
+  // background/env là bản clone() riêng (không phải texture cache của useLoader) → phải tự dispose khi đổi
+  // ảnh (undo/redo/xóa sinh workingUrl mới) hoặc unmount, nếu không rò texture GPU. Không dispose `loaded`.
+  useEffect(
+    () => () => {
+      background.dispose();
+      env.dispose();
+    },
+    [background, env],
+  );
   const cam = cameraToThree(props.camera);
   return (
     <>
