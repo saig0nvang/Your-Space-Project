@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { BuySheet } from "@/components/editor/BuySheet";
 import { EditorStage } from "@/components/editor/EditorStage";
 import { EraseTool, useEraseSession } from "@/components/editor/EraseTool";
 import { EstimateBar } from "@/components/editor/EstimateBar";
@@ -51,8 +52,7 @@ export default function EditorPage() {
         {mode === "erase" ? <EraseTool session={erase} onHoldOriginal={setHoldOriginal} /> : selectedUid ? <ItemPanel onBuy={setBuyIds} /> : <Tray />}
       </section>
       {mode === "place" && <EstimateBar onOpen={() => setBuyIds(allIds)} />}
-      {/* BuySheet gắn ở Task 16; tạm giữ state buyIds để không đổi chữ ký ItemPanel / EstimateBar */}
-      {buyIds && null}
+      <BuySheet productIds={buyIds} onClose={() => setBuyIds(null)} />
     </main>
   );
 }
