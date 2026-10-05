@@ -1,0 +1,146 @@
+{
+  "sofa-nhung-xanh": {
+    "file": "/models/sofa-nhung-xanh.glb",
+    "dimsM": {
+      "widthM": 2.188,
+      "heightM": 0.788,
+      "depthM": 1.023
+    },
+    "credit": "\"GlamVelvetSofa\" — Eric Chadwick (CC-BY-4.0), Khronos glTF Sample Assets"
+  },
+  "ghe-nhung-cam": {
+    "file": "/models/ghe-nhung-cam.glb",
+    "dimsM": {
+      "widthM": 0.827,
+      "heightM": 0.686,
+      "depthM": 0.57
+    },
+    "credit": "\"SheenChair\" — Eric Chadwick (CC0-1.0), Khronos glTF Sample Assets"
+  },
+  "den-san-xoan": {
+    "file": "/models/den-san-xoan.glb",
+    "dimsM": {
+      "widthM": 1.127,
+      "heightM": 1.864,
+      "depthM": 0.722
+    },
+    "credit": "\"LightsPunctualLamp\" — DGG (CC-BY-4.0), Khronos glTF Sample Assets"
+  },
+  "sofa-vai-be": {
+    "file": "/models/sofa-vai-be.glb",
+    "dimsM": {
+      "widthM": 2.731,
+      "heightM": 1.118,
+      "depthM": 0.925
+    },
+    "credit": "\"Sofa 03\" — Fran Calvente, Poly Haven (CC0)"
+  },
+  "sofa-ni-xam": {
+    "file": "/models/sofa-ni-xam.glb",
+    "dimsM": {
+      "widthM": 1.807,
+      "heightM": 0.71,
+      "depthM": 0.818
+    },
+    "credit": "\"Sofa 02\" — Kirill Sannikov, Poly Haven (CC0)"
+  },
+  "ban-tra-tron-thep": {
+    "file": "/models/ban-tra-tron-thep.glb",
+    "dimsM": {
+      "widthM": 1.301,
+      "heightM": 0.491,
+      "depthM": 1.301
+    },
+    "credit": "\"Coffee Table Round 01\" — Ulan Cabanilla, Poly Haven (CC0)"
+  },
+  "tu-go-thap": {
+    "file": "/models/tu-go-thap.glb",
+    "dimsM": {
+      "widthM": 2.44,
+      "heightM": 0.68,
+      "depthM": 0.52
+    },
+    "credit": "\"Modern Wooden Cabinet\" — Patrik Pangerl, Poly Haven (CC0)"
+  },
+  "ban-canh-go": {
+    "file": "/models/ban-canh-go.glb",
+    "dimsM": {
+      "widthM": 0.55,
+      "heightM": 0.551,
+      "depthM": 0.45
+    },
+    "credit": "\"Side Table 01\" — James Ray Cock, Poly Haven (CC0)"
+  },
+  "cay-xanh-chau-gom": {
+    "file": "/models/cay-xanh-chau-gom.glb",
+    "dimsM": {
+      "widthM": 0.587,
+      "heightM": 1.35,
+      "depthM": 0.634
+    },
+    "credit": "\"Potted Plant 01\" — Rico Cilliers, Poly Haven (CC0)"
+  },
+  "cay-xanh-chau-cao": {
+    "file": "/models/cay-xanh-chau-cao.glb",
+    "dimsM": {
+      "widthM": 0.701,
+      "heightM": 0.841,
+      "depthM": 0.657
+    },
+    "credit": "\"Potted Plant 02\" — Rico Cilliers, Poly Haven (CC0)"
+  },
+  "ghe-lounge-oc-cho": {
+    "file": "/models/ghe-lounge-oc-cho.glb",
+    "dimsM": {
+      "widthM": 1.009,
+      "heightM": 1.169,
+      "depthM": 1.19
+    },
+    "credit": "\"Mid Century Lounge Chair\" — Kuutti Siitonen, Poly Haven (CC0)"
+  },
+  "ban-tra-oc-cho": {
+    "file": "/models/ban-tra-oc-cho.glb",
+    "dimsM": {
+      "widthM": 0.6,
+      "heightM": 0.39,
+      "depthM": 1.202
+    },
+    "credit": "\"Modern Coffee Table 01\" — Amin, Poly Haven (CC0)"
+  },
+  "tu-co-dien": {
+    "file": "/models/tu-co-dien.glb",
+    "dimsM": {
+      "widthM": 2.022,
+      "heightM": 2.235,
+      "depthM": 0.67
+    },
+    "credit": "\"Vintage Cabinet 01\" — Rico Cilliers, Poly Haven (CC0)"
+  },
+  "ghe-banh-khung-thep": {
+    "file": "/models/ghe-banh-khung-thep.glb",
+    "dimsM": {
+      "widthM": 0.82,
+      "heightM": 1.023,
+      "depthM": 0.987
+    },
+    "credit": "\"Modern Arm Chair 01\" — Vibrant Nordic, Poly Haven (CC0)"
+  },
+  "ke-thep-den": {
+    "file": "/models/ke-thep-den.glb",
+    "dimsM": {
+      "widthM": 2.351,
+      "heightM": 2.312,
+      "depthM": 0.721
+    },
+    "credit": "\"Steel Frame Shelves 03\" — Ulan Cabanilla, Poly Haven (CC0)"
+  },
+  "ban-tra-cong-nghiep": {
+    "file": "/models/ban-tra-cong-nghiep.glb",
+    "dimsM": {
+      "widthM": 0.778,
+      "heightM": 0.638,
+      "depthM": 0.758
+    },
+    "credit": "\"Industrial Coffee Table\" — Ulan Cabanilla, Poly Haven (CC0)"
+  }
+}
