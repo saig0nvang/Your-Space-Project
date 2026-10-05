@@ -16,3 +16,5 @@ export * from "./ai/gateway";
 export * from "./catalog/types";
 export * from "./pricing/estimate";
 export * from "./mask/mask";
+export * from "./editor/history";
+export * from "./lead/phone";
