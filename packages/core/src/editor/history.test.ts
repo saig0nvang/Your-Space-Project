@@ -43,3 +43,21 @@ test("giữ tối đa 50 bước", () => {
   expect(h.past).toHaveLength(50);
   expect(h.past[0]).toBe(10);
 });
+
+test("undo / redo hoạt động khi T bao gồm undefined", () => {
+  let h = createHistory<string | undefined>("a");
+  h = commit(h, undefined);
+  expect(h.present).toBeUndefined();
+  h = undo(h);
+  expect(h.present).toBe("a");
+  expect(canRedo(h)).toBe(true);
+  h = redo(h);
+  expect(h.present).toBeUndefined();
+
+  // Bắt đầu từ undefined
+  let h2 = createHistory<string | undefined>(undefined);
+  h2 = commit(h2, "b");
+  expect(h2.present).toBe("b");
+  h2 = undo(h2);
+  expect(h2.present).toBeUndefined();
+});

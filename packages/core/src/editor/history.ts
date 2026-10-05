@@ -22,14 +22,14 @@ export function end<T>(h: History<T>): History<T> {
 }
 
 export function undo<T>(h: History<T>): History<T> {
-  const prev = h.past[h.past.length - 1];
-  if (h.past.length === 0 || prev === undefined) return h;
+  if (h.past.length === 0) return h;
+  const prev = h.past[h.past.length - 1] as T;
   return { past: h.past.slice(0, -1), present: prev, future: [h.present, ...h.future], checkpoint: null };
 }
 
 export function redo<T>(h: History<T>): History<T> {
-  const next = h.future[0];
-  if (h.future.length === 0 || next === undefined) return h;
+  if (h.future.length === 0) return h;
+  const next = h.future[0] as T;
   return { past: [...h.past, h.present], present: next, future: h.future.slice(1), checkpoint: null };
 }
 
