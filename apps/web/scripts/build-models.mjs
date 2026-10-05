@@ -1,5 +1,6 @@
-// Tải mô hình CC0 / CC-BY (Poly Haven, Khronos glTF Sample Assets), tối ưu (dedup, prune, weld, meshopt),
-// đặt gốc ở tâm mặt đáy, rồi ghi public/models/<id>.glb + lib/models.json (kích thước thật) + CREDITS.md.
+// Tải mô hình CC0 / CC-BY (Poly Haven, Khronos glTF Sample Assets), tối ưu (dedup, prune, weld, meshopt,
+// nén texture WebP ≤ 1024px), đặt gốc ở tâm mặt đáy, rồi ghi public/models/<id>.glb + lib/models.json
+// (kích thước thật) + CREDITS.md.
 // Chạy lại được: bỏ qua bước tải nếu file nguồn đã có trong thư mục tạm.
 import { mkdir, writeFile, readFile, access } from "node:fs/promises";
 import { join, dirname } from "node:path";
@@ -7,8 +8,9 @@ import { tmpdir } from "node:os";
 import { fileURLToPath } from "node:url";
 import { NodeIO } from "@gltf-transform/core";
 import { ALL_EXTENSIONS } from "@gltf-transform/extensions";
-import { center, dedup, getBounds, meshopt, prune, weld } from "@gltf-transform/functions";
+import { center, dedup, getBounds, meshopt, prune, textureCompress, weld } from "@gltf-transform/functions";
 import { MeshoptDecoder, MeshoptEncoder } from "meshoptimizer";
+import sharp from "sharp";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = join(ROOT, "public/models");
@@ -77,7 +79,14 @@ const credits = [];
 for (const src of SOURCES) {
   const { path, credit } = src.polyhaven ? await fetchPolyHaven(src.polyhaven) : await fetchKhronos(src.khronos);
   const doc = await io.read(path);
-  await doc.transform(dedup(), prune(), weld(), center({ pivot: "below" }), meshopt({ encoder: MeshoptEncoder }));
+  await doc.transform(
+    dedup(),
+    prune(),
+    textureCompress({ encoder: sharp, targetFormat: "webp", resize: [1024, 1024] }),
+    weld(),
+    center({ pivot: "below" }),
+    meshopt({ encoder: MeshoptEncoder }),
+  );
   const scene = doc.getRoot().getDefaultScene() ?? doc.getRoot().listScenes()[0];
   const { min, max } = getBounds(scene);
   const file = `/models/${src.id}.glb`;
@@ -95,5 +104,12 @@ for (const src of SOURCES) {
 await writeFile(join(ROOT, "lib/models.json"), JSON.stringify(manifest, null, 2) + "\n");
 await writeFile(
   join(OUT_DIR, "CREDITS.md"),
-  `# Mô hình 3D — nguồn và giấy phép\n\nSinh bởi \`pnpm --filter web build:models\`. Mô hình CC-BY phải giữ ghi công khi phân phối.\n\n${credits.join("\n")}\n`,
+  `# Mô hình 3D — nguồn và giấy phép\n\n` +
+    `Sinh bởi \`pnpm --filter web build:models\`. Mô hình CC-BY phải giữ ghi công khi phân phối.\n` +
+    `Texture đã được nén lại sang WebP, giới hạn tối đa 1024×1024px để giảm dung lượng .glb.\n\n` +
+    `${credits.join("\n")}\n\n` +
+    `## Ghi chú kích thước\n\n` +
+    `- \`sofa-vai-be\` (rộng 2,73 m) và \`ban-tra-cong-nghiep\` (cao 0,64 m) hơi vượt khoảng gợi ý ` +
+    `(sofa 1,8–2,4 m; bàn trà cao 0,3–0,5 m) nhưng vẫn là kích thước nội thất hợp lý trong thực tế ` +
+    `(không lệch đơn vị kiểu cm/m), nên được giữ lại sau khi kiểm tra.\n`,
 );
