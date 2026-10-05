@@ -1,0 +1,124 @@
+{
+  "_note": "Đồ có sẵn trong 3 ảnh phòng mẫu. box = khung gợi ý cho SAM (0..1 theo ảnh). points (tuỳ chọn) = điểm gợi ý thêm khi chỉ khung chưa đủ (sofa). shadow (tuỳ chọn) = nới mask xuống dưới bao nhiêu (0..1 theo chiều cao ảnh) để ăn cả bóng đổ dưới chân món khi lấp.",
+  "phong-khach-sang": [
+    {
+      "id": "tu-tivi",
+      "label": "Tủ tivi",
+      "box": [0.565, 0.565, 0.84, 0.712],
+      "shadow": 0.03
+    },
+    {
+      "id": "may-suoi",
+      "label": "Máy sưởi",
+      "box": [0.398, 0.553, 0.542, 0.632]
+    },
+    {
+      "id": "den-tha",
+      "label": "Đèn thả",
+      "box": [0.115, 0.118, 0.178, 0.385]
+    },
+    {
+      "id": "den-roi-1",
+      "label": "Đèn rọi",
+      "box": [0.742, 0.108, 0.79, 0.168]
+    },
+    {
+      "id": "den-roi-2",
+      "label": "Đèn rọi",
+      "box": [0.602, 0.208, 0.642, 0.252]
+    },
+    {
+      "id": "den-roi-3",
+      "label": "Đèn rọi",
+      "box": [0.508, 0.278, 0.542, 0.312]
+    },
+    {
+      "id": "o-dien-1",
+      "label": "Ổ điện",
+      "box": [0.052, 0.538, 0.102, 0.558]
+    },
+    {
+      "id": "o-dien-2",
+      "label": "Ổ điện",
+      "box": [0.703, 0.533, 0.752, 0.552]
+    },
+    {
+      "id": "o-dien-3",
+      "label": "Ổ điện",
+      "box": [0.0, 0.628, 0.026, 0.652]
+    }
+  ],
+  "phong-khach-ke-tivi": [
+    {
+      "id": "ban-tron",
+      "label": "Bàn tròn",
+      "box": [0.012, 0.598, 0.352, 0.792],
+      "shadow": 0.03
+    },
+    {
+      "id": "tivi",
+      "label": "Tivi",
+      "box": [0.725, 0.322, 1.0, 0.588]
+    },
+    {
+      "id": "ke-tivi",
+      "label": "Kệ tivi",
+      "box": [0.638, 0.555, 1.0, 0.808],
+      "shadow": 0.02
+    },
+    {
+      "id": "den-tran",
+      "label": "Đèn trần",
+      "box": [0.275, 0.015, 0.345, 0.052]
+    }
+  ],
+  "phong-khach-san-gach": [
+    {
+      "id": "sofa",
+      "label": "Sofa",
+      "box": [0.243, 0.548, 0.672, 0.768],
+      "points": [[0.29, 0.66], [0.42, 0.635], [0.47, 0.58], [0.6, 0.585], [0.64, 0.64], [0.36, 0.7]],
+      "exclude": [
+        "ban-tra"
+      ],
+      "shadow": 0.04
+    },
+    {
+      "id": "ban-tra",
+      "label": "Bàn trà",
+      "box": [0.568, 0.652, 0.808, 0.762],
+      "shadow": 0.03
+    },
+    {
+      "id": "ke-go",
+      "label": "Kệ gỗ",
+      "box": [0.942, 0.598, 1.0, 0.768],
+      "shadow": 0.02
+    },
+    {
+      "id": "den-tran-1",
+      "label": "Đèn trần",
+      "box": [0.928, 0.036, 0.99, 0.068]
+    },
+    {
+      "id": "den-tran-2",
+      "label": "Đèn trần",
+      "box": [0.343, 0.196, 0.383, 0.216]
+    },
+    {
+      "id": "den-tran-3",
+      "label": "Đèn trần",
+      "box": [0.533, 0.272, 0.562, 0.292]
+    },
+    {
+      "id": "bao-khoi",
+      "label": "Đầu báo khói",
+      "box": [0.572, 0.052, 0.612, 0.082]
+    },
+    {
+      "id": "o-dien",
+      "label": "Ổ điện",
+      "box": [0.143, 0.658, 0.172, 0.692]
+    }
+  ]
+}
