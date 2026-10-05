@@ -68,8 +68,6 @@ export function forwardProgress(e: { status?: string; file?: string; loaded?: nu
   if (e.status === "progress" && e.file && e.total) postProgress({ file: e.file, loaded: e.loaded ?? 0, total: e.total });
 }
 
-export const pickDevice = (): "webgpu" | "wasm" => ("gpu" in self.navigator ? "webgpu" : "wasm");
-
 /**
  * Tải `url` (kể cả `blob:` do main thread tạo) thành Blob ngay trong worker, rồi đưa thẳng
  * Blob cho transformers.js — tránh để RawImage/pipeline tự `fetch` + suy luận kiểu input,

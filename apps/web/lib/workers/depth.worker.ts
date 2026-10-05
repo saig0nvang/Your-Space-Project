@@ -1,17 +1,24 @@
 import { pipeline } from "@huggingface/transformers";
-import { fetchAsBlob, forwardProgress, pickDevice, serveRpc } from "./rpc";
+import { depthDtype, loadWithFallback, pickDevice } from "./device";
+import { fetchAsBlob, forwardProgress, serveRpc } from "./rpc";
 
 const MODEL = "onnx-community/depth-anything-v2-small";
 type Estimator = (input: Blob) => Promise<{ predicted_depth: { data: Float32Array; dims: number[] } }>;
 let estimator: Promise<Estimator> | null = null;
 
 const load = () =>
-  (estimator ??= (pipeline("depth-estimation", MODEL, { device: pickDevice(), progress_callback: forwardProgress }) as unknown as Promise<Estimator>).catch(
-    (e: unknown) => {
+  (estimator ??= pickDevice()
+    .then((info) =>
+      loadWithFallback(
+        info,
+        (d) =>
+          pipeline("depth-estimation", MODEL, { device: d.device, dtype: depthDtype(d), progress_callback: forwardProgress }) as unknown as Promise<Estimator>,
+      ),
+    )
+    .catch((e: unknown) => {
       estimator = null;
       throw e;
-    },
-  ));
+    }));
 
 serveRpc({
   async warmup() {

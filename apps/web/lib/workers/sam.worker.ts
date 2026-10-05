@@ -1,26 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AutoProcessor, RawImage, SamModel, Tensor } from "@huggingface/transformers";
-import { fetchAsBlob, forwardProgress, pickDevice, serveRpc } from "./rpc";
+import { loadWithFallback, pickDevice, samOptions } from "./device";
+import { fetchAsBlob, forwardProgress, serveRpc } from "./rpc";
 
 const MODEL = "Xenova/slimsam-77-uniform";
 let loaded: Promise<{ model: any; processor: any }> | null = null;
 let current: { inputs: any; embeddings: any } | null = null;
 
-/**
- * Bộ mã hoá ảnh (vision_encoder) chạy WebGPU khi có để nhanh; bộ giải mã điểm/mask
- * (prompt_encoder_mask_decoder) LUÔN chạy wasm — shader MatMul của nó không biên dịch được
- * trên WebGPU compute pipeline ở một số GPU/driver (lỗi "Invalid ShaderModule" quan sát thực tế
- * trên Chrome). Tên 2 session khớp đúng 2 file .onnx trong kho Xenova/slimsam-77-uniform/onnx/
- * (vision_encoder*.onnx, prompt_encoder_mask_decoder*.onnx). Không có WebGPU → cả hai dùng wasm.
- */
 const load = () =>
   (loaded ??= (async () => {
-    const webgpu = pickDevice() === "webgpu";
-    const device = webgpu
-      ? ({ vision_encoder: "webgpu", prompt_encoder_mask_decoder: "wasm" } as const)
-      : ({ vision_encoder: "wasm", prompt_encoder_mask_decoder: "wasm" } as const);
-    const dtype = webgpu ? ({ vision_encoder: "fp32", prompt_encoder_mask_decoder: "q8" } as const) : undefined;
-    const model = await SamModel.from_pretrained(MODEL, { device, dtype, progress_callback: forwardProgress });
+    const info = await pickDevice();
+    const model = await loadWithFallback(info, (d) => SamModel.from_pretrained(MODEL, { ...samOptions(d), progress_callback: forwardProgress }));
     const processor = await AutoProcessor.from_pretrained(MODEL, { progress_callback: forwardProgress });
     return { model, processor };
   })().catch((e: unknown) => {

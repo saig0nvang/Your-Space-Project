@@ -9,7 +9,10 @@ Spec: `docs/superpowers/specs/2026-10-05-web-pitch-demo-design.md`.
     cp apps/web/.env.example apps/web/.env.local   # điền REPLICATE_API_TOKEN để dùng Xóa đồ
     pnpm dev                                        # http://localhost:3000
 
-- Depth (Depth Anything V2 Small) và chạm chọn (SlimSAM) chạy trong trình duyệt; lần đầu tải ~65 MB model.
+- Depth (Depth Anything V2 Small) và chạm chọn (SlimSAM) chạy trong trình duyệt, tải model lần đầu (sau đó trình
+  duyệt cache): WebGPU có `shader-f16` → depth fp16 49,6 MB + SAM encoder fp16 12,2 MB + decoder q8 4,9 MB ≈ 67 MB;
+  không có WebGPU (wasm) → depth q8 27,3 MB + SAM q8 8,9 + 4,9 MB ≈ 41 MB; WebGPU không `shader-f16` → depth q8
+  27,3 MB + SAM encoder fp32 23,3 MB + decoder 4,9 MB ≈ 55 MB. WebGPU tạo session lỗi → tự chạy lại trên wasm.
 - Xóa đồ gọi LaMa trên Replicate qua `/api/ai/inpaint` (giới hạn 30 lượt/IP/giờ).
 - Dựng lại mô hình 3D: `pnpm --filter web build:models`. Nguồn và giấy phép: `public/models/CREDITS.md`.
 - Trang thử nghiệm cũ: `/dev`.

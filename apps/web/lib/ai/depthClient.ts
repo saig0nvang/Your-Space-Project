@@ -5,7 +5,7 @@ import { createRpcClient, type ModelProgress } from "@/lib/workers/rpc";
 const rpc = createRpcClient(() => new Worker(new URL("../workers/depth.worker.ts", import.meta.url), { type: "module" }));
 let warm: Promise<void> | null = null;
 
-/** Tải model (≈25 MB lần đầu, sau đó cache trình duyệt). Không có timeout vì phụ thuộc mạng. */
+/** Tải model (27–50 MB lần đầu tuỳ thiết bị — xem lib/workers/device.ts, sau đó cache trình duyệt). Không có timeout vì phụ thuộc mạng. */
 export const warmupDepth = (): Promise<void> =>
   (warm ??= rpc
     .call<boolean>("warmup", {})
