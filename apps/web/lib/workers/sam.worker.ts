@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AutoProcessor, RawImage, SamModel, Tensor } from "@huggingface/transformers";
-import { forwardProgress, pickDevice, serveRpc } from "./rpc";
+import { fetchAsBlob, forwardProgress, pickDevice, serveRpc } from "./rpc";
 
 const MODEL = "Xenova/slimsam-77-uniform";
 let loaded: Promise<{ model: any; processor: any }> | null = null;
@@ -11,7 +11,10 @@ const load = () =>
     const model = await SamModel.from_pretrained(MODEL, { device: pickDevice(), progress_callback: forwardProgress });
     const processor = await AutoProcessor.from_pretrained(MODEL, { progress_callback: forwardProgress });
     return { model, processor };
-  })());
+  })().catch((e: unknown) => {
+    loaded = null;
+    throw e;
+  }));
 
 serveRpc({
   async warmup() {
@@ -21,7 +24,8 @@ serveRpc({
   /** Mã hoá ảnh MỘT lần; các lần chạm sau chỉ chạy decoder. */
   async encode({ url }: { url: string }) {
     const { model, processor } = await load();
-    const image = await RawImage.read(url);
+    const blob = await fetchAsBlob(url);
+    const image = await RawImage.fromBlob(blob);
     const inputs = await processor(image);
     const embeddings = await model.get_image_embeddings(inputs);
     current = { inputs, embeddings };

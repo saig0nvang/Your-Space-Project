@@ -1,12 +1,17 @@
 import { pipeline } from "@huggingface/transformers";
-import { forwardProgress, pickDevice, serveRpc } from "./rpc";
+import { fetchAsBlob, forwardProgress, pickDevice, serveRpc } from "./rpc";
 
 const MODEL = "onnx-community/depth-anything-v2-small";
-type Estimator = (input: string) => Promise<{ predicted_depth: { data: Float32Array; dims: number[] } }>;
+type Estimator = (input: Blob) => Promise<{ predicted_depth: { data: Float32Array; dims: number[] } }>;
 let estimator: Promise<Estimator> | null = null;
 
 const load = () =>
-  (estimator ??= pipeline("depth-estimation", MODEL, { device: pickDevice(), progress_callback: forwardProgress }) as unknown as Promise<Estimator>);
+  (estimator ??= (pipeline("depth-estimation", MODEL, { device: pickDevice(), progress_callback: forwardProgress }) as unknown as Promise<Estimator>).catch(
+    (e: unknown) => {
+      estimator = null;
+      throw e;
+    },
+  ));
 
 serveRpc({
   async warmup() {
@@ -15,7 +20,8 @@ serveRpc({
   },
   /** Disparity chuẩn hoá 0..1 (1 = gần nhất) — đúng quy ước DisparityMap của core. */
   async disparity({ url }: { url: string }) {
-    const out = await (await load())(url);
+    const blob = await fetchAsBlob(url);
+    const out = await (await load())(blob);
     const t = out.predicted_depth;
     const h = t.dims[t.dims.length - 2] ?? 0;
     const w = t.dims[t.dims.length - 1] ?? 0;

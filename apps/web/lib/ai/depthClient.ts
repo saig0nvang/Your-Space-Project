@@ -6,7 +6,14 @@ const rpc = createRpcClient(() => new Worker(new URL("../workers/depth.worker.ts
 let warm: Promise<void> | null = null;
 
 /** Tải model (≈25 MB lần đầu, sau đó cache trình duyệt). Không có timeout vì phụ thuộc mạng. */
-export const warmupDepth = (): Promise<void> => (warm ??= rpc.call<boolean>("warmup", {}).then(() => undefined));
+export const warmupDepth = (): Promise<void> =>
+  (warm ??= rpc
+    .call<boolean>("warmup", {})
+    .then(() => undefined)
+    .catch((e: unknown) => {
+      warm = null;
+      throw e;
+    }));
 export const onDepthProgress = (fn: (p: ModelProgress) => void) => rpc.onProgress(fn);
 
 /** Gọi SAU warmupDepth: timeout 20 s chỉ tính phần suy luận (F5). */

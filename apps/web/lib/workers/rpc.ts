@@ -23,6 +23,8 @@ export function createRpcClient(make: () => Worker) {
     worker.onerror = (e) => {
       pending.forEach((p) => p.reject(new Error(e.message || "Worker lỗi")));
       pending.clear();
+      worker?.terminate();
+      worker = null;
     };
     return worker;
   };
@@ -67,3 +69,14 @@ export function forwardProgress(e: { status?: string; file?: string; loaded?: nu
 }
 
 export const pickDevice = (): "webgpu" | "wasm" => ("gpu" in self.navigator ? "webgpu" : "wasm");
+
+/**
+ * Tải `url` (kể cả `blob:` do main thread tạo) thành Blob ngay trong worker, rồi đưa thẳng
+ * Blob cho transformers.js — tránh để RawImage/pipeline tự `fetch` + suy luận kiểu input,
+ * vốn có thể không ổn định với URL blob: trong môi trường worker.
+ */
+export async function fetchAsBlob(url: string): Promise<Blob> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Không tải được ảnh ${url} (${res.status})`);
+  return res.blob();
+}
