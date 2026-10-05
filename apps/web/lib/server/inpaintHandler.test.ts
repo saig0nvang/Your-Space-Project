@@ -30,7 +30,7 @@ const deps = () => ({
   timeoutMs: 1000,
 });
 
-test("thành công: trả PNG, gửi data URI; lần 2 cùng ảnh+mask dùng cache", async () => {
+test("thành công: trả PNG, gửi data URI; KHÔNG cache phía server (lần 2 gọi lại vendor)", async () => {
   const d = deps();
   const handle = createInpaintHandler(d);
   const res = await handle(await req({ image: img(), mask: mask() }));
@@ -39,7 +39,25 @@ test("thành công: trả PNG, gửi data URI; lần 2 cùng ảnh+mask dùng ca
   expect(new Uint8Array(await res.arrayBuffer())).toEqual(new Uint8Array([9, 9]));
   expect(d.lama.mock.calls[0]![0].image).toBe("data:image/jpeg;base64,AQID");
   await handle(await req({ image: img(), mask: mask() }));
-  expect(d.lama).toHaveBeenCalledTimes(1);
+  expect(d.lama).toHaveBeenCalledTimes(2);
+});
+
+test("MIME data URI theo danh sách cho phép, không tin type client khai", async () => {
+  const d = deps();
+  const evil = new Blob([new Uint8Array([1, 2, 3])], { type: "text/html" });
+  const pngMask = new Blob([new Uint8Array([4, 5])], { type: "image/png" });
+  await createInpaintHandler(d)(await req({ image: evil, mask: pngMask }));
+  expect(d.lama.mock.calls[0]![0].image).toBe("data:image/jpeg;base64,AQID");
+  expect(d.lama.mock.calls[0]![0].mask).toBe("data:image/png;base64,BAU=");
+});
+
+test("log lỗi vendor chỉ gồm kind + 200 ký tự đầu message", async () => {
+  const d = deps();
+  d.lama.mockRejectedValue(new Error("x".repeat(500)));
+  const spy = vi.spyOn(console, "error").mockImplementation(() => {});
+  await createInpaintHandler(d)(await req({ image: img(), mask: mask() }));
+  expect(spy).toHaveBeenCalledWith("[inpaint]", "VendorError", "x".repeat(200));
+  spy.mockRestore();
 });
 
 test("thiếu mask → 400", async () => {

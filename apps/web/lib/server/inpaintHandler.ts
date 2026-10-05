@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { makeCachedCall, type AIError } from "@yourspace/core";
 
 const MAX_BYTES = 3_000_000;
@@ -15,19 +14,10 @@ const DEFAULT_CLIENT_MESSAGE = "Xóa chưa được, thử lại sau.";
 
 const fail = (status: number, error: AIError) => Response.json({ error }, { status });
 
-/** Cache kết quả bị chặn ở N phần tử để không phình bộ nhớ qua thời gian dài; xoá entry cũ nhất (theo thứ tự chèn) khi đầy. */
-class BoundedCache<V> extends Map<string, V> {
-  constructor(private readonly limit: number) {
-    super();
-  }
-  override set(key: string, value: V): this {
-    if (!this.has(key) && this.size >= this.limit) {
-      const oldestKey = this.keys().next().value;
-      if (oldestKey !== undefined) this.delete(oldestKey);
-    }
-    return super.set(key, value);
-  }
-}
+/** Chỉ nhận 2 định dạng ta tự sinh ở client; không tin `Blob.type` do client khai báo. */
+const ALLOWED_MIME = new Set(["image/jpeg", "image/png"]);
+const dataUri = (type: string, fallback: string, bytes: Buffer) =>
+  `data:${ALLOWED_MIME.has(type) ? type : fallback};base64,${bytes.toString("base64")}`;
 
 type Deps = {
   lama: (i: { image: string; mask: string }) => Promise<string>;
@@ -37,10 +27,10 @@ type Deps = {
 };
 
 export function createInpaintHandler(deps: Deps): (req: Request) => Promise<Response> {
-  const call = makeCachedCall<{ key: string; image: string; mask: string }, Uint8Array>({
+  // KHÔNG cache kết quả phía server: câu đồng thuận nói ảnh "được xóa ngay sau đó" — client tự giữ kết quả
+  // cho hoàn tác/làm lại nên server không cần giữ bản sao nào.
+  const call = makeCachedCall<{ image: string; mask: string }, Uint8Array>({
     run: async ({ image, mask }) => deps.fetchOutput(await deps.lama({ image, mask })),
-    cache: new BoundedCache<Uint8Array>(50),
-    keyOf: (i) => i.key,
     timeoutMs: deps.timeoutMs,
     label: "inpaint",
   });
@@ -65,14 +55,9 @@ export function createInpaintHandler(deps: Deps): (req: Request) => Promise<Resp
 
     const imageBytes = Buffer.from(await image.arrayBuffer());
     const maskBytes = Buffer.from(await mask.arrayBuffer());
-    const key = createHash("sha256").update(imageBytes).update(maskBytes).digest("hex");
-    const r = await call({
-      key,
-      image: `data:${image.type || "image/jpeg"};base64,${imageBytes.toString("base64")}`,
-      mask: `data:${mask.type || "image/png"};base64,${maskBytes.toString("base64")}`,
-    });
+    const r = await call({ image: dataUri(image.type, "image/jpeg", imageBytes), mask: dataUri(mask.type, "image/png", maskBytes) });
     if (!r.ok) {
-      console.error("[inpaint]", r.error.kind, r.error.message);
+      console.error("[inpaint]", r.error.kind, r.error.message.slice(0, 200));
       const message = CLIENT_MESSAGE[r.error.kind] ?? DEFAULT_CLIENT_MESSAGE;
       return fail(STATUS[r.error.kind], { kind: r.error.kind, message });
     }

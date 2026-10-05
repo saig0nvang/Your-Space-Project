@@ -30,22 +30,23 @@ function toAIError(e: unknown, label: string): AIError {
 /**
  * Bọc một lời gọi vendor với: cache theo key (content-addressed), timeout tuỳ chọn,
  * và ánh xạ lỗi sang AIError có kiểu. Lỗi không vào cache. Thuần & test được.
+ * Không truyền `cache` → không cache gì (mỗi lần gọi đều chạy `run`).
  */
 export function makeCachedCall<I, O>(opts: {
   run: (input: I) => Promise<O>;
-  cache: Map<string, O>;
-  keyOf: (input: I) => string;
+  cache?: Map<string, O>;
+  keyOf?: (input: I) => string;
   timeoutMs?: number;
   label?: string;
 }): (input: I) => Promise<Result<O, AIError>> {
   const label = opts.label ?? "ai";
   return async (input: I): Promise<Result<O, AIError>> => {
-    const key = opts.keyOf(input);
-    const cached = opts.cache.get(key);
+    const key = opts.cache && opts.keyOf ? opts.keyOf(input) : null;
+    const cached = key !== null ? opts.cache?.get(key) : undefined;
     if (cached !== undefined) return { ok: true, value: cached };
     try {
       const value = opts.timeoutMs ? await withTimeout(opts.run(input), opts.timeoutMs) : await opts.run(input);
-      opts.cache.set(key, value);
+      if (key !== null) opts.cache?.set(key, value);
       return { ok: true, value };
     } catch (e) {
       return { ok: false, error: toAIError(e, label) };

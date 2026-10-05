@@ -57,3 +57,12 @@ test("makeCachedCall: lỗi không vào cache, thông báo timeout theo label", 
   expect(r.ok).toBe(false);
   if (!r.ok) expect(r.error).toEqual({ kind: "Timeout", message: "inpaint timed out" });
 });
+
+test("makeCachedCall: không truyền cache → lần nào cũng chạy run", async () => {
+  const run = vi.fn().mockResolvedValue(1);
+  const call = makeCachedCall<string, number>({ run });
+  await call("x");
+  const r = await call("x");
+  expect(run).toHaveBeenCalledTimes(2);
+  expect(r).toEqual({ ok: true, value: 1 });
+});
