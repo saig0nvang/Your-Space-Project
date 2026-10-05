@@ -10,6 +10,23 @@ const canvas = (w: number, h: number) => {
   return c;
 };
 
+/** Cạnh dài tối đa của ô gửi LaMa: ô 1024² JPEG q0.9 ≈ 0,2–0,5 MB, base64 vẫn < ~1 MB. */
+export const LAMA_MAX_SIDE = 1024;
+
+/** Kích thước gửi đi: thu nhỏ đều để cạnh dài ≤ `max` (không phóng to). */
+export function sendSize(w: number, h: number, max = LAMA_MAX_SIDE): { w: number; h: number } {
+  const s = Math.min(1, max / Math.max(w, h));
+  return { w: Math.max(1, Math.round(w * s)), h: Math.max(1, Math.round(h * s)) };
+}
+
+/** Ép mask RGBA về đúng trắng/đen (ngưỡng 128 trên kênh R), alpha 255 — không để lại viền xám sau khi co. */
+export function binarizeMask(rgba: Uint8ClampedArray): void {
+  for (let k = 0; k < rgba.length; k += 4) {
+    const v = (rgba[k] ?? 0) >= 128 ? 255 : 0;
+    rgba[k] = v; rgba[k + 1] = v; rgba[k + 2] = v; rgba[k + 3] = 255;
+  }
+}
+
 /** Mask (1 = xóa) → canvas trắng/đen cùng kích thước. */
 function maskCanvas(mask: Mask): HTMLCanvasElement {
   const c = canvas(mask.width, mask.height);
@@ -24,8 +41,8 @@ function maskCanvas(mask: Mask): HTMLCanvasElement {
 }
 
 /**
- * Lấp từ ẢNH GỐC với mask gộp (E5-US2): cắt ô vuông quanh mask (spike), gửi LaMa, dán kết quả chỉ trong mask
- * với viền mềm 2 px lên ảnh gốc. Trả URL ảnh làm việc mới.
+ * Lấp từ ẢNH GỐC với mask gộp (E5-US2): cắt ô vuông quanh mask (spike), co về cạnh dài ≤ 1024 px rồi gửi LaMa,
+ * phóng kết quả về đúng ô và dán chỉ trong mask (mask gốc, viền mềm 2 px) lên ảnh gốc. Trả URL ảnh làm việc mới.
  */
 export async function eraseWithLama(originalUrl: string, mask: Mask): Promise<Result<string, AIError>> {
   const original = await loadImage(originalUrl);
@@ -36,18 +53,30 @@ export async function eraseWithLama(originalUrl: string, mask: Mask): Promise<Re
   const rect = cropSquare(bbox, W, H);
   const fullMask = maskCanvas(mask);
 
-  const imgCrop = canvas(rect.w, rect.h);
-  imgCrop.getContext("2d")!.drawImage(original, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
-  const maskCrop = canvas(rect.w, rect.h);
+  const maskCrop = canvas(rect.w, rect.h); // độ phân giải đầy đủ — dùng làm alpha khi dán
   maskCrop.getContext("2d")!.drawImage(fullMask, rect.x, rect.y, rect.w, rect.h, 0, 0, rect.w, rect.h);
 
-  const r = await inpaint(await canvasToBlob(imgCrop, "image/jpeg", 0.92), await canvasToBlob(maskCrop, "image/png"));
+  // Bản gửi đi: ảnh co mượt; mask co kiểu lân cận gần nhất (tắt làm mượt) rồi ép ngưỡng → chỉ trắng/đen.
+  const send = sendSize(rect.w, rect.h);
+  const imgSend = canvas(send.w, send.h);
+  const ictx = imgSend.getContext("2d")!;
+  ictx.imageSmoothingQuality = "high";
+  ictx.drawImage(original, rect.x, rect.y, rect.w, rect.h, 0, 0, send.w, send.h);
+  const maskSend = canvas(send.w, send.h);
+  const mctx = maskSend.getContext("2d")!;
+  mctx.imageSmoothingEnabled = false;
+  mctx.drawImage(fullMask, rect.x, rect.y, rect.w, rect.h, 0, 0, send.w, send.h);
+  const m = mctx.getImageData(0, 0, send.w, send.h);
+  binarizeMask(m.data);
+  mctx.putImageData(m, 0, 0);
+
+  const r = await inpaint(await canvasToBlob(imgSend, "image/jpeg", 0.9), await canvasToBlob(maskSend, "image/png"));
   if (!r.ok) return r;
 
   const filledUrl = URL.createObjectURL(r.value);
   const filled = await loadImage(filledUrl).finally(() => URL.revokeObjectURL(filledUrl));
 
-  // Mảnh vá = kết quả LaMa (kéo về đúng kích thước ô) chỉ giữ trong mask đã làm mềm viền.
+  // Mảnh vá = kết quả LaMa (phóng từ cỡ gửi đi về đúng kích thước ô) chỉ giữ trong mask gốc đã làm mềm viền.
   const patch = canvas(rect.w, rect.h);
   const pctx = patch.getContext("2d")!;
   pctx.drawImage(filled, 0, 0, rect.w, rect.h);
