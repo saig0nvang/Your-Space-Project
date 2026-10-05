@@ -17,6 +17,17 @@ Spec: `docs/superpowers/specs/2026-10-05-web-pitch-demo-design.md`.
 - Dựng lại mô hình 3D: `pnpm --filter web build:models`. Nguồn và giấy phép: `public/models/CREDITS.md`.
 - Trang thử nghiệm cũ: `/dev`.
 
+### Mở trên điện thoại
+
+WebGPU và camera chỉ có trên origin bảo mật (HTTPS hoặc `localhost`) — mở `http://192.168.x.x:3000` trên điện thoại
+sẽ rơi về wasm (chậm) và không chụp được ảnh. Chạy HTTPS rồi mở `https://<IP-máy>:3000`, chấp nhận cảnh báo chứng chỉ tự ký:
+
+    pnpm --filter web exec next dev --experimental-https --hostname 0.0.0.0
+
+Hoặc dùng `scripts/https-proxy.mjs` (ở gốc repo, chỉ dùng Node builtins) đứng trước `next start`:
+`node scripts/https-proxy.mjs 3003 3002` phục vụ `https://0.0.0.0:3003` → `http://127.0.0.1:3002`, cần sẵn
+`certs/key.pem` + `certs/cert.pem` ở gốc repo (không commit; tạo bằng `mkcert` và cho điện thoại tin cậy CA).
+
 Bản demo: giá, nhà cung cấp là dữ liệu mẫu; form SĐT không gửi đi đâu.
 
 ## Trạng thái kiểm thử

@@ -4,6 +4,7 @@ import {
   type CameraModel, type DisparityMap, type History, type Mask, type StyleId,
 } from "@yourspace/core";
 import { create } from "zustand";
+import { newId } from "./id";
 import type { PreparedPhoto } from "./image";
 
 export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number };
@@ -27,7 +28,11 @@ type State = {
   notice: Notice | null;
   setStyle: (id: StyleId) => void;
   setPhoto: (p: PreparedPhoto) => void;
+  /** Bỏ ảnh đang sửa cùng mọi thứ gắn với nó (đồ đã bày, lịch sử, depth, lựa chọn). */
+  clearPhoto: () => void;
   startEditing: (setup: CameraSetup) => void;
+  /** Quay lại trình sửa với chân trời/tư thế mới, GIỮ nguyên lịch sử (đồ đã bày, các lần xóa). */
+  resumeEditing: (setup: Pick<CameraSetup, "horizonNdcY" | "heightM">) => void;
   setCameraHeight: (heightM: number) => void;
   arm: (productId: string | null) => void;
   select: (uid: string | null) => void;
@@ -69,10 +74,15 @@ export const useEditor = create<State>()((set, get) => {
     notice: null,
     setStyle: (styleId) => set({ styleId }),
     setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
+    clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
     startEditing: (setup) => {
       const photo = get().photo;
       if (!photo) return;
       set({ setup, history: createHistory<EditorDoc>({ items: [], workingUrl: photo.url, eraseMask: null }), selectedUid: null });
+    },
+    resumeEditing: ({ horizonNdcY, heightM }) => {
+      const s = get().setup;
+      if (s && get().history) set({ setup: { ...s, horizonNdcY, heightM } });
     },
     setCameraHeight: (heightM) => {
       const s = get().setup;
@@ -81,7 +91,7 @@ export const useEditor = create<State>()((set, get) => {
     arm: (armedProductId) => set({ armedProductId, selectedUid: null }),
     select: (selectedUid) => set({ selectedUid }),
     placeItem: (productId, x, z) => {
-      const uid = crypto.randomUUID();
+      const uid = newId();
       commitItems((items) => [...items, { uid, productId, x, z, rotationYRad: 0 }]);
       set({ selectedUid: uid, armedProductId: null });
     },
@@ -98,7 +108,7 @@ export const useEditor = create<State>()((set, get) => {
     duplicateItem: (uid) => {
       const src = get().history?.present.items.find((i) => i.uid === uid);
       if (!src) return;
-      const copy = { ...src, uid: crypto.randomUUID(), x: src.x + 0.4 };
+      const copy = { ...src, uid: newId(), x: src.x + 0.4 };
       commitItems((items) => [...items, copy]);
       set({ selectedUid: copy.uid });
     },
