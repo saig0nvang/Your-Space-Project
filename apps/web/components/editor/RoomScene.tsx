@@ -2,7 +2,7 @@
 import { ContactShadows, Line, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useLoader, useStore, type ThreeEvent } from "@react-three/fiber";
 import { cameraToThree, type CameraModel, type FurnitureModel, type PhotoLighting } from "@yourspace/core";
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { modelById } from "@/lib/catalog";
 import type { PlacedItem } from "@/lib/store";
@@ -48,8 +48,15 @@ function BackgroundQuad({ texture }: { texture: THREE.Texture }) {
   );
 }
 
-/** Lượt chỉ ghi độ sâu của vật thật (z mét → depth của camera ảo); pixel 0 bị bỏ. depthTest phải bật (depthFunc Always) thì GL mới ghi độ sâu. */
-function OccluderQuad({ occluder }: { occluder: NonNullable<Occluder> }) {
+/**
+ * Lượt chỉ ghi độ sâu của vật thật (z mét → depth của camera ảo); pixel 0 bị bỏ. depthTest phải bật (depthFunc
+ * Always) thì GL mới ghi độ sâu.
+ *
+ * `occluder.data` được useSceneDepth() tính MỘT LẦN ở heightM giả định = 1 m (bất biến theo heightM thật — xem
+ * comment ở lib/hooks/useSceneDepth.ts). Uniform `heightM` nhân lại hệ số đúng lúc dựng cảnh, chỉ set giá trị
+ * (không dựng lại material/texture) nên kéo thanh "Chỉnh cỡ phòng" không chạy lại fit/texture mỗi tick.
+ */
+function OccluderQuad({ occluder, heightM }: { occluder: NonNullable<Occluder>; heightM: number }) {
   const material = useMemo(() => {
     const tex = new THREE.DataTexture(occluder.data, occluder.width, occluder.height, THREE.RedFormat, THREE.FloatType);
     tex.minFilter = THREE.NearestFilter;
@@ -60,12 +67,15 @@ function OccluderQuad({ occluder }: { occluder: NonNullable<Occluder> }) {
       // '#version 300 es' và chỉ chèn lớp tương thích (#define varying in / gl_FragColor → pc_fragColor /
       // texture2D → texture) khi glslVersion !== GLSL3; đặt GLSL3 tắt lớp đó nên gl_FragColor/varying/texture2D
       // trong shader dưới sẽ không biên dịch được. gl_FragDepth vẫn là builtin GLSL ES 3.00 nên không cần GLSL3.
-      uniforms: { depthMap: { value: tex }, near: { value: NEAR }, far: { value: FAR } },
+      // `heightM` khởi tạo ở 1 (khớp heightM giả định lúc tính occluder.data); effect bên dưới cập nhật giá trị
+      // thật mỗi khi heightM đổi, không dựng lại material/texture này.
+      uniforms: { depthMap: { value: tex }, near: { value: NEAR }, far: { value: FAR }, heightM: { value: 1 } },
       vertexShader: "varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
-      fragmentShader: `uniform sampler2D depthMap; uniform float near; uniform float far; varying vec2 vUv;
+      fragmentShader: `uniform sampler2D depthMap; uniform float near; uniform float far; uniform float heightM; varying vec2 vUv;
         void main(){
-          float z = texture2D(depthMap, vec2(vUv.x, 1.0 - vUv.y)).r;
-          if (z <= 0.0) discard;
+          float z0 = texture2D(depthMap, vec2(vUv.x, 1.0 - vUv.y)).r;
+          if (z0 <= 0.0) discard;
+          float z = z0 * heightM;
           float ndc = (far + near) / (far - near) - (2.0 * far * near) / ((far - near) * z);
           gl_FragDepth = clamp(ndc * 0.5 + 0.5, 0.0, 1.0);
           gl_FragColor = vec4(0.0);
@@ -76,6 +86,16 @@ function OccluderQuad({ occluder }: { occluder: NonNullable<Occluder> }) {
       depthFunc: THREE.AlwaysDepth,
     });
   }, [occluder]);
+  // `material` là giá trị trả về của useMemo nên eslint-plugin-react-hooks (immutability) cấm sửa trực tiếp;
+  // lưu qua ref (cùng cách Lights() ở dưới dùng store.getState() thay vì destructure từ hook) để chỉ set
+  // uniform.value — KHÔNG dựng lại material/texture — mỗi khi heightM đổi (kéo thanh "Chỉnh cỡ phòng").
+  const materialRef = useRef(material);
+  useEffect(() => {
+    materialRef.current = material;
+  }, [material]);
+  useEffect(() => {
+    materialRef.current.uniforms.heightM!.value = heightM;
+  }, [heightM]);
   useEffect(() => {
     const depthTex = material.uniforms.depthMap!.value as THREE.Texture;
     return () => {
@@ -217,7 +237,7 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
     <>
       <PerspectiveCamera makeDefault fov={cam.fovDeg} near={NEAR} far={FAR} position={cam.position} rotation={[cam.rotationXRad, 0, 0]} />
       <BackgroundQuad texture={background} />
-      {props.occluder && <OccluderQuad occluder={props.occluder} />}
+      {props.occluder && <OccluderQuad occluder={props.occluder} heightM={props.camera.heightM} />}
       <Lights lighting={props.lighting} envTexture={env} />
       <mesh rotation-x={-Math.PI / 2} position={[0, 0.001, -5]} receiveShadow>
         <planeGeometry args={[40, 40]} />

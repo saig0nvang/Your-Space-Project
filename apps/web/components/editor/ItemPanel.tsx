@@ -28,7 +28,8 @@ export function ItemPanel({ onBuy }: { onBuy: (productIds: string[]) => void }) 
         <input type="range" min={-180} max={180} step={1} value={deg} className="flex-1 accent-foreground h-11"
           onPointerDown={beginGesture}
           onPointerUp={(e) => { rotateItem(item.uid, (snap(Number(e.currentTarget.value)) * Math.PI) / 180); endGesture(); }}
-          onKeyUp={endGesture} onKeyDown={beginGesture}
+          onKeyUp={(e) => { rotateItem(item.uid, (snap(Number(e.currentTarget.value)) * Math.PI) / 180); endGesture(); }}
+          onKeyDown={(e) => { if (!e.repeat) beginGesture(); }}
           onChange={(e) => rotateItem(item.uid, (Number(e.target.value) * Math.PI) / 180)} />
         <span className="w-12 text-right tabular">{deg}°</span>
       </label>

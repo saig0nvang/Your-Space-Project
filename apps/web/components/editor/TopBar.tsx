@@ -17,7 +17,7 @@ export function TopBar({ mode, onModeChange }: { mode: "place" | "erase"; onMode
       <div className="inline-flex bg-muted rounded-pill p-1" role="tablist" aria-label="Chế độ">
         {(["place", "erase"] as const).map((m) => (
           <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => onModeChange(m)}
-            className={`min-h-[40px] px-4 rounded-pill text-[15px] font-semibold ${mode === m ? "bg-accent text-on-accent" : ""}`}>
+            className={`min-h-[44px] px-4 rounded-pill text-[15px] font-semibold ${mode === m ? "bg-accent text-on-accent" : ""}`}>
             {m === "place" ? "Bày đồ" : "Xóa đồ"}
           </button>
         ))}

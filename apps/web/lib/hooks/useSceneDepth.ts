@@ -33,13 +33,24 @@ export function useSceneDepth() {
     return () => { cancelled = true; };
   }, [url, setDepth, notify]);
 
+  const aspect = photo ? photo.width / photo.height : null;
+  const horizonNdcY = setup?.horizonNdcY ?? null;
+  const fovYRad = setup?.fovYRad ?? null;
+
+  // Độ sâu che khuất không phụ thuộc heightM: floorViewZ = heightM · f(ndc, pitch, fov), và pitchRad được giải
+  // từ horizonNdcY + fovYRad độc lập với heightM (solveCameraFromHorizon) nên f không đổi theo heightM. fit
+  // (1/z = a·d + b) vì vậy tỉ lệ 1/heightM, còn phép so sánh "z ≥ zf·(1 − tol)" trong buildOccluderDepth là một
+  // TỈ SỐ nên bất biến theo heightM (cả hai vế cùng nhân heightM). Kết quả: depth tính ở heightM giả định = 1 m
+  // dùng được cho MỌI heightM thật — chỉ cần nhân thêm heightM thật lúc dựng cảnh (RoomScene/OccluderQuad), khỏi
+  // chạy lại fitDepthToFloor + buildOccluderDepth (toàn bộ pixel) mỗi lần kéo thanh "Chỉnh cỡ phòng".
   const occluder = useMemo(() => {
-    if (!photo || !setup || depth.status !== "ready" || !depth.disparity || depth.forUrl !== url) return null;
-    const camera = cameraOf(setup, photo.width / photo.height);
-    const fit = fitDepthToFloor(depth.disparity, camera);
+    if (aspect === null || horizonNdcY === null || fovYRad === null) return null;
+    if (depth.status !== "ready" || !depth.disparity || depth.forUrl !== url) return null;
+    const camera1 = cameraOf({ horizonNdcY, heightM: 1, fovYRad }, aspect);
+    const fit = fitDepthToFloor(depth.disparity, camera1);
     if (fit.confidence < MIN_CONFIDENCE) return null;
-    return { data: buildOccluderDepth(depth.disparity, fit, camera), width: depth.disparity.width, height: depth.disparity.height };
-  }, [photo, setup, depth, url]);
+    return { data: buildOccluderDepth(depth.disparity, fit, camera1), width: depth.disparity.width, height: depth.disparity.height };
+  }, [aspect, horizonNdcY, fovYRad, depth, url]);
 
   // F4: depth chạy được nhưng không khớp nổi mặt sàn (ảnh không thấy sàn, cận cảnh…).
   useEffect(() => {
