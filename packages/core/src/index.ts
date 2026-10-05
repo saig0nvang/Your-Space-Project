@@ -10,3 +10,5 @@ export * from "./scene/device-tilt";
 export { syntheticFloor } from "./scene/fixtures/synthetic-floor";
 export * from "./ai/types";
 export * from "./ai/gateway";
+export * from "./catalog/types";
+export * from "./pricing/estimate";
