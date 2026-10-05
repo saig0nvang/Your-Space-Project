@@ -66,6 +66,24 @@ test("buildOccluderDepth: sàn = 0, hộp > 0 và gần hơn sàn", () => {
   expect(zBox).toBeLessThan(floorViewZ(nx, ny, cam)!);
 });
 
+test("buildOccluderDepth tỉ lệ thuận heightM: tính ở heightM=1 rồi nhân heightM thật = tính thẳng ở heightM thật", () => {
+  // Chứng minh bất biến mà apps/web/lib/hooks/useSceneDepth.ts dựa vào: occluder depth tính MỘT LẦN ở heightM
+  // giả định = 1 m dùng được cho MỌI heightM thật, chỉ cần nhân thêm heightM lúc dựng cảnh (RoomScene).
+  const disp = synthetic();
+  const cam1: CameraModel = { ...cam, heightM: 1 };
+  const occAtOne = buildOccluderDepth(disp, fitDepthToFloor(disp, cam1), cam1);
+  const occAtReal = buildOccluderDepth(disp, fitDepthToFloor(disp, cam), cam); // cam.heightM = 1.4
+  expect(occAtReal.length).toBe(occAtOne.length);
+  for (let k = 0; k < occAtReal.length; k++) {
+    const scaled = occAtOne[k]! * cam.heightM;
+    if (scaled === 0 || occAtReal[k] === 0) {
+      expect(occAtReal[k]).toBe(scaled);
+    } else {
+      expect(Math.abs(occAtReal[k]! - scaled) / scaled).toBeLessThan(1e-3);
+    }
+  }
+});
+
 test("quá ít điểm sàn → confidence 0", () => {
   const flat: DisparityMap = { width: 4, height: 2, data: new Float32Array(8).fill(0.5) };
   const up: CameraModel = { ...cam, pitchRad: -0.5 }; // nhìn lên: không tia nào chạm sàn

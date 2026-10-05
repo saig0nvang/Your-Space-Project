@@ -1,6 +1,6 @@
 "use client";
 import { ContactShadows, Line, PerspectiveCamera, useGLTF } from "@react-three/drei";
-import { Canvas, useLoader, useStore, type ThreeEvent } from "@react-three/fiber";
+import { Canvas, useFrame, useLoader, useStore, type ThreeEvent } from "@react-three/fiber";
 import { cameraToThree, type CameraModel, type FurnitureModel, type PhotoLighting } from "@yourspace/core";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -87,15 +87,23 @@ function OccluderQuad({ occluder, heightM }: { occluder: NonNullable<Occluder>; 
     });
   }, [occluder]);
   // `material` là giá trị trả về của useMemo nên eslint-plugin-react-hooks (immutability) cấm sửa trực tiếp;
-  // lưu qua ref (cùng cách Lights() ở dưới dùng store.getState() thay vì destructure từ hook) để chỉ set
-  // uniform.value — KHÔNG dựng lại material/texture — mỗi khi heightM đổi (kéo thanh "Chỉnh cỡ phòng").
+  // lưu qua ref (cùng cách Lights() ở dưới dùng store.getState() thay vì destructure từ hook) rồi chỉ set
+  // uniform.value qua ref đó — KHÔNG dựng lại material/texture — mỗi khi heightM đổi (kéo thanh "Chỉnh cỡ phòng").
+  //
+  // Cập nhật qua useFrame (vòng lặp render riêng của r3f, chạy TRƯỚC mỗi lần gl.render(), ngoài chu kỳ
+  // commit/effect của React) thay vì useEffect: đã quan sát thực tế useEffect([heightM]) KHÔNG đưa giá trị mới
+  // tới GPU ổn định (occluder luôn che như heightM = 1, tỉ lệ sai ≈ 1/heightM thật) — rất có thể do Canvas của
+  // r3f render độc lập với chu kỳ commit của cây React ở ngoài nó, nên effect chạy "sau" không đảm bảo chạy
+  // trước frame kế tiếp được vẽ. useFrame không có vấn đề này: callback truyền vào luôn đóng gói closure của lần
+  // render GẦN NHẤT (r3f tự đồng bộ qua ref nội bộ của nó), và chạy lại ở MỌI khung hình nên luôn đúng giá trị
+  // heightM hiện tại trước khi GPU vẽ — không phụ thuộc thứ tự effect.
   const materialRef = useRef(material);
   useEffect(() => {
     materialRef.current = material;
   }, [material]);
-  useEffect(() => {
+  useFrame(() => {
     materialRef.current.uniforms.heightM!.value = heightM;
-  }, [heightM]);
+  });
   useEffect(() => {
     const depthTex = material.uniforms.depthMap!.value as THREE.Texture;
     return () => {
