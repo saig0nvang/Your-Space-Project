@@ -78,7 +78,10 @@ export function useEraseSession(active: boolean) {
       const union = prepareEraseMask(masks, history?.present.eraseMask ?? null);
       const r = await eraseWithLama(photo.url, union);
       if (!r.ok) {
-        notify(ERROR_TEXT[r.error.kind] ?? "Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
+        // VendorError luôn có message đã được server soạn sẵn cho người dùng (xem inpaintHandler.ts/route.ts) —
+        // gồm cả thông báo vận hành "chưa có mô hình trên máy chủ" (503). Lỗi khác (Budget/RateLimited/Timeout/
+        // LowConfidence) mới dùng câu chung.
+        notify(r.error.kind === "VendorError" ? r.error.message : ERROR_TEXT[r.error.kind] ?? "Xóa chưa được · thử lại hoặc chọn vùng nhỏ hơn");
         setStatus("ready");
         return;
       }
