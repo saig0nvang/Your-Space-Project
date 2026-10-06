@@ -24,36 +24,35 @@ async function req(
 const img = () => new Blob([new Uint8Array([1, 2, 3])], { type: "image/jpeg" });
 const mask = () => new Blob([new Uint8Array([4, 5])], { type: "image/png" });
 const deps = () => ({
-  lama: vi.fn().mockResolvedValue("https://x/out.png"),
-  fetchOutput: vi.fn().mockResolvedValue(new Uint8Array([9, 9])),
+  inpaint: vi.fn().mockResolvedValue(new Uint8Array([9, 9])),
   limiter: { take: vi.fn().mockReturnValue(true) },
   timeoutMs: 1000,
 });
 
-test("thành công: trả PNG, gửi data URI; KHÔNG cache phía server (lần 2 gọi lại vendor)", async () => {
+test("thành công: trả PNG, gửi byte thô cho inpaint; KHÔNG cache phía server (lần 2 gọi lại)", async () => {
   const d = deps();
   const handle = createInpaintHandler(d);
   const res = await handle(await req({ image: img(), mask: mask() }));
   expect(res.status).toBe(200);
   expect(res.headers.get("content-type")).toBe("image/png");
   expect(new Uint8Array(await res.arrayBuffer())).toEqual(new Uint8Array([9, 9]));
-  expect(d.lama.mock.calls[0]![0].image).toBe("data:image/jpeg;base64,AQID");
+  expect(Array.from(d.inpaint.mock.calls[0]![0] as Uint8Array)).toEqual([1, 2, 3]);
+  expect(Array.from(d.inpaint.mock.calls[0]![1] as Uint8Array)).toEqual([4, 5]);
   await handle(await req({ image: img(), mask: mask() }));
-  expect(d.lama).toHaveBeenCalledTimes(2);
+  expect(d.inpaint).toHaveBeenCalledTimes(2);
 });
 
-test("MIME data URI theo danh sách cho phép, không tin type client khai", async () => {
+test("MIME ngoài allowlist (không phải JPEG/PNG) → 400, không gọi inpaint", async () => {
   const d = deps();
   const evil = new Blob([new Uint8Array([1, 2, 3])], { type: "text/html" });
-  const pngMask = new Blob([new Uint8Array([4, 5])], { type: "image/png" });
-  await createInpaintHandler(d)(await req({ image: evil, mask: pngMask }));
-  expect(d.lama.mock.calls[0]![0].image).toBe("data:image/jpeg;base64,AQID");
-  expect(d.lama.mock.calls[0]![0].mask).toBe("data:image/png;base64,BAU=");
+  const res = await createInpaintHandler(d)(await req({ image: evil, mask: mask() }));
+  expect(res.status).toBe(400);
+  expect(d.inpaint).not.toHaveBeenCalled();
 });
 
 test("log lỗi vendor chỉ gồm kind + 200 ký tự đầu message", async () => {
   const d = deps();
-  d.lama.mockRejectedValue(new Error("x".repeat(500)));
+  d.inpaint.mockRejectedValue(new Error("x".repeat(500)));
   const spy = vi.spyOn(console, "error").mockImplementation(() => {});
   await createInpaintHandler(d)(await req({ image: img(), mask: mask() }));
   expect(spy).toHaveBeenCalledWith("[inpaint]", "VendorError", "x".repeat(200));
@@ -75,7 +74,7 @@ test("vượt giới hạn lượt → 429 BudgetExceeded", async () => {
 
 test("vendor lỗi → 502 VendorError", async () => {
   const d = deps();
-  d.lama.mockRejectedValue(new Error("boom"));
+  d.inpaint.mockRejectedValue(new Error("boom"));
   const res = await createInpaintHandler(d)(await req({ image: img(), mask: mask() }));
   expect(res.status).toBe(502);
   expect((await res.json()).error.kind).toBe("VendorError");
@@ -86,7 +85,7 @@ test("Content-Length vượt 7MB → 400 trước khi đọc body", async () => 
   const res = await createInpaintHandler(d)(await req({ image: img(), mask: mask() }, { contentLength: 7_000_001 }));
   expect(res.status).toBe(400);
   expect((await res.json()).error.kind).toBe("VendorError");
-  expect(d.lama).not.toHaveBeenCalled();
+  expect(d.inpaint).not.toHaveBeenCalled();
 });
 
 test("thiếu Content-Length → 400", async () => {
@@ -97,10 +96,9 @@ test("thiếu Content-Length → 400", async () => {
 
 test("lỗi vendor không rò message gốc ra client", async () => {
   const d = deps();
-  d.lama.mockRejectedValue(new Error("Replicate 500: internal stack trace nhạy cảm"));
+  d.inpaint.mockRejectedValue(new Error("stack trace nhạy cảm của onnxruntime"));
   const res = await createInpaintHandler(d)(await req({ image: img(), mask: mask() }));
   const bodyText = await res.text();
-  expect(bodyText).not.toContain("internal stack trace nhạy cảm");
-  expect(bodyText).not.toContain("Replicate 500");
+  expect(bodyText).not.toContain("stack trace nhạy cảm");
   expect(JSON.parse(bodyText).error.kind).toBe("VendorError");
 });

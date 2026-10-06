@@ -16,12 +16,9 @@ const fail = (status: number, error: AIError) => Response.json({ error }, { stat
 
 /** Chỉ nhận 2 định dạng ta tự sinh ở client; không tin `Blob.type` do client khai báo. */
 const ALLOWED_MIME = new Set(["image/jpeg", "image/png"]);
-const dataUri = (type: string, fallback: string, bytes: Buffer) =>
-  `data:${ALLOWED_MIME.has(type) ? type : fallback};base64,${bytes.toString("base64")}`;
 
 type Deps = {
-  lama: (i: { image: string; mask: string }) => Promise<string>;
-  fetchOutput: (url: string) => Promise<Uint8Array>;
+  inpaint: (image: Uint8Array, mask: Uint8Array) => Promise<Uint8Array>;
   limiter: { take(k: string): boolean };
   timeoutMs: number;
 };
@@ -29,8 +26,8 @@ type Deps = {
 export function createInpaintHandler(deps: Deps): (req: Request) => Promise<Response> {
   // KHÔNG cache kết quả phía server: câu đồng thuận nói ảnh "được xóa ngay sau đó" — client tự giữ kết quả
   // cho hoàn tác/làm lại nên server không cần giữ bản sao nào.
-  const call = makeCachedCall<{ image: string; mask: string }, Uint8Array>({
-    run: async ({ image, mask }) => deps.fetchOutput(await deps.lama({ image, mask })),
+  const call = makeCachedCall<{ image: Uint8Array; mask: Uint8Array }, Uint8Array>({
+    run: async ({ image, mask }) => deps.inpaint(image, mask),
     timeoutMs: deps.timeoutMs,
     label: "inpaint",
   });
@@ -52,10 +49,13 @@ export function createInpaintHandler(deps: Deps): (req: Request) => Promise<Resp
     const mask = form?.get("mask");
     if (!(image instanceof Blob) || !(mask instanceof Blob)) return fail(400, { kind: "VendorError", message: "Thiếu ảnh hoặc mask." });
     if (image.size > MAX_BYTES || mask.size > MAX_BYTES) return fail(400, { kind: "VendorError", message: "Ảnh quá lớn." });
+    if (!ALLOWED_MIME.has(image.type) || !ALLOWED_MIME.has(mask.type)) {
+      return fail(400, { kind: "VendorError", message: "Ảnh phải là JPEG hoặc PNG." });
+    }
 
-    const imageBytes = Buffer.from(await image.arrayBuffer());
-    const maskBytes = Buffer.from(await mask.arrayBuffer());
-    const r = await call({ image: dataUri(image.type, "image/jpeg", imageBytes), mask: dataUri(mask.type, "image/png", maskBytes) });
+    const imageBytes = new Uint8Array(await image.arrayBuffer());
+    const maskBytes = new Uint8Array(await mask.arrayBuffer());
+    const r = await call({ image: imageBytes, mask: maskBytes });
     if (!r.ok) {
       console.error("[inpaint]", r.error.kind, r.error.message.slice(0, 200));
       const message = CLIENT_MESSAGE[r.error.kind] ?? DEFAULT_CLIENT_MESSAGE;
