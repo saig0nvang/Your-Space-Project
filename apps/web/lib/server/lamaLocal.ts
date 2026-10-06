@@ -86,7 +86,7 @@ export type ImageCodec = {
 
 const channelsOf = (raw: RawImage): 1 | 3 => (raw.data.length / (raw.width * raw.height) === 1 ? 1 : 3);
 
-const sharpCodec: ImageCodec = {
+export const sharpCodec: ImageCodec = {
   async decodeRgb(bytes) {
     const { data, info } = await sharp(bytes).removeAlpha().toColourspace("srgb").raw().toBuffer({ resolveWithObject: true });
     return { data: new Uint8Array(data), width: info.width, height: info.height };
@@ -96,8 +96,11 @@ const sharpCodec: ImageCodec = {
     return { data: new Uint8Array(data), width: info.width, height: info.height };
   },
   async resize(raw, width, height, kernel) {
-    const { data, info } = await sharp(raw.data, { raw: { width: raw.width, height: raw.height, channels: channelsOf(raw) } })
+    const channels = channelsOf(raw);
+    const { data, info } = await sharp(raw.data, { raw: { width: raw.width, height: raw.height, channels } })
       .resize(width, height, { kernel, fit: "fill" })
+      // sharp mặc định xuất sRGB 3 kênh — giữ mask 1 kênh, không thì toMaskTensor đọc thành toàn 0.
+      .toColourspace(channels === 1 ? "b-w" : "srgb")
       .raw()
       .toBuffer({ resolveWithObject: true });
     return { data: new Uint8Array(data), width: info.width, height: info.height };
