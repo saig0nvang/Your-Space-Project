@@ -36,6 +36,11 @@ Interface đổi được vẫn giữ nguyên: `InpaintService` / `AIGateway` (`
   chung giữa các request, không chạy song song được nhiều lượt xóa đồ cùng lúc trên một instance. Vẫn giữ
   giới hạn 30 lượt/IP/giờ để chặn lạm dụng; không còn khái niệm "ngân sách theo ngày" vì không còn chi phí
   theo lượt.
+- **Thứ tự kiểm trong route**: `route.ts` kiểm `isAvailable()` (model đã tải chưa) **trước** cả giới hạn
+  30 lượt/IP/giờ — cố ý, vì khi chưa có model thì chưa ai xóa đồ được, nên 503 "chưa có mô hình" là lỗi vận
+  hành cần thấy ngay (không bị giới hạn lượt che mất), và lỗi này không tốn suy luận CPU nào để lo bị lạm
+  dụng. Hệ quả: khi model đã sẵn, request vẫn qua `isAvailable()` (một lần gọi `fs.existsSync`, rẻ) trước khi
+  tới bước giới hạn lượt — không đổi hành vi giới hạn lượt khi model đã có.
 - **Chất lượng như spike**: đồ lớn sát tường vẫn hay xấu (F3 — chọn vùng nhỏ hơn rồi xóa lại — vẫn là đường xử
   lý chính khi kết quả không ưng ý), vì cùng model, cùng kích thước suy luận 512×512.
 - `decisions/D3-cloud-inpainting.md` được amend bởi quyết định này — phần thân D3 giữ nguyên, chỉ thêm `D11`

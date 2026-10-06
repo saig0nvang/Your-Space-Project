@@ -14,8 +14,17 @@ const DEFAULT_CLIENT_MESSAGE = "Xóa chưa được, thử lại sau.";
 
 const fail = (status: number, error: AIError) => Response.json({ error }, { status });
 
-/** Chỉ nhận 2 định dạng ta tự sinh ở client; không tin `Blob.type` do client khai báo. */
-const ALLOWED_MIME = new Set(["image/jpeg", "image/png"]);
+/**
+ * Chỉ nhận 2 định dạng ta tự sinh ở client — kiểm bằng magic bytes thật của nội dung
+ * (JPEG: FF D8 FF…, PNG: 89 50 4E 47 0D 0A 1A 0A…), không tin `Content-Type`/`Blob.type`
+ * do client khai báo (theo spec §3.2: "Kiểm loại file bằng magic bytes, không tin Content-Type").
+ */
+const JPEG_MAGIC = [0xff, 0xd8, 0xff];
+const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+function hasAllowedMagicBytes(bytes: Uint8Array): boolean {
+  const startsWith = (sig: number[]) => bytes.length >= sig.length && sig.every((b, i) => bytes[i] === b);
+  return startsWith(JPEG_MAGIC) || startsWith(PNG_MAGIC);
+}
 
 type Deps = {
   inpaint: (image: Uint8Array, mask: Uint8Array) => Promise<Uint8Array>;
@@ -49,12 +58,13 @@ export function createInpaintHandler(deps: Deps): (req: Request) => Promise<Resp
     const mask = form?.get("mask");
     if (!(image instanceof Blob) || !(mask instanceof Blob)) return fail(400, { kind: "VendorError", message: "Thiếu ảnh hoặc mask." });
     if (image.size > MAX_BYTES || mask.size > MAX_BYTES) return fail(400, { kind: "VendorError", message: "Ảnh quá lớn." });
-    if (!ALLOWED_MIME.has(image.type) || !ALLOWED_MIME.has(mask.type)) {
-      return fail(400, { kind: "VendorError", message: "Ảnh phải là JPEG hoặc PNG." });
-    }
 
     const imageBytes = new Uint8Array(await image.arrayBuffer());
     const maskBytes = new Uint8Array(await mask.arrayBuffer());
+    if (!hasAllowedMagicBytes(imageBytes) || !hasAllowedMagicBytes(maskBytes)) {
+      return fail(400, { kind: "VendorError", message: "Ảnh phải là JPEG hoặc PNG." });
+    }
+
     const r = await call({ image: imageBytes, mask: maskBytes });
     if (!r.ok) {
       console.error("[inpaint]", r.error.kind, r.error.message.slice(0, 200));
