@@ -2,6 +2,7 @@
 import { AutoProcessor, RawImage, SamModel, Tensor } from "@huggingface/transformers";
 import { loadWithFallback, pickDevice, samOptions } from "./device";
 import { fetchAsBlob, forwardProgress, serveRpc } from "./rpc";
+import { pickMask } from "../ai/pickMask";
 
 const MODEL = "Xenova/slimsam-77-uniform";
 let loaded: Promise<{ model: any; processor: any }> | null = null;
@@ -33,7 +34,7 @@ serveRpc({
     current = { inputs, embeddings };
     return { value: { width: image.width, height: image.height } };
   },
-  /** points: x, y chuẩn hoá 0..1. Trả mask LỚN NHẤT trong 3 mask (spike: ưu tiên mask lớn cứu thêm 11/65 món). */
+  /** points: x, y chuẩn hoá 0..1. Chọn mask theo pickMask (lớn nhất nhưng không phải sàn/tường). */
   async decode({ points }: { points: { x: number; y: number; positive: boolean }[] }) {
     if (!current) throw new Error("Chưa mã hoá ảnh");
     const { model, processor } = await load();
@@ -47,12 +48,13 @@ serveRpc({
     const H = m.dims[2] ?? 0;
     const W = m.dims[3] ?? 0;
     const size = W * H;
-    let best = 0, bestArea = -1;
+    const areas: number[] = [];
     for (let c = 0; c < channels; c++) {
       let area = 0;
       for (let k = c * size; k < (c + 1) * size; k++) if (m.data[k]) area++;
-      if (area > bestArea) { bestArea = area; best = c; }
+      areas.push(area);
     }
+    const best = pickMask(areas, Array.from(outputs.iou_scores.data as Float32Array), size);
     const data = new Uint8Array(size);
     for (let k = 0; k < size; k++) data[k] = m.data[best * size + k] ? 1 : 0;
     return { value: { width: W, height: H, data }, transfer: [data.buffer] };
