@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# LaMa ONNX tự host (D11) — ~208 MB, tải bằng `pnpm --filter web fetch:lama`.
+/.models/
+
 # production
 /build
 

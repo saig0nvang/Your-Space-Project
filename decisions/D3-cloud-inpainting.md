@@ -6,7 +6,7 @@ date: 2026-07-23
 supersedes: null
 superseded_by: null
 amends: null
-amended_by: [D3b]
+amended_by: [D3b, D11]
 ---
 
 **Quyết định:** **MVP = cloud inpainting qua API hosted trả-theo-lượt** (Replicate hoặc tương đương), KHÔNG tự nuôi GPU server. Giữ được trải nghiệm "xóa đồ cũ trong phòng thật" (non-negotiable gốc).
