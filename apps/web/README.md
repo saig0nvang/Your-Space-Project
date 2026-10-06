@@ -6,14 +6,20 @@ Spec: `docs/superpowers/specs/2026-10-05-web-pitch-demo-design.md`.
 ## Chạy
 
     pnpm install
-    cp apps/web/.env.example apps/web/.env.local   # điền REPLICATE_API_TOKEN để dùng Xóa đồ
+    pnpm --filter web fetch:lama                    # tải model LaMa (~208 MB, một lần) cho Xóa đồ
     pnpm dev                                        # http://localhost:3000
 
 - Depth (Depth Anything V2 Small) và chạm chọn (SlimSAM) chạy trong trình duyệt, tải model lần đầu (sau đó trình
   duyệt cache): WebGPU có `shader-f16` → depth fp16 49,6 MB + SAM encoder fp16 12,2 MB + decoder q8 4,9 MB ≈ 67 MB;
   không có WebGPU (wasm) → depth q8 27,3 MB + SAM q8 8,9 + 4,9 MB ≈ 41 MB; WebGPU không `shader-f16` → depth q8
   27,3 MB + SAM encoder fp32 23,3 MB + decoder 4,9 MB ≈ 55 MB. WebGPU tạo session lỗi → tự chạy lại trên wasm.
-- Xóa đồ gọi LaMa trên Replicate qua `/api/ai/inpaint` (giới hạn 30 lượt/IP/giờ).
+- Xóa đồ chạy **LaMa ONNX tự host ngay trên server** (`onnxruntime-node` + `sharp`, D11) qua `/api/ai/inpaint`
+  (giới hạn 30 lượt/IP/giờ, một lượt suy luận tại một thời điểm). Model `lama_fp32.onnx` (Carve/LaMa-ONNX,
+  thực tải về **198,4 MB**) tải bằng `pnpm --filter web fetch:lama`, lưu ở `apps/web/.models/` (git-ignored,
+  đổi chỗ bằng `LAMA_MODEL_PATH`); route tự trả `503` kèm hướng dẫn tải nếu chưa có model. Đo trên máy dev
+  (CPU, không GPU): **~8,3 s lượt đầu** (gồm nạp session + model vào RAM) rồi **~1,85–1,9 s mỗi lượt sau đó**,
+  với ảnh 512×384 cắt từ `public/golden/rooms/room-02.jpg`. **Không chạy được trên Vercel serverless** (không
+  có ổ đĩa bền cho model ~208 MB) — deploy thật cần máy chủ có ổ đĩa/RAM riêng (vd. Railway).
 - Dựng lại mô hình 3D: `pnpm --filter web build:models`. Nguồn và giấy phép: `public/models/CREDITS.md`.
 - Trang thử nghiệm cũ: `/dev`.
 
@@ -33,10 +39,11 @@ Bản demo: giá, nhà cung cấp là dữ liệu mẫu; form SĐT không gửi 
 ## Trạng thái kiểm thử
 
 Đã kiểm trên Chrome desktop: đặt đồ, kéo đồ, che khuất đúng sau đồ thật trong phòng, ánh sáng theo ảnh
-chụp, undo/redo, chỉnh tỷ lệ phòng, chạm chọn bằng SlimSAM, sheet Mua + form để lại SĐT.
+chụp, undo/redo, chỉnh tỷ lệ phòng, chạm chọn bằng SlimSAM, sheet Mua + form để lại SĐT, xóa đồ thật qua
+LaMa tự host (gọi route `/api/ai/inpaint` trực tiếp bằng ảnh mẫu, xem Task 18 report).
 
-Chưa kiểm: xóa đồ thật qua Replicate (chưa có token để thử), trình duyệt trên điện thoại, ảnh phòng chụp
-từ điện thoại thật.
+Chưa kiểm: xóa đồ qua UI Xóa đồ đầu-cuối trong trình duyệt (SlimSAM chọn → gửi lên LaMa tự host → dán kết
+quả), trình duyệt trên điện thoại, ảnh phòng chụp từ điện thoại thật.
 
 ## Lint
 

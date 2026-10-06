@@ -1,9 +1,9 @@
 ---
-derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a, D7@96011236, D8@4efe52c0]
+derives_from: [D3@57ec90a0, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a, D7@96011236, D8@4efe52c0, D11@2f9e46cb]
 ---
 # YourSpace — Demo web cho pitch: vòng lõi M1 với AI thật — Design Spec
 
-> Ngày: 2026-10-05 · Branch: `demo/web-pitch` (tách từ `m1-build`) · Trạng thái: **đã triển khai trên `demo/web-pitch` (2026-10-05); xóa đồ qua Replicate chưa thử với token thật**
+> Ngày: 2026-10-05 · Branch: `demo/web-pitch` (tách từ `m1-build`) · Trạng thái: **đã triển khai trên `demo/web-pitch` (2026-10-05)**
 > Nguồn: PRD v2.0 §4.2 và §5 (E01, E03, E04, E05, E07) · spec M1 `2026-07-24-m1-web-validation-design.md` §4, §5, §7, §9 ·
 > spike `docs/spikes/2026-10-04-ai-pipeline-real-photos.md` · research `docs/research/2026-10-04-mock-thanh-chuc-nang-that.md`.
 
@@ -16,7 +16,7 @@ derives_from: [D3@7fbc47fb, D3b@4248a41d, D4@bb7f1ffe, D5@15cdc73a, D7@96011236,
 **Lệch có chủ đích so với spec M1 (chỉ cho demo, không phải quyết định mới):**
 - Depth chạy **trong trình duyệt** thay vì server (D3b). Vẫn đặt sau interface `DepthService` của `packages/core` để đổi sang server mà không sửa UI.
 - Segmentation (SlimSAM) chạy **trong trình duyệt** thay vì server (spec M1 §5), cùng lý do và cùng cách cách ly.
-- Inpainting vẫn đúng D3: cloud trả theo lượt qua Replicate.
+- Inpainting dùng LaMa ONNX tự host trên server (D11, amend D3) thay vì API hosted trả theo lượt qua Replicate.
 
 ## 1. Màn và điều hướng
 
@@ -74,17 +74,16 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 - Mask luôn hiện ra để xem trước (phủ màu bán trong suốt + viền). Chọn được nhiều món; danh sách món đã chọn có nút bỏ từng món.
 - Nút chính **Xóa** gửi một lượt cho mọi món đã chọn.
 
-### 3.2. Lấp (cloud)
+### 3.2. Lấp (LaMa tự host — D11)
 - Client: gộp mask của mọi món đã chọn **và mọi vùng đã xóa trước đó**, nới 1,2% cạnh dài ảnh, nới thêm 2,5% chiều cao ảnh xuống dưới với món có đáy ở nửa dưới ảnh. Hàm thuần `prepareEraseMask(masks, imageSize)` trong `packages/core`.
 - Luôn lấp từ **ảnh gốc** với mặt nạ gộp (PRD E5-US2), không lấp chồng lên ảnh đã lấp — tránh "bóng ma".
-- Ảnh gửi lên thu về cạnh dài ≤ 1600 px. Kết quả được dán lại chỉ trong vùng mask (viền mềm) lên ảnh làm việc.
-- Route `POST /api/ai/inpaint` (Next.js, runtime Node): nhận ảnh + mask PNG, gọi nhà cung cấp Replicate `allenhooo/lama` qua `AIGateway`. Hiện `packages/core/src/ai/gateway.ts` chỉ có `makeCachedDepth` (cache theo key, timeout, `AIError` có kiểu); tổng quát nó thành `makeCachedCall<I, O>` dùng chung cho depth và inpaint (giữ `makeCachedDepth` làm lớp mỏng để test cũ không đổi), thêm `InpaintService` vào `ai/types.ts`. Cache theo hash ảnh + mask. Token `REPLICATE_API_TOKEN` ở `.env.local`, không bao giờ xuống client.
-- Giới hạn trong bộ nhớ: 30 lượt / IP / giờ, trả lỗi có kiểu khi vượt.
-- **Kiểm soát chi phí và đầu vào** (theo audit bảo mật 2026-10-05):
-  - Ngân sách theo ngày và trần số lượt chạy đồng thời được **giữ chỗ trước khi gọi Replicate**, hoàn lại khi lỗi. Đọc → gọi → trừ sau sẽ để nhiều request song song cùng lọt trần. Trong một tiến trình Node, giữ chỗ phải xong trước `await` đầu tiên; khi chạy nhiều instance thì dùng `INCRBY` nguyên tử của Redis.
+- Ảnh gửi lên thu về cạnh dài ≤ 1024 px (`LAMA_MAX_SIDE`, `apps/web/lib/erase.ts`). Kết quả được dán lại chỉ trong vùng mask (viền mềm) lên ảnh làm việc.
+- Route `POST /api/ai/inpaint` (Next.js, `runtime = "nodejs"`, `serverExternalPackages: ["onnxruntime-node", "sharp"]`): nhận ảnh + mask PNG, chạy **LaMa ONNX tự host trên CPU của chính server app** (D11, amend D3 — không còn gọi Replicate hay bất kỳ nhà cung cấp thứ ba nào) qua `createLocalLama` (`apps/web/lib/server/lamaLocal.ts`, dùng `onnxruntime-node` + `sharp`). `packages/core/src/ai/gateway.ts` có `makeCachedCall<I, O>` dùng chung cho depth và inpaint (cache tuỳ chọn; route inpaint **không cache** — câu đồng thuận nói ảnh "được xóa ngay sau đó"), `InpaintService` trong `ai/types.ts`. Model `lama_fp32.onnx` (Carve/LaMa-ONNX, ~208 MB) tải bằng `pnpm --filter web fetch:lama`, đường dẫn `LAMA_MODEL_PATH` (mặc định `apps/web/.models/`, git-ignored) — model file chưa có thì route trả `503` kèm hướng dẫn tải, hiện nguyên văn cho người dùng (thông điệp vận hành).
+- Giới hạn trong bộ nhớ: 30 lượt / IP / giờ, trả lỗi có kiểu khi vượt. Suy luận chạy **tuần tự** (hàng đợi promise trong `lamaLocal.ts`) — một `InferenceSession` CPU dùng chung giữa các lượt, không chạy song song.
+- **Kiểm soát đầu vào** (theo audit bảo mật 2026-10-05; phần ngân sách/chi phí theo lượt của bản Replicate không còn áp dụng — tự host không tính tiền theo lượt):
   - Đọc kích thước ảnh từ header **trước khi giải mã**: từ chối nếu cạnh dài > 2048 px hoặc mask khác kích thước ảnh. Kiểm loại file bằng magic bytes, không tin `Content-Type`.
   - Route AI **không bao giờ nhận URL**, chỉ nhận dữ liệu ảnh và mask, nên không có bề mặt SSRF.
-  - Không ghi ảnh, mask, token hay SĐT vào log. Log chỉ có request id, độ trễ, cache hit/miss, lý do bị chặn (giới hạn lượt, hết ngân sách, Replicate lỗi). Không secret nào mang tiền tố `NEXT_PUBLIC_*`.
+  - Không ghi ảnh hay mask vào log. Log chỉ có kind lỗi có kiểu (`AIError["kind"]`) và 200 ký tự đầu message gốc. Không secret nào mang tiền tố `NEXT_PUBLIC_*`.
 - Sau khi lấp: thanh so sánh **Trước / Sau** (giữ để xem ảnh gốc). Kết quả xấu → Hoàn tác, hoặc chọn vùng nhỏ hơn rồi xóa lại (F3). Lỗi mạng/timeout → giữ nguyên ảnh, chip lỗi, cho thử lại.
 - Sau mỗi lượt lấp thành công: chạy lại depth (§2.3).
 
