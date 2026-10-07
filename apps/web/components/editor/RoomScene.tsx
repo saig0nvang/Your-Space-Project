@@ -219,6 +219,7 @@ function Furniture({
     <group
       position={[item.x, 0, item.z]}
       rotation={[0, item.rotationYRad + model.baseYawRad, 0]}
+      scale={item.scale}
       onPointerDown={(e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();
         onPointerDown(item.uid, { x: e.pointer.x, y: e.pointer.y }, e.point.y);

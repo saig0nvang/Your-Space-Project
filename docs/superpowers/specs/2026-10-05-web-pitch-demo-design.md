@@ -62,7 +62,7 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 - Chọn món trong khay → chạm lên sàn để đặt (`placeOnFloor`). Chạm phía trên đường chân trời → chip "Chạm vào sàn, thấp hơn đường chân trời".
 - Kéo món để di chuyển (raycast xuống mặt sàn y=0, tức F2: món luôn bám sàn).
 - Món đang chọn có thanh tác vụ (MASTER.md · Thanh tác vụ của món): **Mua** | Nhân bản · **Bỏ**, và thước **xoay trục Y** (hít vào 0°, ±45°, ±90° khi thả trong ±5°). Panel đáy hiện tên, giá, "rộng × sâu × cao cm".
-- **Không có tỷ lệ cho từng món** (founder quyết 2026-10-04 trong MASTER.md: món luôn đúng kích thước thật, để người dùng không lầm tưởng món vừa không gian). F1 làm ở mức phòng: nút **Chỉnh cỡ phòng** đổi chiều cao máy (0,8–2,0 m) — mọi món cùng to/nhỏ theo, đúng nguyên nhân sai tỷ lệ mà spike chỉ ra.
+- **Cỡ từng món — đổi 2026-10-07 theo yêu cầu người dùng, lệch quyết định founder 2026-10-04 trong MASTER.md (cần founder xác nhận):** món đang chọn có thanh **Cỡ** 50–150% (mặc định 100% = kích thước thật); khi khác 100% panel ghi "Đang hiển thị …% — kích thước thật vẫn là số đo ở trên". F1 ở mức phòng vẫn giữ: nút **Chỉnh cỡ phòng** có thanh **Tầm mắt** (đường chân trời, hiện nét đứt trên ảnh khi mở) và **Độ cao máy** (0,8–2,0 m) — tầm mắt đặt sai là nguyên nhân hay gặp nhất khiến đồ to bất thường.
 - Hoàn tác / Làm lại nhiều bước cho mọi thao tác trên canvas, kể cả xóa đồ cũ (F6).
 - Sau lần đặt đầu, chip: "Đã căn theo mặt sàn · kéo để chỉnh".
 

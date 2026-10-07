@@ -30,3 +30,15 @@ test("placeItem: uid khác nhau mỗi lần (không cần crypto.randomUUID)", (
   const uids = s().history!.present.items.map((i) => i.uid);
   expect(new Set(uids).size).toBe(uids.length);
 });
+
+test("scaleItem: món mới cỡ 1; đổi cỡ trong một gesture = một bước hoàn tác; kẹp 0,5–1,5", () => {
+  const uid = s().history!.present.items[0]!.uid;
+  expect(s().history!.present.items[0]!.scale).toBe(1);
+  s().beginGesture();
+  s().scaleItem(uid, 1.2);
+  s().scaleItem(uid, 9);
+  s().endGesture();
+  expect(s().history!.present.items[0]!.scale).toBe(1.5);
+  s().undo();
+  expect(s().history!.present.items[0]!.scale).toBe(1);
+});

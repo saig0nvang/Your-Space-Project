@@ -7,7 +7,10 @@ import { create } from "zustand";
 import { newId } from "./id";
 import type { PreparedPhoto } from "./image";
 
-export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number };
+/** `scale`: cỡ hiển thị do người dùng chỉnh (1 = kích thước thật) — người dùng quyết 2026-10-07, lệch MASTER.md 2026-10-04. */
+export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number; scale: number };
+
+export const ITEM_SCALE_RANGE = { min: 0.5, max: 1.5 };
 /** Phần nằm trong lịch sử hoàn tác. `workingUrl` = ảnh sau các lần xóa; `eraseMask` = mọi vùng đã xóa (lấp lại từ ảnh gốc). */
 export type EditorDoc = { items: PlacedItem[]; workingUrl: string; eraseMask: Mask | null };
 export type CameraSetup = { horizonNdcY: number; heightM: number; fovYRad: number };
@@ -43,6 +46,7 @@ type State = {
   beginGesture: () => void;
   moveItem: (uid: string, x: number, z: number) => void;
   rotateItem: (uid: string, rad: number) => void;
+  scaleItem: (uid: string, scale: number) => void;
   endGesture: () => void;
   duplicateItem: (uid: string) => void;
   removeItem: (uid: string) => void;
@@ -100,7 +104,7 @@ export const useEditor = create<State>()((set, get) => {
     select: (selectedUid) => set({ selectedUid }),
     placeItem: (productId, x, z) => {
       const uid = newId();
-      commitItems((items) => [...items, { uid, productId, x, z, rotationYRad: 0 }]);
+      commitItems((items) => [...items, { uid, productId, x, z, rotationYRad: 0, scale: 1 }]);
       set({ selectedUid: uid, armedProductId: null });
     },
     beginGesture: () => {
@@ -109,6 +113,10 @@ export const useEditor = create<State>()((set, get) => {
     },
     moveItem: (uid, x, z) => patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, x, z } : i))),
     rotateItem: (uid, rad) => patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, rotationYRad: rad } : i))),
+    scaleItem: (uid, scale) => {
+      const v = Math.min(ITEM_SCALE_RANGE.max, Math.max(ITEM_SCALE_RANGE.min, scale));
+      patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, scale: v } : i)));
+    },
     endGesture: () => {
       const h = get().history;
       if (h) set({ history: end(h) });

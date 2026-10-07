@@ -2,13 +2,13 @@
 import { Copy, ShoppingBag, Trash } from "@phosphor-icons/react";
 import { modelById } from "@/lib/catalog";
 import { formatDimsCm, formatVND } from "@/lib/format";
-import { useEditor } from "@/lib/store";
+import { ITEM_SCALE_RANGE, useEditor } from "@/lib/store";
 
 const SNAPS = [-180, -135, -90, -45, 0, 45, 90, 135, 180];
 const snap = (deg: number) => SNAPS.find((a) => Math.abs(a - deg) <= 5) ?? deg;
 
 export function ItemPanel({ onBuy }: { onBuy: (productIds: string[]) => void }) {
-  const { history, selectedUid, select, rotateItem, beginGesture, endGesture, duplicateItem, removeItem } = useEditor();
+  const { history, selectedUid, select, rotateItem, scaleItem, beginGesture, endGesture, duplicateItem, removeItem } = useEditor();
   const item = history?.present.items.find((i) => i.uid === selectedUid);
   const model = item ? modelById(item.productId) : undefined;
   if (!item || !model) return null;
@@ -33,6 +33,18 @@ export function ItemPanel({ onBuy }: { onBuy: (productIds: string[]) => void }) 
           onChange={(e) => rotateItem(item.uid, (Number(e.target.value) * Math.PI) / 180)} />
         <span className="w-12 text-right tabular">{deg}°</span>
       </label>
+      <label className="flex items-center gap-3 text-[13px] font-semibold">
+        <span className="w-12">Cỡ</span>
+        <input type="range" min={ITEM_SCALE_RANGE.min} max={ITEM_SCALE_RANGE.max} step={0.01} value={item.scale}
+          className="flex-1 accent-foreground h-11"
+          onPointerDown={beginGesture} onPointerUp={endGesture}
+          onKeyDown={(e) => { if (!e.repeat) beginGesture(); }} onKeyUp={endGesture}
+          onChange={(e) => scaleItem(item.uid, Number(e.target.value))} />
+        <span className="w-12 text-right tabular">{Math.round(item.scale * 100)}%</span>
+      </label>
+      {item.scale !== 1 && (
+        <p className="text-[12px] text-muted-foreground">Đang hiển thị {Math.round(item.scale * 100)}% — kích thước thật vẫn là số đo ở trên.</p>
+      )}
       <div className="inline-flex self-start items-stretch bg-accent text-on-accent rounded-pill px-2 shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
         <button type="button" className="w-[58px] h-[52px] flex flex-col items-center justify-center text-[11px] font-semibold" onClick={() => onBuy([model.id])}>
           <ShoppingBag size={20} />Mua
