@@ -9,6 +9,7 @@ export * from "./scene/horizon";
 export * from "./scene/device-tilt";
 export * from "./scene/exif-fov";
 export * from "./scene/occlusion";
+export * from "./scene/floor-rectify";
 export * from "./scene/lighting";
 export { syntheticFloor } from "./scene/fixtures/synthetic-floor";
 export * from "./ai/types";

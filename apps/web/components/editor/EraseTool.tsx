@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { decodePoints, encodeImage, onSamProgress, warmupSam, type SamPoint } from "@/lib/ai/samClient";
 import { eraseWithLama } from "@/lib/erase";
-import { useEditor } from "@/lib/store";
+import { cameraOf, useEditor } from "@/lib/store";
 
 export type EraseObject = { points: SamPoint[]; mask: Mask | null };
 
@@ -71,12 +71,15 @@ export function useEraseSession(active: boolean) {
 
   const erase = useCallback(async () => {
     const masks = objects.flatMap((o) => (o.mask ? [o.mask] : []));
-    const { photo, history } = useEditor.getState();
+    const { photo, history, setup, depth } = useEditor.getState();
     if (!photo || masks.length === 0) return;
     setStatus("erasing");
     try {
       const union = prepareEraseMask(masks, history?.present.eraseMask ?? null);
-      const r = await eraseWithLama(photo.url, union);
+      // Depth của đúng ảnh đang thấy (sàn đã xóa trước đó vẫn là sàn) → phần sàn được lấp trong ảnh nắn thẳng.
+      const floor = setup && depth.disparity && depth.forUrl === history?.present.workingUrl
+        ? { camera: cameraOf(setup, photo.width / photo.height), disparity: depth.disparity } : null;
+      const r = await eraseWithLama(photo.url, union, floor);
       if (!r.ok) {
         // VendorError luôn có message đã được server soạn sẵn cho người dùng (xem inpaintHandler.ts/route.ts) —
         // gồm cả thông báo vận hành "chưa có mô hình trên máy chủ" (503). Lỗi khác (Budget/RateLimited/Timeout/
