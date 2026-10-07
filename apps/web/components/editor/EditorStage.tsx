@@ -1,5 +1,5 @@
 "use client";
-import { placeOnFloor, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
+import { placeOnFloor, pointOnHorizontalPlane, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
@@ -43,7 +43,7 @@ export function EditorStage({
   const s = useEditor.getState;
   const boxRef = useRef<HTMLDivElement>(null);
   const hitItem = useRef(false);
-  const drag = useRef<{ uid: string; dx: number; dz: number } | null>(null);
+  const drag = useRef<{ uid: string; planeY: number; dx: number; dz: number } | null>(null);
   if (!photo || !setup || !items || !workingUrl) return null;
   const aspect = photo.width / photo.height;
   const camera = cameraOf(setup, aspect);
@@ -55,13 +55,17 @@ export function EditorStage({
   };
   const floorAt = (ndc: { x: number; y: number }) => placeOnFloor(ndc, calib, { widthM: 0, heightM: 0, depthM: 0 }).position;
 
-  function onItemPointerDown(uid: string, pointer: { x: number; y: number }) {
+  // Kéo trên mặt phẳng ngang ở độ cao điểm bấm vào món (vd lưng ghế), không chiếu xuống sàn: điểm bấm nằm trên
+  // chân trời thì tia không chạm sàn, độ lệch tính sai và món bị giữ sát máy. Kẹp dưới tầm máy để tia luôn cắt mặt phẳng.
+  function onItemPointerDown(uid: string, pointer: { x: number; y: number }, hitY: number) {
     if (mode !== "place") return;
     hitItem.current = true;
     const item = s().history?.present.items.find((i) => i.uid === uid);
     if (!item) return;
-    const p = floorAt(pointer);
-    drag.current = { uid, dx: item.x - p.x, dz: item.z - p.z };
+    const planeY = Math.min(Math.max(hitY, 0), camera.heightM * 0.9);
+    const p = pointOnHorizontalPlane(pointer, camera, planeY);
+    if (!p) return;
+    drag.current = { uid, planeY, dx: item.x - p.x, dz: item.z - p.z };
     s().select(uid);
     s().beginGesture();
   }
@@ -96,9 +100,8 @@ export function EditorStage({
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
     const d = drag.current;
     if (!d) return;
-    const ndc = toNdc(e);
-    if (ndc.y >= setup!.horizonNdcY - 0.01) return; // không kéo món lên trên chân trời (F2: luôn bám sàn)
-    const p = floorAt(ndc);
+    const p = pointOnHorizontalPlane(toNdc(e), camera, d.planeY);
+    if (!p) return; // con trỏ vượt chân trời của mặt kéo — giữ vị trí cũ (F2: món vẫn ở y = 0)
     s().moveItem(d.uid, p.x + d.dx, p.z + d.dz);
   }
 

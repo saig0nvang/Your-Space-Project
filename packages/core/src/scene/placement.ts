@@ -38,3 +38,15 @@ export function placeOnFloor(
   position.y = 0;
   return { position, rotationYRad: 0, scale: 1 };
 }
+
+/**
+ * Giao tia qua điểm màn hình với mặt phẳng ngang y = planeY (thế giới: sàn y=0, máy cao heightM).
+ * Dùng khi kéo món: kéo trên mặt phẳng ở độ cao của điểm người dùng bấm vào món (vd lưng ghế), không chiếu xuống sàn —
+ * điểm bấm cao trên chân trời thì tia không chạm sàn. null nếu tia không cắt mặt phẳng phía trước máy.
+ */
+export function pointOnHorizontalPlane(screenNdc: { x: number; y: number }, cam: CameraModel, planeY: number): Vec3 | null {
+  const dir = worldRay(screenNdc.x, screenNdc.y, cam);
+  const dy = planeY - cam.heightM;
+  if (Math.abs(dir.y) < 1e-6 || dy / dir.y <= 0) return null;
+  return add({ x: 0, y: cam.heightM, z: 0 }, scale(dir, dy / dir.y));
+}

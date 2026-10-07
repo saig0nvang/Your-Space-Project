@@ -182,7 +182,7 @@ function Furniture({
   item: PlacedItem;
   model: FurnitureModel;
   selected: boolean;
-  onPointerDown: (uid: string, pointer: { x: number; y: number }) => void;
+  onPointerDown: (uid: string, pointer: { x: number; y: number }, hitY: number) => void;
 }) {
   const { scene } = useGLTF(model.glbUrl);
   const object = useMemo(() => {
@@ -221,7 +221,7 @@ function Furniture({
       rotation={[0, item.rotationYRad + model.baseYawRad, 0]}
       onPointerDown={(e: ThreeEvent<PointerEvent>) => {
         e.stopPropagation();
-        onPointerDown(item.uid, { x: e.pointer.x, y: e.pointer.y });
+        onPointerDown(item.uid, { x: e.pointer.x, y: e.pointer.y }, e.point.y);
       }}
     >
       <primitive object={object} />
@@ -304,7 +304,7 @@ export function RoomScene(props: {
   selectedUid: string | null;
   occluder: Occluder;
   lighting: PhotoLighting;
-  onItemPointerDown: (uid: string, pointer: { x: number; y: number }) => void;
+  onItemPointerDown: (uid: string, pointer: { x: number; y: number }, hitY: number) => void;
 }) {
   return (
     <Canvas
