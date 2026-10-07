@@ -7,7 +7,13 @@ Spec: `docs/superpowers/specs/2026-10-05-web-pitch-demo-design.md`.
 
     pnpm install
     pnpm --filter web fetch:lama                    # tải model LaMa (~208 MB, một lần) cho Xóa đồ
+    pnpm calib:setup                                # một lần: venv Python + torch CPU + GeoCalib (~1 GB)
+    pnpm calib:dev                                  # service đoán tầm mắt ở :8001 (để chạy song song)
     pnpm dev                                        # http://localhost:3000
+
+- Bước Thử phòng tự đoán tầm mắt bằng GeoCalib (`services/calibrate`, ~4–5 giây/ảnh trên CPU), người dùng vẫn kéo
+  chỉnh được; service tắt thì đường chân trời về giữa ảnh như cũ. FOV của GeoCalib chỉ dùng khi ảnh không có EXIF
+  và độ bất định ≤ 10°.
 
 - Depth (Depth Anything V2 Small) và chạm chọn (SlimSAM) chạy trong trình duyệt, tải model lần đầu (sau đó trình
   duyệt cache): WebGPU có `shader-f16` → depth fp16 49,6 MB + SAM encoder fp16 12,2 MB + decoder q8 4,9 MB ≈ 67 MB;

@@ -30,3 +30,16 @@ export function solveCameraFromHorizon(opts: {
 export function horizonNdcYFromCamera(cam: CameraModel): number {
   return Math.tan(cam.pitchRad) / Math.tan(cam.fovYRad / 2);
 }
+
+/** FOV của GeoCalib chỉ tin khi độ bất định ≤ 10° (spike 2026-10-04: trung vị ~10,7°, có ảnh lệch 25°). */
+export const MAX_TRUSTED_VFOV_UNCERTAINTY_RAD = (10 * Math.PI) / 180;
+
+/**
+ * Đường chân trời (NDC y) từ hướng trọng lực của GeoCalib. GeoCalib: pitch ÂM = máy chúc xuống; core: pitchRad DƯƠNG
+ * = chúc xuống. Tính bằng FOV của chính GeoCalib để đường nằm đúng chỗ trên ảnh; camera của app sau đó giải lại pitch
+ * theo FOV app dùng (EXIF hoặc mặc định). Kẹp [-0,94; 0,94] như đường kéo tay.
+ */
+export function horizonFromGravity(g: { pitchRad: number; vfovRad: number }): number {
+  const ny = Math.tan(-g.pitchRad) / Math.tan(g.vfovRad / 2);
+  return Math.min(0.94, Math.max(-0.94, ny));
+}

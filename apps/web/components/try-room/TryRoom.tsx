@@ -1,11 +1,12 @@
 "use client";
-import { fovYFromFocal35, type StyleId } from "@yourspace/core";
+import { MAX_TRUSTED_VFOV_UNCERTAINTY_RAD, fovYFromFocal35, horizonFromGravity, type StyleId } from "@yourspace/core";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/Button";
+import { calibrate } from "@/lib/ai/calibrateClient";
 import { SAMPLE_ROOMS } from "@/lib/catalog";
 import { preparePhoto } from "@/lib/image";
 import { useEditor } from "@/lib/store";
@@ -25,6 +26,11 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
   // Quay lại từ trình sửa (nút ← ở TopBar): lấy chân trời/tư thế đang dùng thay vì về mặc định.
   const [horizon, setHorizon] = useState(setup?.horizonNdcY ?? 0);
   const [heightM, setHeightM] = useState<number>(setup?.heightM ?? POSTURES[0].heightM);
+  // GeoCalib (services/calibrate) điền sẵn tầm mắt; người dùng đã kéo thì không ghi đè.
+  const [auto, setAuto] = useState<{ status: "idle" | "pending" | "done"; fovYRad: number | null; rollDeg: number }>(
+    { status: "idle", fovYRad: null, rollDeg: 0 },
+  );
+  const touched = useRef(false);
 
   useEffect(() => {
     if (initialStyle) setStyle(initialStyle);
@@ -36,7 +42,9 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
     setError(null);
     try {
       const blob = typeof source === "string" ? await (await fetch(source)).blob() : source;
-      setPhoto(await preparePhoto(blob));
+      const prepared = await preparePhoto(blob);
+      setPhoto(prepared);
+      void autoHorizon(prepared.url);
     } catch {
       setError("Không mở được ảnh này. Thử một ảnh JPEG hoặc PNG khác.");
     } finally {
@@ -44,9 +52,27 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
     }
   }
 
+  async function autoHorizon(url: string) {
+    touched.current = false;
+    setAuto({ status: "pending", fovYRad: null, rollDeg: 0 });
+    const g = await calibrate(await (await fetch(url)).blob());
+    if (!g) return setAuto({ status: "idle", fovYRad: null, rollDeg: 0 });
+    if (!touched.current) setHorizon(horizonFromGravity(g));
+    setAuto({
+      status: "done",
+      fovYRad: g.vfovUncertainty <= MAX_TRUSTED_VFOV_UNCERTAINTY_RAD ? g.vfovRad : null,
+      rollDeg: (g.rollRad * 180) / Math.PI,
+    });
+  }
+
+  function dragHorizon(ndcY: number) {
+    touched.current = true;
+    setHorizon(ndcY);
+  }
+
   function start() {
     if (!photo) return;
-    const fovYRad = fovYFromFocal35(photo.focal35, photo.width / photo.height) ?? DEFAULT_FOV;
+    const fovYRad = fovYFromFocal35(photo.focal35, photo.width / photo.height) ?? auto.fovYRad ?? DEFAULT_FOV;
     startEditing({ horizonNdcY: horizon, heightM, fovYRad });
     router.push("/chinh-sua");
   }
@@ -59,6 +85,7 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
 
   function pickAnother() {
     clearPhoto();
+    setAuto({ status: "idle", fovYRad: null, rollDeg: 0 });
     setHorizon(0);
     setHeightM(POSTURES[0].heightM);
   }
@@ -97,10 +124,16 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
       <Button variant="text" className="self-start" onClick={pickAnother}>← Chọn ảnh khác</Button>
       <h1 className="font-display font-bold text-[28px] leading-[34px] tracking-[-0.6px]">Kéo đường ngang tầm mắt</h1>
       <p className="text-[15px] leading-5 text-muted-foreground">Đặt đường nét đứt ở độ cao mắt bạn lúc chụp — thường là nơi các đường của tường và sàn hội tụ.</p>
+      {auto.status === "pending" && <p className="text-[13px] text-muted-foreground" role="status">Đang tự đoán tầm mắt…</p>}
+      {auto.status === "done" && (
+        <p className="text-[13px] text-muted-foreground" role="status">
+          Đã tự đoán tầm mắt · kéo nếu chưa đúng{Math.abs(auto.rollDeg) > 4 ? ` · ảnh nghiêng ~${Math.round(Math.abs(auto.rollDeg))}°, đồ có thể lệch` : ""}
+        </p>
+      )}
       <div className="relative w-full overflow-hidden rounded-md2 bg-muted" style={{ aspectRatio: `${photo.width} / ${photo.height}` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={photo.url} alt="Ảnh phòng của bạn" className="absolute inset-0 size-full object-cover" />
-        <HorizonOverlay value={horizon} onChange={setHorizon} />
+        <HorizonOverlay value={horizon} onChange={dragHorizon} />
       </div>
       <fieldset className="flex flex-col gap-2">
         <legend className="text-[15px] font-semibold mb-2">Lúc chụp bạn đang</legend>

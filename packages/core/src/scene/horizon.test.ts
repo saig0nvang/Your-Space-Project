@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { horizonNdcYFromCamera, solveCameraFromHorizon } from "./horizon";
+import { horizonNdcYFromCamera, solveCameraFromHorizon, horizonFromGravity } from "./horizon";
 import { placeOnFloor } from "./placement";
 import type { Calibration } from "../types";
 
@@ -29,4 +29,18 @@ test("điểm càng gần chân trời càng xa camera", () => {
   const far = placeOnFloor({ x: 0, y: 0.1 }, calib, dims); // sát chân trời hơn
   expect(Math.abs(near.position.z)).toBeLessThan(Math.abs(far.position.z));
   expect(near.position.y).toBeCloseTo(0, 6);
+});
+
+test("horizonFromGravity: GeoCalib pitch âm (chúc xuống) → chân trời phía trên giữa ảnh; khớp ngược solveCameraFromHorizon", () => {
+  const vfov = (89.7 * Math.PI) / 180;
+  const ny = horizonFromGravity({ pitchRad: -0.2805, vfovRad: vfov });
+  expect(ny).toBeCloseTo(Math.tan(0.2805) / Math.tan(vfov / 2), 6);
+  expect(ny).toBeGreaterThan(0);
+  const cam = solveCameraFromHorizon({ horizonNdcY: ny, aspect: 4 / 3, fovYRad: vfov });
+  expect(cam.pitchRad).toBeCloseTo(0.2805, 6);
+});
+
+test("horizonFromGravity: kẹp trong [-0,94; 0,94] như đường kéo tay", () => {
+  expect(horizonFromGravity({ pitchRad: -1.2, vfovRad: 0.5 })).toBe(0.94);
+  expect(horizonFromGravity({ pitchRad: 1.2, vfovRad: 0.5 })).toBe(-0.94);
 });

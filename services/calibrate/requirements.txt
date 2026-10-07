@@ -1,0 +1,7 @@
+torch
+torchvision
+geocalib @ git+https://github.com/cvg/GeoCalib
+fastapi
+uvicorn[standard]
+python-multipart
+pillow
