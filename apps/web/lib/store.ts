@@ -34,6 +34,7 @@ type State = {
   /** Quay lại trình sửa với chân trời/tư thế mới, GIỮ nguyên lịch sử (đồ đã bày, các lần xóa). */
   resumeEditing: (setup: Pick<CameraSetup, "horizonNdcY" | "heightM">) => void;
   setCameraHeight: (heightM: number) => void;
+  setHorizon: (horizonNdcY: number) => void;
   arm: (productId: string | null) => void;
   select: (uid: string | null) => void;
   placeItem: (productId: string, x: number, z: number) => void;
@@ -87,6 +88,10 @@ export const useEditor = create<State>()((set, get) => {
     setCameraHeight: (heightM) => {
       const s = get().setup;
       if (s) set({ setup: { ...s, heightM } });
+    },
+    setHorizon: (horizonNdcY) => {
+      const s = get().setup;
+      if (s) set({ setup: { ...s, horizonNdcY } });
     },
     arm: (armedProductId) => set({ armedProductId, selectedUid: null }),
     select: (selectedUid) => set({ selectedUid }),
