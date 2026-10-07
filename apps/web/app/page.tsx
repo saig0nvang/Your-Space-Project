@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 
@@ -19,7 +20,7 @@ export default function Home() {
           <Button href="/thu-phong" full>Thử phòng</Button>
           <Button href="/phong-cach" variant="secondary" full>Khám phá phong cách</Button>
         </div>
-        <p className="text-[12px] leading-4 text-muted-foreground">Bản demo · giá và nhà cung cấp là dữ liệu mẫu.</p>
+        <p className="text-[12px] leading-4 text-muted-foreground">Bản demo · giá và nhà cung cấp là dữ liệu mẫu · <Link href="/ghi-cong" className="underline underline-offset-2">Ghi công</Link></p>
       </section>
     </main>
   );

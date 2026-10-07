@@ -127,7 +127,7 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
       {auto.status === "pending" && <p className="text-[13px] text-muted-foreground" role="status">Đang tự đoán tầm mắt…</p>}
       {auto.status === "done" && (
         <p className="text-[13px] text-muted-foreground" role="status">
-          Đã tự đoán tầm mắt · kéo nếu chưa đúng{Math.abs(auto.rollDeg) > 4 ? ` · ảnh nghiêng ~${Math.round(Math.abs(auto.rollDeg))}°, đồ có thể lệch` : ""}
+          Đã tự đoán tầm mắt (GeoCalib) · kéo nếu chưa đúng{Math.abs(auto.rollDeg) > 4 ? ` · ảnh nghiêng ~${Math.round(Math.abs(auto.rollDeg))}°, đồ có thể lệch` : ""}
         </p>
       )}
       <div className="relative w-full overflow-hidden rounded-md2 bg-muted" style={{ aspectRatio: `${photo.width} / ${photo.height}` }}>
