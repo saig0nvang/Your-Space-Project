@@ -1,4 +1,5 @@
 import type { CameraModel } from "../types";
+import { pointOnHorizontalPlane } from "./placement";
 
 const DEFAULT_FOV_Y = (60 * Math.PI) / 180;
 
@@ -42,4 +43,31 @@ export const MAX_TRUSTED_VFOV_UNCERTAINTY_RAD = (10 * Math.PI) / 180;
 export function horizonFromGravity(g: { pitchRad: number; vfovRad: number }): number {
   const ny = Math.tan(-g.pitchRad) / Math.tan(g.vfovRad / 2);
   return Math.min(0.94, Math.max(-0.94, ny));
+}
+
+/**
+ * Chiều cao máy (m) từ một vật đứng thẳng đã biết chiều cao (vd cửa đi 2,1 m): người dùng chạm chân rồi đỉnh vật.
+ * Mọi khoảng cách trong cảnh tỷ lệ thuận với chiều cao máy, nên giải với máy cao 1 m: chân vật chạm sàn tại P, tia qua
+ * đỉnh vật cắt đường thẳng đứng qua P ở độ cao y; chiều cao máy = chiều cao vật / y. null khi chạm không hợp lệ.
+ * Cùng cách "vật đã biết kích thước làm thước" của Kreativ (US20200302686A1, bước S570).
+ */
+export function cameraHeightFromVerticalObject(
+  bottomNdc: { x: number; y: number },
+  topNdc: { x: number; y: number },
+  cam: CameraModel,
+  objectHeightM: number,
+): number | null {
+  if (topNdc.y <= bottomNdc.y) return null;
+  const unit = { ...cam, heightM: 1 };
+  const foot = pointOnHorizontalPlane(bottomNdc, unit, 0);
+  if (!foot) return null;
+  const t = Math.tan(cam.fovYRad / 2);
+  const c = Math.cos(-cam.pitchRad), s = Math.sin(-cam.pitchRad);
+  const lx = topNdc.x * t * cam.aspect, ly = topNdc.y * t, lz = -1;
+  const dir = { x: lx, y: ly * c - lz * s, z: ly * s + lz * c };
+  const reach = Math.hypot(foot.x, foot.z);
+  const along = Math.hypot(dir.x, dir.z);
+  if (along < 1e-9) return null;
+  const yTop = 1 + (reach / along) * dir.y;
+  return yTop > 1e-3 ? objectHeightM / yTop : null;
 }

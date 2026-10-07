@@ -19,6 +19,10 @@ export function RoomScalePopover({ onClose }: { onClose: () => void }) {
         <input type="range" aria-label="Tầm mắt" min={-0.94} max={0.94} step={0.01} value={setup.horizonNdcY}
           className="accent-foreground h-11" onChange={(e) => setHorizon(Number(e.target.value))} />
       </label>
+      <button type="button" className="min-h-[44px] rounded-pill border-[1.5px] border-foreground text-[15px] font-semibold"
+        onClick={() => { useEditor.setState({ measure: { objectHeightM: 2.1, bottom: null }, notice: { id: Date.now(), text: "Chạm vào chân cửa đi (chỗ cửa chạm sàn)" } }); onClose(); }}>
+        Đo theo cửa đi (cao 2,1 m)
+      </button>
       <span className="text-[13px] font-semibold">Độ cao máy</span>
       <input type="range" aria-label="Độ cao máy" min={ROOM_HEIGHT_RANGE.min} max={ROOM_HEIGHT_RANGE.max} step={0.05} value={setup.heightM}
         className="accent-foreground h-11" onChange={(e) => setCameraHeight(Number(e.target.value))} />

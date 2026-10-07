@@ -1,5 +1,5 @@
 "use client";
-import { placeOnFloor, pointOnHorizontalPlane, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
+import { cameraHeightFromVerticalObject, placeOnFloor, pointOnHorizontalPlane, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
@@ -30,7 +30,7 @@ export function EditorStage({
   onErasePoint: (p: { x: number; y: number }) => void;
   children?: ReactNode;
 }) {
-  const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon } = useEditor(
+  const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon, measure } = useEditor(
     useShallow((st) => ({
       photo: st.photo,
       setup: st.setup,
@@ -39,6 +39,7 @@ export function EditorStage({
       selectedUid: st.selectedUid,
       armedProductId: st.armedProductId,
       showHorizon: st.showHorizon,
+      measure: st.measure,
     })),
   );
   const s = useEditor.getState;
@@ -74,6 +75,23 @@ export function EditorStage({
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
     e.currentTarget.setPointerCapture(e.pointerId);
     const ndc = toNdc(e);
+    const m = s().measure;
+    if (m) {
+      if (!m.bottom) {
+        useEditor.setState({ measure: { ...m, bottom: ndc } });
+        s().notify("Giờ chạm vào đỉnh của vật");
+        return;
+      }
+      const h = cameraHeightFromVerticalObject(m.bottom, ndc, camera, m.objectHeightM);
+      useEditor.setState({ measure: null });
+      if (h === null || h < 0.5 || h > 3) {
+        s().notify("Chưa đo được — chạm chân vật (trên sàn) trước, rồi đỉnh vật phía trên");
+        return;
+      }
+      s().setCameraHeight(Math.round(h * 100) / 100);
+      s().notify(`Máy cao ${h.toFixed(2)} m theo vật ${m.objectHeightM} m · mọi món đã đổi cỡ theo`);
+      return;
+    }
     if (mode === "erase") {
       onErasePoint({ x: (ndc.x + 1) / 2, y: (1 - ndc.y) / 2 });
       return;
@@ -133,6 +151,10 @@ export function EditorStage({
         lighting={lighting}
         onItemPointerDown={onItemPointerDown}
       />
+      {measure?.bottom && (
+        <span aria-hidden className="absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-accent pointer-events-none"
+          style={{ left: `${((measure.bottom.x + 1) / 2) * 100}%`, top: `${((1 - measure.bottom.y) / 2) * 100}%` }} />
+      )}
       {showHorizon && (
         <div aria-hidden className="absolute inset-x-0 border-t-2 border-dashed border-white pointer-events-none shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
           style={{ top: `${((1 - setup.horizonNdcY) / 2) * 100}%` }} />

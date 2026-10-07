@@ -31,6 +31,8 @@ type State = {
   notice: Notice | null;
   /** Hiện đường tầm mắt trên ảnh (khi mở popover Chỉnh cỡ phòng). */
   showHorizon: boolean;
+  /** Đo chiều cao máy bằng vật thẳng đứng đã biết chiều cao: chạm chân rồi đỉnh (vd cửa đi 2,1 m). */
+  measure: { objectHeightM: number; bottom: { x: number; y: number } | null } | null;
   setStyle: (id: StyleId) => void;
   setPhoto: (p: PreparedPhoto) => void;
   /** Bỏ ảnh đang sửa cùng mọi thứ gắn với nó (đồ đã bày, lịch sử, depth, lựa chọn). */
@@ -80,6 +82,7 @@ export const useEditor = create<State>()((set, get) => {
     depth: IDLE_DEPTH,
     notice: null,
     showHorizon: false,
+    measure: null,
     setStyle: (styleId) => set({ styleId }),
     setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
     clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
