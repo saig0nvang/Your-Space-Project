@@ -28,9 +28,9 @@ export function TopBar({ mode, onModeChange, historyLocked = false }: { mode: "p
       <div className="flex gap-1">
         <button type="button" aria-label="Hoàn tác" className={round} disabled={historyLocked || !undoable} onClick={undo}><ArrowCounterClockwise size={20} /></button>
         <button type="button" aria-label="Làm lại" className={round} disabled={historyLocked || !redoable} onClick={redo}><ArrowClockwise size={20} /></button>
-        <button type="button" aria-label="Chỉnh cỡ phòng" aria-expanded={scaleOpen} className={round} onClick={() => setScaleOpen((o) => !o)}><Ruler size={20} /></button>
+        <button type="button" aria-label="Chỉnh cỡ phòng" aria-expanded={scaleOpen} className={round} onClick={() => { const open = !scaleOpen; setScaleOpen(open); useEditor.setState({ showHorizon: open }); }}><Ruler size={20} /></button>
       </div>
-      {scaleOpen && <RoomScalePopover onClose={() => setScaleOpen(false)} />}
+      {scaleOpen && <RoomScalePopover onClose={() => { setScaleOpen(false); useEditor.setState({ showHorizon: false }); }} />}
     </div>
   );
 }

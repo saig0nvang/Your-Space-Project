@@ -30,7 +30,7 @@ export function EditorStage({
   onErasePoint: (p: { x: number; y: number }) => void;
   children?: ReactNode;
 }) {
-  const { photo, setup, items, workingUrl, selectedUid, armedProductId } = useEditor(
+  const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon } = useEditor(
     useShallow((st) => ({
       photo: st.photo,
       setup: st.setup,
@@ -38,6 +38,7 @@ export function EditorStage({
       workingUrl: st.history?.present.workingUrl ?? null,
       selectedUid: st.selectedUid,
       armedProductId: st.armedProductId,
+      showHorizon: st.showHorizon,
     })),
   );
   const s = useEditor.getState;
@@ -132,6 +133,10 @@ export function EditorStage({
         lighting={lighting}
         onItemPointerDown={onItemPointerDown}
       />
+      {showHorizon && (
+        <div aria-hidden className="absolute inset-x-0 border-t-2 border-dashed border-white pointer-events-none shadow-[0_1px_2px_rgba(0,0,0,0.6)]"
+          style={{ top: `${((1 - setup.horizonNdcY) / 2) * 100}%` }} />
+      )}
       {children}
     </div>
   );

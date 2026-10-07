@@ -26,6 +26,8 @@ type State = {
   armedProductId: string | null;
   depth: DepthState;
   notice: Notice | null;
+  /** Hiện đường tầm mắt trên ảnh (khi mở popover Chỉnh cỡ phòng). */
+  showHorizon: boolean;
   setStyle: (id: StyleId) => void;
   setPhoto: (p: PreparedPhoto) => void;
   /** Bỏ ảnh đang sửa cùng mọi thứ gắn với nó (đồ đã bày, lịch sử, depth, lựa chọn). */
@@ -73,6 +75,7 @@ export const useEditor = create<State>()((set, get) => {
     armedProductId: null,
     depth: IDLE_DEPTH,
     notice: null,
+    showHorizon: false,
     setStyle: (styleId) => set({ styleId }),
     setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
     clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
