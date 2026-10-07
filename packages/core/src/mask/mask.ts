@@ -100,3 +100,53 @@ export function cropSquare(bbox: Rect, width: number, height: number): Rect {
   const y = Math.round(Math.min(Math.max(cy - side / 2, 0), height - side));
   return { x, y, w: side, h: side };
 }
+
+/** Gán nhãn vùng 4-liên thông của các pixel có `data[k] === value`; trả nhãn (0 = không thuộc) và số pixel mỗi nhãn. */
+function labelRegions(data: Uint8Array, w: number, h: number, value: 0 | 1): { labels: Int32Array; sizes: number[] } {
+  const labels = new Int32Array(w * h);
+  const sizes = [0];
+  const stack: number[] = [];
+  for (let start = 0; start < w * h; start++) {
+    if (data[start] !== value || labels[start]) continue;
+    const id = sizes.length;
+    sizes.push(0);
+    labels[start] = id;
+    stack.push(start);
+    while (stack.length) {
+      const k = stack.pop()!;
+      sizes[id]!++;
+      const x = k % w;
+      for (const n of [x > 0 ? k - 1 : -1, x < w - 1 ? k + 1 : -1, k - w, k + w]) {
+        if (n < 0 || n >= w * h || data[n] !== value || labels[n]) continue;
+        labels[n] = id;
+        stack.push(n);
+      }
+    }
+  }
+  return { labels, sizes };
+}
+
+/**
+ * Làm sạch mask một món (như build.py của bản mock): giữ các mảng chứa điểm chạm (không điểm nào trúng thì giữ
+ * mảng lớn nhất), rồi lấp lỗ — vùng nền không thông ra mép ảnh, ví dụ khe giữa các nan sofa/ghế — để LaMa không
+ * lấy lại pixel của chính món đó qua khe.
+ */
+export function cleanObjectMask(m: Mask, seeds: readonly { x: number; y: number }[]): Mask {
+  const { width: w, height: h } = m;
+  const fg = labelRegions(m.data, w, h, 1);
+  const keep = new Set<number>();
+  for (const s of seeds) {
+    const id = fg.labels[Math.round(s.y) * w + Math.round(s.x)] ?? 0;
+    if (id) keep.add(id);
+  }
+  if (keep.size === 0 && fg.sizes.length > 1) keep.add(fg.sizes.indexOf(Math.max(...fg.sizes.slice(1))));
+  const out = new Uint8Array(w * h);
+  for (let k = 0; k < w * h; k++) if (keep.has(fg.labels[k] ?? 0)) out[k] = 1;
+
+  const bg = labelRegions(out, w, h, 0);
+  const touchesEdge = new Set<number>();
+  for (let x = 0; x < w; x++) { touchesEdge.add(bg.labels[x] ?? 0); touchesEdge.add(bg.labels[(h - 1) * w + x] ?? 0); }
+  for (let y = 0; y < h; y++) { touchesEdge.add(bg.labels[y * w] ?? 0); touchesEdge.add(bg.labels[y * w + w - 1] ?? 0); }
+  for (let k = 0; k < w * h; k++) if (!out[k] && !touchesEdge.has(bg.labels[k] ?? 0)) out[k] = 1;
+  return { width: w, height: h, data: out };
+}

@@ -2,6 +2,7 @@
 import { AutoProcessor, RawImage, SamModel, Tensor } from "@huggingface/transformers";
 import { loadWithFallback, pickDevice, samOptions } from "./device";
 import { fetchAsBlob, forwardProgress, serveRpc } from "./rpc";
+import { cleanObjectMask } from "@yourspace/core";
 import { pickMask } from "../ai/pickMask";
 
 const MODEL = "Xenova/slimsam-77-uniform";
@@ -57,6 +58,8 @@ serveRpc({
     const best = pickMask(areas, Array.from(outputs.iou_scores.data as Float32Array), size);
     const data = new Uint8Array(size);
     for (let k = 0; k < size; k++) data[k] = m.data[best * size + k] ? 1 : 0;
-    return { value: { width: W, height: H, data }, transfer: [data.buffer] };
+    const seeds = points.filter((p) => p.positive).map((p) => ({ x: Math.min(W - 1, p.x * W), y: Math.min(H - 1, p.y * H) }));
+    const clean = cleanObjectMask({ width: W, height: H, data }, seeds);
+    return { value: clean, transfer: [clean.data.buffer] };
   },
 });

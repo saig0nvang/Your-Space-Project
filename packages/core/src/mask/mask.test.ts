@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import {
-  cropSquare, dilateMask, emptyMask, extendDown, maskArea, maskBBox, prepareEraseMask, unionMasks, type Mask,
+  cleanObjectMask, cropSquare, dilateMask, emptyMask, extendDown, maskArea, maskBBox, prepareEraseMask, unionMasks, type Mask,
 } from "./mask";
 
 const withPixels = (w: number, h: number, pts: Array<[number, number]>): Mask => {
@@ -48,4 +48,23 @@ test("cropSquare: ô 512 quanh bbox nhỏ, kẹp trong ảnh; bbox quá lớn �
   expect(cropSquare({ x: 10, y: 10, w: 20, h: 20 }, 1600, 1200)).toEqual({ x: 0, y: 0, w: 512, h: 512 });
   expect(cropSquare({ x: 700, y: 500, w: 100, h: 100 }, 1600, 1200)).toEqual({ x: 494, y: 294, w: 512, h: 512 });
   expect(cropSquare({ x: 0, y: 0, w: 1500, h: 100 }, 1600, 1200)).toEqual({ x: 0, y: 0, w: 1600, h: 1200 });
+});
+
+test("cleanObjectMask: bỏ mảng rời không chứa điểm chạm, lấp lỗ (khe nan sofa)", () => {
+  // 7×5: mảng chính cột 1..4 (có lỗ ở (2,2)); mảng rời ở cột 6; chạm tại (1,1)
+  const m = withPixels(7, 5, [
+    [1, 1], [2, 1], [3, 1], [4, 1],
+    [1, 2], /* lỗ (2,2) */ [3, 2], [4, 2],
+    [1, 3], [2, 3], [3, 3], [4, 3],
+    [6, 2],
+  ]);
+  const c = cleanObjectMask(m, [{ x: 1, y: 1 }]);
+  expect(c.data[2 * 7 + 2]).toBe(1); // lỗ đã lấp
+  expect(c.data[2 * 7 + 6]).toBe(0); // mảng rời đã bỏ
+  expect(maskArea(c)).toBe(12);
+});
+
+test("cleanObjectMask: điểm chạm trượt khỏi mask → giữ mảng lớn nhất", () => {
+  const m = withPixels(6, 3, [[0, 0], [1, 0], [2, 0], [5, 2]]);
+  expect(maskArea(cleanObjectMask(m, [{ x: 4, y: 1 }]))).toBe(3);
 });
