@@ -6,6 +6,7 @@ import { useShallow } from "zustand/react/shallow";
 import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
 import { dragAgainstWalls, placementYaw } from "@/lib/walls";
 import { ItemOverlay } from "./ItemOverlay";
+import { snapped, wrap } from "./RotationRuler";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -52,6 +53,14 @@ export function EditorStage({
   const hitItem = useRef(false);
   const drag = useRef<{ uid: string; planeY: number; dx: number; dz: number } | null>(null);
   const [dragging, setDragging] = useState(false); // ẩn thanh tác vụ khi kéo (MASTER.md)
+  // Vặn hai ngón trên ảnh = xoay món đang chọn (MASTER.md · Thước xoay món).
+  const pointers = useRef(new Map<number, { x: number; y: number }>());
+  const twist = useRef<{ uid: string; a0: number; yaw0: number } | null>(null);
+  const tapDeselect = useRef(false); // chạm chỗ trống: bỏ chọn lúc NHẤC tay, để ngón thứ hai còn vặn được món đang chọn
+  const pinchAngle = () => {
+    const [a, b] = [...pointers.current.values()];
+    return Math.atan2(b!.y - a!.y, b!.x - a!.x); // màn hình: y xuống → góc tăng theo chiều kim đồng hồ
+  };
   if (!photo || !setup || !items || !workingUrl) return null;
   const aspect = photo.width / photo.height;
   const camera = cameraOf(setup, aspect);
@@ -68,6 +77,7 @@ export function EditorStage({
   function onItemPointerDown(uid: string, pointer: { x: number; y: number }, hitY: number) {
     if (mode !== "place") return;
     hitItem.current = true;
+    if (pointers.current.size > 0) return; // ngón thứ hai trúng món: là vặn xoay, không phải kéo mới
     const item = s().history?.present.items.find((i) => i.uid === uid);
     if (!item) return;
     const planeY = Math.min(Math.max(hitY, 0), camera.heightM * 0.9);
@@ -81,6 +91,29 @@ export function EditorStage({
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>) {
     e.currentTarget.setPointerCapture(e.pointerId);
+    if (e.isPrimary) {
+      // Ngón đầu của lượt chạm mới: bỏ ngón "ma" (pointerup bị mất — thông báo hệ thống đè lên…) và vặn còn dở, không
+      // thì mọi lần chạm sau đều bị coi là vặn hai ngón.
+      pointers.current.clear();
+      if (twist.current) {
+        twist.current = null;
+        setDragging(false);
+        s().endGesture();
+      }
+    }
+    pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const sel = s().history?.present.items.find((i) => i.uid === s().selectedUid);
+    if (pointers.current.size === 2 && mode === "place" && sel) {
+      if (!drag.current) s().beginGesture(); // đang kéo thì gesture đã mở — cả kéo lẫn vặn là MỘT bước hoàn tác
+      drag.current = null;
+      hitItem.current = false;
+      setDragging(true);
+      useEditor.setState({ wallGuide: null });
+      twist.current = { uid: sel.uid, a0: pinchAngle(), yaw0: sel.rotationYRad };
+      tapDeselect.current = false;
+      return;
+    }
+    if (pointers.current.size > 1) return;
     const ndc = toNdc(e);
     const m = s().measure;
     if (m) {
@@ -109,7 +142,7 @@ export function EditorStage({
     } // R3F đã xử lý (chạy trước, vì lắng nghe ở phần tử con)
     const productId = s().armedProductId;
     if (!productId) {
-      s().select(null);
+      tapDeselect.current = true;
       return;
     }
     if (ndc.y >= setup!.horizonNdcY) {
@@ -124,6 +157,12 @@ export function EditorStage({
   }
 
   function onPointerMove(e: PointerEvent<HTMLDivElement>) {
+    if (pointers.current.has(e.pointerId)) pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const t = twist.current;
+    if (t && pointers.current.size === 2) {
+      s().rotateItem(t.uid, t.yaw0 - (pinchAngle() - t.a0)); // vặn theo chiều kim đồng hồ = xoay cùng chiều nhìn từ trên
+      return;
+    }
     const d = drag.current;
     if (!d) return;
     const p = pointOnHorizontalPlane(toNdc(e), camera, d.planeY);
@@ -137,7 +176,21 @@ export function EditorStage({
     if (q.yawRad !== item.rotationYRad) s().rotateItem(d.uid, q.yawRad);
   }
 
-  function onPointerUp() {
+  function onPointerUp(e: PointerEvent<HTMLDivElement>) {
+    pointers.current.delete(e.pointerId);
+    if (tapDeselect.current) {
+      tapDeselect.current = false;
+      s().select(null);
+    }
+    const t = twist.current;
+    if (t) {
+      twist.current = null; // nhấc một ngón là xong; ngón còn lại không kéo tiếp
+      const item = s().history?.present.items.find((i) => i.uid === t.uid);
+      if (item) s().rotateItem(t.uid, (snapped(wrap((item.rotationYRad * 180) / Math.PI)) * Math.PI) / 180);
+      setDragging(false);
+      s().endGesture();
+      return;
+    }
     if (drag.current) {
       drag.current = null;
       setDragging(false);

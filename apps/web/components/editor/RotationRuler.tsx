@@ -7,8 +7,9 @@ const SNAP_EVERY = 45; // 0°, ±45°, ±90°…
 const SNAP_WITHIN = 5;
 const KEY_STEP = 15;
 
-const wrap = (deg: number) => ((((deg + 180) % 360) + 360) % 360) - 180;
-const snapped = (deg: number) => {
+export const wrap = (deg: number) => ((((deg + 180) % 360) + 360) % 360) - 180;
+/** Thả tay trong ±5° quanh 0°, ±45°, ±90°… thì hít vào góc đó (dùng chung cho thước và vặn hai ngón). */
+export const snapped = (deg: number) => {
   const s = Math.round(deg / SNAP_EVERY) * SNAP_EVERY;
   return Math.abs(s - deg) <= SNAP_WITHIN ? wrap(s) : deg;
 };
