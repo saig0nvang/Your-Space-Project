@@ -2,9 +2,10 @@
 import type { StyleId } from "@yourspace/core";
 import { CATEGORY_LABEL, STYLES, modelsOfStyle } from "@/lib/catalog";
 import { formatVND } from "@/lib/format";
+import { autoPlace } from "@/lib/autoPlace";
 import { useEditor } from "@/lib/store";
 
-/** Khay đồ lọc theo phong cách. Chạm một món để "cầm", rồi chạm lên sàn trong ảnh để đặt. */
+/** Khay đồ lọc theo phong cách. Chạm một món là tự đặt vào chỗ sàn trống; chưa có depth thì "cầm" rồi chạm lên sàn để đặt. */
 export function Tray() {
   const { styleId, setStyle, armedProductId, arm } = useEditor();
   const items = modelsOfStyle(styleId);
@@ -32,7 +33,7 @@ export function Tray() {
               <button
                 type="button"
                 aria-pressed={armed}
-                onClick={() => arm(armed ? null : m.id)}
+                onClick={() => armed ? arm(null) : autoPlace(m.id) || arm(m.id)}
                 className={`w-[132px] min-h-[88px] text-left rounded-md2 p-3 flex flex-col justify-between ${armed ? "bg-accent text-on-accent" : "bg-card border border-border"}`}
               >
                 <span className="text-[12px] leading-4 opacity-80">{CATEGORY_LABEL[m.category]}</span>
@@ -44,7 +45,7 @@ export function Tray() {
         })}
       </ul>
       <p className="text-[13px] text-muted-foreground min-h-[18px]">
-        {armedProductId ? "Chạm lên sàn trong ảnh để đặt món." : "Chọn một món, rồi chạm lên sàn để đặt."}
+        {armedProductId ? "Chạm lên sàn trong ảnh để đặt món." : "Chọn một món để đặt vào chỗ sàn trống, rồi kéo để chỉnh."}
       </p>
     </div>
   );
