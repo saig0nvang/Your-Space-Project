@@ -50,23 +50,38 @@ export function floorEdge(disp: DisparityMap, fit: FloorFit, cam: CameraModel): 
 }
 
 /**
- * Giữ món đứng trên sàn THẤY ĐƯỢC: chân món (x, z) chiếu lên ảnh mà nằm trên mép sàn của cột đó (tức ra sau tường/đồ
- * — trên ảnh trông như treo trên tường) thì kéo về theo hướng nhìn, để mép sau món (`halfDepthM`) vừa chạm mép sàn.
- * Đo trực tiếp trên ảnh nên chắc hơn tường ước lượng (lệch ~5–15%). Cột không thấy sàn thì để nguyên.
+ * Giữ món đứng trên sàn THẤY ĐƯỢC: góc đáy nào của món (hộp `widthM` × `depthM` xoay `yawRad`) chiếu lên ảnh mà nằm
+ * trên mép sàn của cột ảnh chứa nó (tức ra sau tường/đồ — trên ảnh trông như treo trên tường) thì kéo cả món về theo
+ * hướng nhìn, tới vị trí xa nhất mà mọi góc còn trên sàn (chia đôi). Mỗi góc so với mép sàn của chính cột nó — món dài
+ * trải qua nhiều cột, tường xiên. Đo trực tiếp trên ảnh nên chắc hơn tường ước lượng (lệch ~5–15%). Góc ra ngoài khung
+ * ảnh hay rơi vào cột không thấy sàn thì bỏ qua.
  */
-export function keepOnVisibleFloor(edge: FloorEdge, cam: CameraModel, x: number, z: number, halfDepthM: number): { x: number; z: number } {
-  const ndc = floorPointToNdc(x, z, cam);
-  if (!ndc) return { x, z };
+export function keepOnVisibleFloor(
+  edge: FloorEdge, cam: CameraModel, x: number, z: number, yawRad: number, widthM: number, depthM: number,
+): { x: number; z: number } {
   const w = edge.top.length;
-  const i = Math.min(w - 1, Math.max(0, Math.floor(((ndc.x + 1) / 2) * w)));
-  const row = edge.top[i]!;
-  if (row >= edge.rows) return { x, z };
-  const e = pointOnHorizontalPlane({ x: ndc.x, y: 1 - (row / edge.rows) * 2 }, cam, 0);
-  if (!e) return { x, z };
+  const c = Math.cos(yawRad), s = Math.sin(yawRad);
+  const onFloor = (cx: number, cz: number) => {
+    for (const [a, b] of [[-1, -1], [1, -1], [1, 1], [-1, 1]] as const) {
+      const px = cx + (a * widthM / 2) * c + (b * depthM / 2) * s;
+      const pz = cz - (a * widthM / 2) * s + (b * depthM / 2) * c;
+      const ndc = floorPointToNdc(px, pz, cam);
+      if (!ndc || Math.abs(ndc.x) >= 1) continue;
+      const row = edge.top[Math.min(w - 1, Math.floor(((ndc.x + 1) / 2) * w))]!;
+      if (row >= edge.rows) continue;
+      const e = pointOnHorizontalPlane({ x: ndc.x, y: 1 - (row / edge.rows) * 2 }, cam, 0);
+      if (e && Math.hypot(px, pz) > Math.hypot(e.x, e.z)) return false;
+    }
+    return true;
+  };
+  if (onFloor(x, z)) return { x, z };
   const r = Math.hypot(x, z);
-  const limit = Math.max(Math.hypot(e.x, e.z) - halfDepthM, 0.3 * cam.heightM);
-  if (r <= limit) return { x, z };
-  return { x: (x * limit) / r, z: (z * limit) / r };
+  let lo = Math.min(1, (0.3 * cam.heightM) / r), hi = 1; // phần của khoảng cách tới máy; lo là sàn tối thiểu
+  for (let k = 0; k < 20; k++) {
+    const mid = (lo + hi) / 2;
+    if (onFloor(x * mid, z * mid)) lo = mid; else hi = mid;
+  }
+  return { x: x * lo, z: z * lo };
 }
 
 /**

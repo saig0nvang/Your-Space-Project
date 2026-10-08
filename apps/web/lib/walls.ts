@@ -4,7 +4,7 @@ import {
   type FloorEdge, type Wall,
 } from "@yourspace/core";
 import { modelById } from "./catalog";
-import { cameraOf, useEditor } from "./store";
+import { cameraOf, setItemConstraint, useEditor } from "./store";
 
 /** Cùng ngưỡng khớp sàn với lượt che khuất (useSceneDepth). */
 const MIN_FLOOR_FIT = 0.3;
@@ -39,14 +39,16 @@ export function currentWalls(): Wall[] {
   return room()?.walls.map((wl) => scaleWall(wl, heightM)) ?? [];
 }
 
-/** Chân món (x, z) không được ra sau mép sàn thấy được — chạm lên tường dưới tầm mắt không còn đặt món "treo tường". */
-export function onVisibleFloor(productId: string, scale: number, x: number, z: number): { x: number; z: number } {
+// Mọi thay đổi món (đặt, kéo, xoay, đổi cỡ, nhân bản) giữ chân món trên sàn thấy được — chạm lên tường dưới tầm mắt,
+// hay xoay/phóng món dài ra sau tường, không còn ra món "treo tường".
+setItemConstraint((i) => {
   const { photo, setup } = useEditor.getState();
   const edge = room()?.edge;
-  if (!edge || !photo || !setup) return { x, z };
-  const halfDepth = ((modelById(productId)?.dimsM.depthM ?? 0) * scale) / 2;
-  return keepOnVisibleFloor(edge, cameraOf(setup, photo.width / photo.height), x, z, halfDepth);
-}
+  const d = modelById(i.productId)?.dimsM;
+  if (!edge || !photo || !setup || !d) return i;
+  const cam = cameraOf(setup, photo.width / photo.height);
+  return keepOnVisibleFloor(edge, cam, i.x, i.z, i.rotationYRad, d.widthM * i.scale, d.depthM * i.scale);
+});
 
 /** Góc xoay khi đặt món tại (x, z): quay lưng vào tường gần nếu có, không thì 0 (nhìn về máy). */
 export function placementYaw(x: number, z: number): number {

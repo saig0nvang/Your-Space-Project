@@ -2,7 +2,7 @@
 import { findFreeFloorSpot, fitDepthToFloor, floorMaskFromDepth } from "@yourspace/core";
 import { modelById } from "./catalog";
 import { cameraOf, useEditor } from "./store";
-import { onVisibleFloor, placementYaw } from "./walls";
+import { placementYaw } from "./walls";
 
 /** Cùng ngưỡng khớp sàn với lượt che khuất (useSceneDepth). */
 const MIN_FLOOR_FIT = 0.3;
@@ -27,8 +27,7 @@ export function autoPlace(productId: string): boolean {
   const need = footprintRadius(productId, 1);
   const spot = findFreeFloorSpot(floorMaskFromDepth(depth.disparity, fit, cam1), cameraOf(setup, aspect), obstacles, need);
   if (!spot) return false;
-  const p = onVisibleFloor(productId, 1, spot.x, spot.z);
-  placeItem(productId, p.x, p.z, placementYaw(p.x, p.z));
+  placeItem(productId, spot.x, spot.z, placementYaw(spot.x, spot.z)); // store giữ chân món trên sàn thấy được
   notify(spot.clearanceM < need ? "Sàn trống hơi chật · kéo để chỉnh" : "Đã đặt vào chỗ sàn trống · kéo để chỉnh");
   return true;
 }

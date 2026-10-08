@@ -64,6 +64,14 @@ type State = {
 
 const IDLE_DEPTH: DepthState = { status: "idle", forUrl: null, disparity: null };
 
+/**
+ * Ràng buộc vị trí món, áp cho MỌI thay đổi (đặt, kéo, xoay, đổi cỡ, nhân bản) — lib/walls đăng ký "chân món trên sàn
+ * thấy được" (store không biết hình học phòng). Mặc định giữ nguyên.
+ */
+let constrain: (i: PlacedItem) => { x: number; z: number } = (i) => i;
+export const setItemConstraint = (f: typeof constrain) => { constrain = f; };
+const fitted = (i: PlacedItem): PlacedItem => ({ ...i, ...constrain(i) });
+
 export const useEditor = create<State>()((set, get) => {
   /** Sửa `present.items` theo một gesture (không tạo bước; bước tạo ở endGesture). */
   const patchItems = (fn: (items: PlacedItem[]) => PlacedItem[]) => {
@@ -111,18 +119,18 @@ export const useEditor = create<State>()((set, get) => {
     select: (selectedUid) => set({ selectedUid }),
     placeItem: (productId, x, z, rotationYRad = 0) => {
       const uid = newId();
-      commitItems((items) => [...items, { uid, productId, x, z, rotationYRad, scale: 1 }]);
+      commitItems((items) => [...items, fitted({ uid, productId, x, z, rotationYRad, scale: 1 })]);
       set({ selectedUid: uid, armedProductId: null });
     },
     beginGesture: () => {
       const h = get().history;
       if (h) set({ history: begin(h) });
     },
-    moveItem: (uid, x, z) => patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, x, z } : i))),
-    rotateItem: (uid, rad) => patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, rotationYRad: rad } : i))),
+    moveItem: (uid, x, z) => patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, x, z }) : i))),
+    rotateItem: (uid, rad) => patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, rotationYRad: rad }) : i))),
     scaleItem: (uid, scale) => {
       const v = Math.min(ITEM_SCALE_RANGE.max, Math.max(ITEM_SCALE_RANGE.min, scale));
-      patchItems((items) => items.map((i) => (i.uid === uid ? { ...i, scale: v } : i)));
+      patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, scale: v }) : i)));
     },
     endGesture: () => {
       const h = get().history;
@@ -131,7 +139,7 @@ export const useEditor = create<State>()((set, get) => {
     duplicateItem: (uid) => {
       const src = get().history?.present.items.find((i) => i.uid === uid);
       if (!src) return;
-      const copy = { ...src, uid: newId(), x: src.x + 0.4 };
+      const copy = fitted({ ...src, uid: newId(), x: src.x + 0.4 });
       commitItems((items) => [...items, copy]);
       set({ selectedUid: copy.uid });
     },

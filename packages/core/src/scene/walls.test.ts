@@ -69,10 +69,14 @@ test("snapToWall: gần tường thì xoay lưng vào và áp sát; xa thì gi�
 
 test("keepOnVisibleFloor: chân món ra sau mép sàn (trông như treo trên tường) bị kéo về; trên sàn thì để nguyên", () => {
   const edge = { top: new Float32Array(80).fill(60), rows: 120 }; // mép sàn ở giữa ảnh, mọi cột
-  const far = keepOnVisibleFloor(edge, cam, 0.5, -20, 0.2);
+  const far = keepOnVisibleFloor(edge, cam, 0.5, -20, 0, 1, 0.4);
   const ndc = floorPointToNdc(far.x, far.z, cam)!;
   expect(ndc.y).toBeLessThan(0); // chân giờ ở dưới mép sàn (nửa dưới ảnh)
   expect(far.x / far.z).toBeCloseTo(0.5 / -20); // kéo theo đúng hướng nhìn
-  expect(keepOnVisibleFloor(edge, cam, 0, -2, 0.2)).toEqual({ x: 0, z: -2 });
-  expect(keepOnVisibleFloor({ top: new Float32Array(80).fill(120), rows: 120 }, cam, 0, -20, 0.2)).toEqual({ x: 0, z: -20 });
+  expect(keepOnVisibleFloor(edge, cam, 0, -2, 0, 1, 0.4)).toEqual({ x: 0, z: -2 });
+  expect(keepOnVisibleFloor({ top: new Float32Array(80).fill(120), rows: 120 }, cam, 0, -20, 0, 1, 0.4)).toEqual({ x: 0, z: -20 });
+  // tủ dài xoay 90°: cạnh dài chĩa theo hướng nhìn → phải lùi thêm nửa chiều dài
+  const long = keepOnVisibleFloor(edge, cam, 0, -20, Math.PI / 2, 2.4, 0.5);
+  const short = keepOnVisibleFloor(edge, cam, 0, -20, 0, 2.4, 0.5);
+  expect(short.z - long.z).toBeCloseTo(-(1.2 - 0.25), 5);
 });

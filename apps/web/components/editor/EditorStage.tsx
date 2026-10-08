@@ -4,7 +4,7 @@ import { useRef, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
 import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
-import { dragAgainstWalls, onVisibleFloor, placementYaw } from "@/lib/walls";
+import { dragAgainstWalls, placementYaw } from "@/lib/walls";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -111,8 +111,7 @@ export function EditorStage({
       return;
     }
     if (!modelById(productId)) return;
-    const hit = floorAt(ndc);
-    const p = onVisibleFloor(productId, 1, hit.x, hit.z); // chạm lên tường dưới tầm mắt → đứng ở mép sàn, không treo tường
+    const p = floorAt(ndc); // chạm lên tường dưới tầm mắt → store kéo về mép sàn (setItemConstraint ở lib/walls)
     const first = (s().history?.present.items.length ?? 0) === 0;
     s().placeItem(productId, p.x, p.z, placementYaw(p.x, p.z));
     if (first) s().notify("Đã căn theo mặt sàn · kéo để chỉnh");
@@ -126,8 +125,7 @@ export function EditorStage({
     const item = s().history?.present.items.find((i) => i.uid === d.uid);
     if (!item) return;
     const q = dragAgainstWalls(item.productId, item.scale, item.rotationYRad, p.x + d.dx, p.z + d.dz); // hít tường, không xuyên
-    const f = onVisibleFloor(item.productId, item.scale, q.x, q.z);
-    s().moveItem(d.uid, f.x, f.z);
+    s().moveItem(d.uid, q.x, q.z);
     if (q.yawRad !== item.rotationYRad) s().rotateItem(d.uid, q.yawRad);
   }
 
