@@ -34,6 +34,8 @@ type State = {
   showHorizon: boolean;
   /** Đo chiều cao máy bằng vật thẳng đứng đã biết chiều cao: chạm chân rồi đỉnh (vd cửa đi 2,1 m). */
   measure: { objectHeightM: number; bottom: { x: number; y: number } | null } | null;
+  /** Vạch chân tường khi món đang kéo hít tường — tạm thời, không vào lịch sử. */
+  wallGuide: [[number, number], [number, number]] | null;
   /** Đồ nội thất máy dò thấy trên ảnh GỐC (`forUrl` = photo.url) — Xóa đồ viền sẵn để chạm chọn. */
   detections: { forUrl: string; objects: Detection[] } | null;
   setStyle: (id: StyleId) => void;
@@ -95,6 +97,7 @@ export const useEditor = create<State>()((set, get) => {
     showHorizon: false,
     measure: null,
     detections: null,
+    wallGuide: null,
     setStyle: (styleId) => set({ styleId }),
     setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH, detections: null }),
     clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH, detections: null }),

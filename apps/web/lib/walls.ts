@@ -1,6 +1,6 @@
 "use client";
 import {
-  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, snapToWall, yawFacingAway,
+  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, snapToWall, wallGuide, yawFacingAway,
   type FloorEdge, type Wall,
 } from "@yourspace/core";
 import { modelById } from "./catalog";
@@ -57,8 +57,15 @@ export function placementYaw(x: number, z: number): number {
   return wl ? yawFacingAway(wl) : 0;
 }
 
-/** Vị trí + góc khi kéo tới (x, z): sát tường thì hít vào (xoay lưng, áp sát), lấn tường thì bị đẩy ra. */
-export function dragAgainstWalls(productId: string, scale: number, yawRad: number, x: number, z: number): { x: number; z: number; yawRad: number } {
+/**
+ * Vị trí + góc khi kéo tới (x, z): sát tường thì hít vào (xoay lưng, áp sát), lấn tường thì bị đẩy ra. `guide` = vạch
+ * chân tường khi đang hít, null khi không.
+ */
+export function dragAgainstWalls(
+  productId: string, scale: number, yawRad: number, x: number, z: number,
+): { x: number; z: number; yawRad: number; guide: ReturnType<typeof wallGuide> | null } {
   const d = modelById(productId)?.dimsM;
-  return d ? snapToWall(currentWalls(), x, z, yawRad, d.widthM * scale, d.depthM * scale, SNAP_M) : { x, z, yawRad };
+  if (!d) return { x, z, yawRad, guide: null };
+  const q = snapToWall(currentWalls(), x, z, yawRad, d.widthM * scale, d.depthM * scale, SNAP_M);
+  return { ...q, guide: q.wall ? wallGuide(q.wall, q.x, q.z, d.widthM * scale) : null };
 }

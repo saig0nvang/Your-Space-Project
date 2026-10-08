@@ -32,7 +32,7 @@ export function EditorStage({
   onErasePoint: (p: { x: number; y: number }) => void;
   children?: ReactNode;
 }) {
-  const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon, measure } = useEditor(
+  const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon, measure, wallGuide } = useEditor(
     useShallow((st) => ({
       photo: st.photo,
       setup: st.setup,
@@ -42,6 +42,7 @@ export function EditorStage({
       armedProductId: st.armedProductId,
       showHorizon: st.showHorizon,
       measure: st.measure,
+      wallGuide: st.wallGuide,
     })),
   );
   const s = useEditor.getState;
@@ -126,6 +127,8 @@ export function EditorStage({
     const item = s().history?.present.items.find((i) => i.uid === d.uid);
     if (!item) return;
     const q = dragAgainstWalls(item.productId, item.scale, item.rotationYRad, p.x + d.dx, p.z + d.dz); // hít tường, không xuyên
+    if (q.guide && !s().wallGuide) navigator.vibrate?.(10); // MASTER: rung nhẹ đúng một lần lúc hít vào
+    useEditor.setState({ wallGuide: q.guide });
     s().moveItem(d.uid, q.x, q.z);
     if (q.yawRad !== item.rotationYRad) s().rotateItem(d.uid, q.yawRad);
   }
@@ -133,6 +136,7 @@ export function EditorStage({
   function onPointerUp() {
     if (drag.current) {
       drag.current = null;
+      useEditor.setState({ wallGuide: null });
       s().endGesture();
     }
   }
@@ -155,6 +159,7 @@ export function EditorStage({
         selectedUid={selectedUid}
         occluder={occluder}
         lighting={lighting}
+        wallGuide={wallGuide}
         onItemPointerDown={onItemPointerDown}
       />
       {mode === "place" && selectedUid && (() => {

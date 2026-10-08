@@ -264,7 +264,7 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
   const invalidate = useThree((st) => st.invalidate);
   useEffect(() => {
     invalidate();
-  }, [props.items, props.camera, props.occluder, props.lighting, props.selectedUid, background, env, invalidate]);
+  }, [props.items, props.camera, props.occluder, props.lighting, props.selectedUid, props.wallGuide, background, env, invalidate]);
   // Tab ẩn thì trình duyệt dừng requestAnimationFrame: frame đã yêu cầu lúc ẩn chỉ vẽ khi tab hiện lại — vẽ lại
   // chủ động khi hiện lại cho chắc (không có vòng lặp liên tục nào khác để "tự sửa" như frameloop="always").
   useEffect(() => {
@@ -286,6 +286,13 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
         <shadowMaterial opacity={0.35} />
       </mesh>
       <ContactShadows position={[0, 0.005, -5]} scale={20} far={1.5} blur={2.5} opacity={0.5} resolution={512} />
+      {props.wallGuide && (
+        // Vạch chân tường khi món hít tường (MASTER.md): lõi onImage 3 trên viền scrim 35% 7; cảnh 3D nên món che vạch.
+        <>
+          <Line points={props.wallGuide.map(([x, z]) => [x, 0.003, z] as [number, number, number])} color="black" transparent opacity={0.35} lineWidth={7} />
+          <Line points={props.wallGuide.map(([x, z]) => [x, 0.004, z] as [number, number, number])} color="white" lineWidth={3} />
+        </>
+      )}
       {props.items.map((item) => {
         const model = modelById(item.productId);
         // Suspense riêng từng món: GLB đang tải chỉ treo món đó, không ẩn cả ảnh phòng + các món khác.
@@ -311,6 +318,8 @@ export function RoomScene(props: {
   selectedUid: string | null;
   occluder: Occluder;
   lighting: PhotoLighting;
+  /** Hai đầu (x, z) của vạch chân tường khi món đang hít tường; null = không vẽ. */
+  wallGuide?: [[number, number], [number, number]] | null;
   onItemPointerDown: (uid: string, pointer: { x: number; y: number }, hitY: number) => void;
 }) {
   return (

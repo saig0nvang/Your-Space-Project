@@ -3,7 +3,7 @@ import type { CameraModel } from "../types";
 import type { DisparityMap } from "./occlusion";
 import { pixelRayDir } from "./ray";
 import { floorPointToNdc } from "./floor-rectify";
-import { estimateWalls, keepInFrontOfWalls, keepOnVisibleFloor, nearestWall, snapToWall, yawFacingAway, type Wall } from "./walls";
+import { estimateWalls, keepInFrontOfWalls, keepOnVisibleFloor, nearestWall, snapToWall, wallGuide, yawFacingAway, type Wall } from "./walls";
 
 const cam: CameraModel = { fovYRad: (60 * Math.PI) / 180, aspect: 4 / 3, heightM: 1.5, pitchRad: (12 * Math.PI) / 180 };
 
@@ -64,6 +64,10 @@ test("snapToWall: gần tường thì xoay lưng vào và áp sát; xa thì gi�
   const p = snapToWall([left], -1.6, -2, 0, 1.6, 0.4, 0.25); // lưng cách tường 0,2 ≤ 0,25
   expect(p.yawRad).toBeCloseTo(Math.PI / 2);
   expect(p.x).toBeCloseTo(-1.8); // lưng chạm tường x = −2
+  expect(p.wall).toBe(left);
+  const [a, b] = wallGuide(left, p.x, p.z, 1.6); // trên chân tường x = −2, dài 1,7 × rộng, quanh z = −2
+  expect(a[0]).toBeCloseTo(-2); expect(b[0]).toBeCloseTo(-2);
+  expect(Math.abs(a[1] - b[1])).toBeCloseTo(1.6 * 1.7); expect((a[1] + b[1]) / 2).toBeCloseTo(-2);
   expect(snapToWall([left], 0, -2, 0.3, 1.6, 0.4, 0.25)).toEqual({ x: 0, z: -2, yawRad: 0.3 });
 });
 

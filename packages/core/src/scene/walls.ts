@@ -211,12 +211,12 @@ export function keepInFrontOfWalls(
 }
 
 /**
- * Hít tường khi kéo: lưng món (sâu `depthM`) cách tường gần nhất ≤ `snapM` → xoay lưng vào tường và áp sát; không thì
- * giữ góc cũ. Sau đó vẫn đẩy ra trước mọi tường (góc phòng).
+ * Hít tường khi kéo: lưng món (sâu `depthM`) cách tường gần nhất ≤ `snapM` → xoay lưng vào tường và áp sát (`wall` =
+ * tường đó, để vẽ vạch chân tường); không thì giữ góc cũ. Sau đó vẫn đẩy ra trước mọi tường (góc phòng).
  */
 export function snapToWall(
   walls: readonly Wall[], x: number, z: number, yawRad: number, widthM: number, depthM: number, snapM: number,
-): { x: number; z: number; yawRad: number } {
+): { x: number; z: number; yawRad: number; wall?: Wall } {
   const wl = nearestWall(walls, x, z, depthM / 2 + snapM);
   if (wl) {
     const gap = wl.nx * x + wl.nz * z - wl.d - depthM / 2;
@@ -224,5 +224,16 @@ export function snapToWall(
     z -= gap * wl.nz;
     yawRad = yawFacingAway(wl);
   }
-  return { ...keepInFrontOfWalls(walls, x, z, yawRad, widthM, depthM), yawRad };
+  return { ...keepInFrontOfWalls(walls, x, z, yawRad, widthM, depthM), yawRad, ...(wl && { wall: wl }) };
+}
+
+/**
+ * Vạch chân tường dưới món đã hít (MASTER.md: dài hơn món 35% mỗi bên): hai đầu (x, z) trên đường chân tường, đối xứng
+ * quanh hình chiếu tâm món.
+ */
+export function wallGuide(wl: Wall, x: number, z: number, widthM: number): [[number, number], [number, number]] {
+  const t = -wl.nz * x + wl.nx * z;
+  const half = widthM * 0.85;
+  const at = (u: number): [number, number] => [wl.nx * wl.d - wl.nz * u, wl.nz * wl.d + wl.nx * u];
+  return [at(t - half), at(t + half)];
 }
