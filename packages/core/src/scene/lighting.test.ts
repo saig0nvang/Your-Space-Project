@@ -37,12 +37,12 @@ test("brightSpot: cửa sổ sáng góc trên trái → tâm ở trái-trên; �
   expect(brightSpot(new Uint8ClampedArray(w * h * 4).fill(128), w, h)).toBeNull();
 });
 
-test("keyLightDir: nguồn sáng bên trái → đèn từ trái (x < 0), độ cao trong 35–65°", () => {
+test("keyLightDir: nguồn sáng bên trái → đèn từ trái (x < 0), độ cao trong 55–75°", () => {
   const cam = { fovYRad: (60 * Math.PI) / 180, aspect: 4 / 3, heightM: 1.5, pitchRad: (10 * Math.PI) / 180 };
   const d = keyLightDir({ x: -0.8, y: 0.2 }, cam);
   expect(d.x).toBeLessThan(0);
   const el = (Math.asin(d.y) * 180) / Math.PI;
-  expect(el).toBeGreaterThanOrEqual(35 - 1e-9);
-  expect(el).toBeLessThanOrEqual(65 + 1e-9);
+  expect(el).toBeGreaterThanOrEqual(55 - 1e-9);
+  expect(el).toBeLessThanOrEqual(75 + 1e-9);
   expect(Math.hypot(d.x, d.y, d.z)).toBeCloseTo(1);
 });

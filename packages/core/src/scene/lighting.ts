@@ -81,11 +81,11 @@ export function brightSpot(rgba: Uint8ClampedArray | Uint8Array, width: number, 
   return { x: sx / count, y: sy / count };
 }
 
-const ELEVATION_RAD = [(35 * Math.PI) / 180, (65 * Math.PI) / 180] as const;
+const ELEVATION_RAD = [(55 * Math.PI) / 180, (75 * Math.PI) / 180] as const;
 
 /**
  * Hướng (đơn vị, từ cảnh tới đèn) của đèn chính đặt theo vùng sáng: phương vị = hướng từ giữa vùng sàn trước máy
- * (cách 2,5·h) tới nguồn sáng (coi cách máy 4·h theo tia qua `spot`); độ cao kẹp 35–65° — cửa sổ thường ngang tầm mắt,
+ * (cách 2,5·h) tới nguồn sáng (coi cách máy 4·h theo tia qua `spot`); độ cao kẹp 55–75° — cửa sổ thường ngang tầm mắt,
  * để thật thì bóng dài quá, mà ánh sáng cửa sổ vốn là trời phía trên chiếu xuống.
  */
 export function keyLightDir(spot: { x: number; y: number }, cam: CameraModel): Vec3 {
