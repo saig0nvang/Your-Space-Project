@@ -36,3 +36,29 @@ test("kéo, xoay, đổi cỡ, nhân bản đều không làm chồng món", () 
   const all = items();
   for (let i = 0; i < all.length; i++) for (let j = i + 1; j < all.length; j++) expect(separation(fp(all[i]!), fp(all[j]!))).toBeNull();
 });
+
+test("đặt lên mặt bàn: cây vào giữa bàn trà → lên mặt (y = cao bàn); bàn dời/xoay → cây theo; bỏ bàn → cây rơi xuống sàn", () => {
+  s().placeItem("ban-tra-tron-thep", 0, -3); // bàn trà tròn 1,3 × 1,3 m, mặt cao 0,49 m
+  s().placeItem("cay-xanh-chau-cao", 0.2, -3); // cây lá môn 0,70 × 0,66, cao 0,84 m
+  const [table, plant] = items();
+  expect(plant!.onUid).toBe(table!.uid);
+  expect(plant!.y).toBeCloseTo(0.491, 2);
+  expect(plant!.x).toBeCloseTo(0.2); // không bị va chạm đẩy ra khỏi chính cái bàn
+  s().moveItem(table!.uid, 1, -3); // dời bàn +1 m theo x
+  expect(items()[1]!.x).toBeCloseTo(1.2);
+  expect(items()[1]!.onUid).toBe(table!.uid);
+  s().rotateItem(table!.uid, Math.PI / 2); // xoay bàn 90°: cây (lệch +0,2 theo x) quay quanh tâm bàn
+  expect(items()[1]!.x).toBeCloseTo(1);
+  expect(items()[1]!.z).toBeCloseTo(-3.2);
+  s().removeItem(table!.uid);
+  expect(items()[0]).toMatchObject({ y: 0, onUid: undefined });
+});
+
+test("ngoài mặt bàn hoặc món không đặt-lên-được → ở sàn, không chồng", () => {
+  s().placeItem("ban-tra-tron-thep", 0, -3);
+  s().placeItem("cay-xanh-chau-cao", 2, -3); // xa bàn
+  expect(items()[1]).toMatchObject({ y: 0, onUid: undefined });
+  s().placeItem("ghe-banh-khung-thep", 0, -3); // ghế không đặt lên bàn → bị đẩy ra
+  expect(items()[2]!.y ?? 0).toBe(0);
+  expect(separation(fp(items()[2]!), fp(items()[0]!))).toBeNull();
+});

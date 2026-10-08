@@ -45,3 +45,24 @@ export function separateFromOthers(a: Footprint, others: readonly Footprint[], p
   }
   return { x, z };
 }
+
+/** Mặt trên của món làm mặt đỡ (bàn, tủ): chân đế + độ cao mặt. */
+export type Support = Footprint & { uid: string; top: number };
+
+/**
+ * Mặt đỡ cho món `f` (đồ trang trí đặt lên mặt tủ/bàn, như mặt "stackable" của Kreativ): tâm món nằm trong mặt trên
+ * (chừa 30% bề rộng món ở mép — cho thò ra chút như đồ thật) và món không rộng hơn mặt. Nhiều mặt thì lấy mặt cao nhất.
+ */
+export function findSupport(f: Footprint, supports: readonly Support[]): Support | null {
+  let best: Support | null = null;
+  for (const s of supports) {
+    const [u, v] = axes(s);
+    const lu = (f.x - s.x) * u[0] + (f.z - s.z) * u[1];
+    const lv = (f.x - s.x) * v[0] + (f.z - s.z) * v[1];
+    const eu = radius(f, u), ev = radius(f, v); // nửa bề rộng món theo hai trục của mặt
+    if (eu > s.w / 2 || ev > s.d / 2) continue;
+    if (Math.abs(lu) > s.w / 2 - eu * 0.3 || Math.abs(lv) > s.d / 2 - ev * 0.3) continue;
+    if (!best || s.top > best.top) best = s;
+  }
+  return best;
+}

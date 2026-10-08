@@ -87,8 +87,9 @@ function measureLines(
   const yaw = item.rotationYRad + baseYawRad;
   const W = dims.widthM * item.scale, D = dims.depthM * item.scale, H = dims.heightM * item.scale;
   const c = Math.cos(yaw), s = Math.sin(yaw);
+  const base = item.y ?? 0; // món đặt trên mặt tủ/bàn
   const px = (lx: number, y: number, lz: number): P | null => {
-    const n = worldToNdc(item.x + lx * c + lz * s, y, item.z - lx * s + lz * c, cam);
+    const n = worldToNdc(item.x + lx * c + lz * s, base + y, item.z - lx * s + lz * c, cam);
     return n && { x: ((n.x + 1) / 2) * size.w, y: ((1 - n.y) / 2) * size.h };
   };
   // Cạnh đáy theo chiều rộng nằm thấp hơn trên ảnh = gần máy hơn.
@@ -116,7 +117,8 @@ function topCenter(
   const W = dims.widthM * item.scale, D = dims.depthM * item.scale, H = dims.heightM * item.scale;
   const c = Math.cos(yaw), s = Math.sin(yaw);
   const pts: P[] = [];
-  for (const a of [-1, 1]) for (const b of [-1, 1]) for (const y of [0, H]) {
+  const base = item.y ?? 0;
+  for (const a of [-1, 1]) for (const b of [-1, 1]) for (const y of [base, base + H]) {
     const n = worldToNdc(item.x + (a * W / 2) * c + (b * D / 2) * s, y, item.z - (a * W / 2) * s + (b * D / 2) * c, cam);
     if (n) pts.push({ x: ((n.x + 1) / 2) * size.w, y: ((1 - n.y) / 2) * size.h });
   }

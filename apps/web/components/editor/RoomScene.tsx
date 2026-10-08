@@ -223,7 +223,7 @@ function Furniture({
   );
   return (
     <group
-      position={[item.x, 0, item.z]}
+      position={[item.x, item.y ?? 0, item.z]} // y > 0: đặt trên mặt món khác
       rotation={[0, item.rotationYRad + model.baseYawRad, 0]}
       scale={[item.flipped ? -item.scale : item.scale, item.scale, item.scale]} // lật = gương theo trục rộng
       onPointerDown={(e: ThreeEvent<PointerEvent>) => {

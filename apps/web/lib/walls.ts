@@ -1,7 +1,7 @@
 "use client";
 import {
-  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, separateFromOthers, snapToWall,
-  wallGuide, yawFacingAway, type FloorEdge, type Footprint, type Wall,
+  estimateWalls, findSupport, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, separateFromOthers,
+  snapToWall, wallGuide, yawFacingAway, type FloorEdge, type Footprint, type Support, type Wall,
 } from "@yourspace/core";
 import { modelById } from "./catalog";
 import { cameraOf, setItemConstraint, useEditor, type PlacedItem } from "./store";
@@ -44,20 +44,43 @@ const footprintOf = (i: PlacedItem): Footprint | null => {
   const m = modelById(i.productId);
   return m ? { x: i.x, z: i.z, yaw: i.rotationYRad + m.baseYawRad, w: m.dimsM.widthM * i.scale, d: m.dimsM.depthM * i.scale } : null;
 };
+const heightOf = (i: PlacedItem) => (modelById(i.productId)?.dimsM.heightM ?? 0) * i.scale;
+/** Mặt đỡ: bàn, tủ/kệ. Đặt lên được: cây cảnh, đèn nhỏ (≤ 90 cm) — như mặt "stackable" của Kreativ. */
+const SUPPORT_CATEGORIES = new Set(["table", "shelf"]);
+const canStack = (i: PlacedItem) => {
+  const m = modelById(i.productId);
+  return !!m && (m.category === "plant" || m.category === "lamp") && m.dimsM.heightM * i.scale <= 0.9;
+};
+const supportOf = (o: PlacedItem): Support | null => {
+  const m = modelById(o.productId), f = footprintOf(o);
+  return m && f && SUPPORT_CATEGORIES.has(m.category) && !o.onUid ? { ...f, uid: o.uid, top: (o.y ?? 0) + heightOf(o) } : null;
+};
 
 // Mọi thay đổi món (đặt, kéo, xoay, đổi cỡ, nhân bản, đổi món), theo thứ tự:
-// 1. không chồng lên món đã bày khác (như Kreativ kiểm va chạm khi kéo) — chạy cả khi chưa có depth;
-// 2. chân món trên sàn thấy được — chạm lên tường dưới tầm mắt, hay xoay/phóng món dài ra sau tường, không còn ra món
-//    "treo tường". Bị kéo về có thể lấn lại món khác; sàn thắng vì treo tường sai rõ hơn chạm nhẹ món bên cạnh.
-setItemConstraint((i) => {
-  const { photo, setup, history } = useEditor.getState();
+// 1. món đặt-lên-được có tâm nằm trong mặt trên của bàn/tủ → lên mặt đó (y = độ cao mặt, nhớ món cha);
+// 2. không chồng lên món khác ở CÙNG tầng cao (như Kreativ kiểm va chạm) — chậu trên tủ không va với chính cái tủ;
+// 3. món trên sàn: chân món trên sàn thấy được — chạm lên tường dưới tầm mắt, hay xoay/phóng món dài ra sau tường, không
+//    còn "treo tường". Bị kéo về có thể lấn lại món khác; sàn thắng vì treo tường sai rõ hơn chạm nhẹ món bên cạnh.
+setItemConstraint((i, items) => {
   const f = footprintOf(i);
   if (!f) return i;
-  const others = (history?.present.items ?? []).filter((o) => o.uid !== i.uid).flatMap((o) => footprintOf(o) ?? []);
-  const p = separateFromOthers(f, others);
+  const others = items.filter((o) => o.uid !== i.uid && o.onUid !== i.uid);
+  const supports = canStack(i) ? others.flatMap((o) => supportOf(o) ?? []) : [];
+  const h = heightOf(i);
+  const place = (x: number, z: number) => {
+    const sup = findSupport({ ...f, x, z }, supports);
+    const y = sup?.top ?? 0;
+    const colliders = others.filter((o) => o.uid !== sup?.uid && (o.y ?? 0) < y + h - 1e-3 && y < (o.y ?? 0) + heightOf(o) - 1e-3);
+    return { sup, y, ...separateFromOthers({ ...f, x, z }, colliders.flatMap((o) => footprintOf(o) ?? [])) };
+  };
+  let p = place(f.x, f.z);
+  if (p.sup && !findSupport({ ...f, x: p.x, z: p.z }, [p.sup])) p = { ...p, sup: null, y: 0 }; // bị đẩy ra khỏi mặt
+  if (p.sup) return { x: p.x, z: p.z, y: p.y, onUid: p.sup.uid };
+  const { photo, setup } = useEditor.getState();
   const edge = room()?.edge;
-  if (!edge || !photo || !setup) return p;
-  return keepOnVisibleFloor(edge, cameraOf(setup, photo.width / photo.height), p.x, p.z, f.yaw, f.w, f.d);
+  if (!edge || !photo || !setup) return { x: p.x, z: p.z, y: 0, onUid: undefined };
+  const q = keepOnVisibleFloor(edge, cameraOf(setup, photo.width / photo.height), p.x, p.z, f.yaw, f.w, f.d);
+  return { ...q, y: 0, onUid: undefined };
 });
 
 /** Góc xoay khi đặt món tại (x, z): quay lưng vào tường gần nếu có, không thì 0 (nhìn về máy). */

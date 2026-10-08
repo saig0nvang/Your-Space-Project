@@ -11,8 +11,13 @@ import type { PreparedPhoto } from "./image";
 /**
  * `scale`: cỡ hiển thị do người dùng chỉnh (1 = kích thước thật) — người dùng quyết 2026-10-07, lệch MASTER.md 2026-10-04.
  * `flipped`: lật gương theo chiều rộng (nút Lật trên thanh tác vụ, MASTER.md).
+ * `y` + `onUid`: món đặt trên mặt món khác (chậu cây trên tủ — như mặt "stackable"/món cha của Kreativ): độ cao chân
+ * món và món cha; món cha dời/xoay/đổi cỡ thì món con đi theo, món cha bị bỏ thì món con rơi xuống sàn.
  */
-export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number; scale: number; flipped?: boolean };
+export type PlacedItem = {
+  uid: string; productId: string; x: number; z: number; rotationYRad: number; scale: number; flipped?: boolean;
+  y?: number; onUid?: string;
+};
 
 export const ITEM_SCALE_RANGE = { min: 0.5, max: 1.5 };
 /** Phần nằm trong lịch sử hoàn tác. `workingUrl` = ảnh sau các lần xóa; `eraseMask` = mọi vùng đã xóa (lấp lại từ ảnh gốc). */
@@ -76,9 +81,29 @@ const IDLE_DEPTH: DepthState = { status: "idle", forUrl: null, disparity: null }
  * Ràng buộc vị trí món, áp cho MỌI thay đổi (đặt, kéo, xoay, đổi cỡ, nhân bản) — lib/walls đăng ký "chân món trên sàn
  * thấy được" (store không biết hình học phòng). Mặc định giữ nguyên.
  */
-let constrain: (i: PlacedItem) => { x: number; z: number } = (i) => i;
+type Placement = Pick<PlacedItem, "x" | "z"> & Partial<Pick<PlacedItem, "y" | "onUid">>;
+/** `items`: các món đang bày (có thể gồm chính `i` — ràng buộc tự bỏ qua theo uid). */
+let constrain: (i: PlacedItem, items: readonly PlacedItem[]) => Placement = (i) => i;
 export const setItemConstraint = (f: typeof constrain) => { constrain = f; };
-const fitted = (i: PlacedItem): PlacedItem => ({ ...i, ...constrain(i) });
+const fitted = (i: PlacedItem, items: readonly PlacedItem[]): PlacedItem => ({ ...i, ...constrain(i, items) });
+
+/**
+ * Đổi món `uid` bằng `update` (qua ràng buộc), rồi kéo các món đặt trên nó theo: giữ vị trí tương đối (xoay quanh tâm
+ * món cha khi món cha xoay) và chạy lại ràng buộc — món cha to/nhỏ đi thì món con lên/xuống mặt mới, không còn mặt
+ * thì rơi xuống sàn.
+ */
+function withChildren(items: PlacedItem[], uid: string, update: (i: PlacedItem) => PlacedItem): PlacedItem[] {
+  const old = items.find((i) => i.uid === uid);
+  if (!old) return items;
+  const next = fitted(update(old), items);
+  const out = items.map((i) => (i.uid === uid ? next : i));
+  const dYaw = next.rotationYRad - old.rotationYRad, c = Math.cos(dYaw), s = Math.sin(dYaw);
+  return out.map((ch) => {
+    if (ch.onUid !== uid) return ch;
+    const ox = ch.x - old.x, oz = ch.z - old.z;
+    return fitted({ ...ch, x: next.x + ox * c + oz * s, z: next.z - ox * s + oz * c, rotationYRad: ch.rotationYRad + dYaw }, out);
+  });
+}
 
 export const useEditor = create<State>()((set, get) => {
   /** Sửa `present.items` theo một gesture (không tạo bước; bước tạo ở endGesture). */
@@ -128,18 +153,18 @@ export const useEditor = create<State>()((set, get) => {
     select: (selectedUid) => set({ selectedUid }),
     placeItem: (productId, x, z, rotationYRad = 0) => {
       const uid = newId();
-      commitItems((items) => [...items, fitted({ uid, productId, x, z, rotationYRad, scale: 1 })]);
+      commitItems((items) => [...items, fitted({ uid, productId, x, z, rotationYRad, scale: 1 }, items)]);
       set({ selectedUid: uid, armedProductId: null });
     },
     beginGesture: () => {
       const h = get().history;
       if (h) set({ history: begin(h) });
     },
-    moveItem: (uid, x, z) => patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, x, z }) : i))),
-    rotateItem: (uid, rad) => patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, rotationYRad: rad }) : i))),
+    moveItem: (uid, x, z) => patchItems((items) => withChildren(items, uid, (i) => ({ ...i, x, z }))),
+    rotateItem: (uid, rad) => patchItems((items) => withChildren(items, uid, (i) => ({ ...i, rotationYRad: rad }))),
     scaleItem: (uid, scale) => {
       const v = Math.min(ITEM_SCALE_RANGE.max, Math.max(ITEM_SCALE_RANGE.min, scale));
-      patchItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, scale: v }) : i)));
+      patchItems((items) => withChildren(items, uid, (i) => ({ ...i, scale: v })));
     },
     endGesture: () => {
       const h = get().history;
@@ -148,14 +173,18 @@ export const useEditor = create<State>()((set, get) => {
     duplicateItem: (uid) => {
       const src = get().history?.present.items.find((i) => i.uid === uid);
       if (!src) return;
-      const copy = fitted({ ...src, uid: newId(), x: src.x + 0.4 });
+      const copy = fitted({ ...src, uid: newId(), x: src.x + 0.4 }, get().history?.present.items ?? []);
       commitItems((items) => [...items, copy]);
       set({ selectedUid: copy.uid });
     },
     flipItem: (uid) => commitItems((items) => items.map((i) => (i.uid === uid ? { ...i, flipped: !i.flipped } : i))),
-    swapItem: (uid, productId) => commitItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, productId, scale: 1 }) : i))),
+    swapItem: (uid, productId) => commitItems((items) => withChildren(items, uid, (i) => ({ ...i, productId, scale: 1 }))),
     removeItem: (uid) => {
-      commitItems((items) => items.filter((i) => i.uid !== uid));
+      // Món đặt trên món bị bỏ rơi xuống sàn (ràng buộc không còn thấy mặt đỡ).
+      commitItems((items) => {
+        const rest = items.filter((i) => i.uid !== uid);
+        return rest.map((i) => (i.onUid === uid ? fitted({ ...i, onUid: undefined }, rest) : i));
+      });
       set({ selectedUid: null });
     },
     applyErase: (workingUrl, mask) => {
