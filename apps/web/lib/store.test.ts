@@ -1,5 +1,5 @@
 import { beforeEach, expect, test } from "vitest";
-import { useEditor } from "./store";
+import { setItemConstraint, useEditor } from "./store";
 
 const photo = { url: "blob:a", width: 400, height: 300, focal35: null };
 const s = useEditor.getState;
@@ -41,4 +41,16 @@ test("scaleItem: món mới cỡ 1; đổi cỡ trong một gesture = một bư�
   expect(s().history!.present.items[0]!.scale).toBe(1.5);
   s().undo();
   expect(s().history!.present.items[0]!.scale).toBe(1);
+});
+
+test("swapItem: đổi món tại chỗ (giữ vị trí, góc; cỡ về 1), một bước hoàn tác; ràng buộc vị trí áp lại", () => {
+  const uid = s().history!.present.items[0]!.uid;
+  s().rotateItem(uid, 0.5);
+  s().scaleItem(uid, 1.3);
+  setItemConstraint((i) => (i.productId === "p2" ? { x: i.x, z: -1 } : i)); // món mới to hơn → bị kéo lại
+  s().swapItem(uid, "p2");
+  expect(s().history!.present.items[0]).toMatchObject({ uid, productId: "p2", x: 0, z: -1, rotationYRad: 0.5, scale: 1 });
+  s().undo();
+  expect(s().history!.present.items[0]!.productId).toBe("p1");
+  setItemConstraint((i) => i);
 });

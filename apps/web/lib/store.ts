@@ -56,6 +56,8 @@ type State = {
   scaleItem: (uid: string, scale: number) => void;
   endGesture: () => void;
   duplicateItem: (uid: string) => void;
+  /** Đổi món tại chỗ (giữ vị trí, góc; cỡ về 100% vì món mới có kích thước thật riêng) — một bước hoàn tác. */
+  swapItem: (uid: string, productId: string) => void;
   removeItem: (uid: string) => void;
   applyErase: (workingUrl: string, mask: Mask) => void;
   undo: () => void;
@@ -146,6 +148,7 @@ export const useEditor = create<State>()((set, get) => {
       commitItems((items) => [...items, copy]);
       set({ selectedUid: copy.uid });
     },
+    swapItem: (uid, productId) => commitItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, productId, scale: 1 }) : i))),
     removeItem: (uid) => {
       commitItems((items) => items.filter((i) => i.uid !== uid));
       set({ selectedUid: null });
