@@ -47,7 +47,7 @@ type State = {
   setHorizon: (horizonNdcY: number) => void;
   arm: (productId: string | null) => void;
   select: (uid: string | null) => void;
-  placeItem: (productId: string, x: number, z: number) => void;
+  placeItem: (productId: string, x: number, z: number, rotationYRad?: number) => void;
   beginGesture: () => void;
   moveItem: (uid: string, x: number, z: number) => void;
   rotateItem: (uid: string, rad: number) => void;
@@ -109,9 +109,9 @@ export const useEditor = create<State>()((set, get) => {
     },
     arm: (armedProductId) => set({ armedProductId, selectedUid: null }),
     select: (selectedUid) => set({ selectedUid }),
-    placeItem: (productId, x, z) => {
+    placeItem: (productId, x, z, rotationYRad = 0) => {
       const uid = newId();
-      commitItems((items) => [...items, { uid, productId, x, z, rotationYRad: 0, scale: 1 }]);
+      commitItems((items) => [...items, { uid, productId, x, z, rotationYRad, scale: 1 }]);
       set({ selectedUid: uid, armedProductId: null });
     },
     beginGesture: () => {

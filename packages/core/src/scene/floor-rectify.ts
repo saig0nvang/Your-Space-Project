@@ -163,9 +163,9 @@ export function sampleFromFloorGrid(filled: Rgba, grid: FloorGrid, cam: CameraMo
 }
 
 /** Mask "là sàn" từ depth đã khớp sàn: dưới chân trời và không có vật nào trước mặt sàn (cùng tiêu chí buildOccluderDepth). */
-export function floorMaskFromDepth(disp: DisparityMap, fit: FloorFit, cam: CameraModel): Mask {
+export function floorMaskFromDepth(disp: DisparityMap, fit: FloorFit, cam: CameraModel, floorTolerance?: number): Mask {
   const { width: w, height: h } = disp;
-  const occ = buildOccluderDepth(disp, fit, cam);
+  const occ = buildOccluderDepth(disp, fit, cam, { floorTolerance });
   const data = new Uint8Array(w * h);
   for (let j = 0; j < h; j++) {
     for (let i = 0; i < w; i++) {

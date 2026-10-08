@@ -4,6 +4,7 @@ import { useRef, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
 import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
+import { dragAgainstWalls, placementYaw } from "@/lib/walls";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -112,7 +113,7 @@ export function EditorStage({
     if (!modelById(productId)) return;
     const p = floorAt(ndc);
     const first = (s().history?.present.items.length ?? 0) === 0;
-    s().placeItem(productId, p.x, p.z);
+    s().placeItem(productId, p.x, p.z, placementYaw(p.x, p.z));
     if (first) s().notify("Đã căn theo mặt sàn · kéo để chỉnh");
   }
 
@@ -121,7 +122,11 @@ export function EditorStage({
     if (!d) return;
     const p = pointOnHorizontalPlane(toNdc(e), camera, d.planeY);
     if (!p) return; // con trỏ vượt chân trời của mặt kéo — giữ vị trí cũ (F2: món vẫn ở y = 0)
-    s().moveItem(d.uid, p.x + d.dx, p.z + d.dz);
+    const item = s().history?.present.items.find((i) => i.uid === d.uid);
+    if (!item) return;
+    const q = dragAgainstWalls(item.productId, item.scale, item.rotationYRad, p.x + d.dx, p.z + d.dz); // hít tường, không xuyên
+    s().moveItem(d.uid, q.x, q.z);
+    if (q.yawRad !== item.rotationYRad) s().rotateItem(d.uid, q.yawRad);
   }
 
   function onPointerUp() {

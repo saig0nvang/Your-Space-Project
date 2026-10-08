@@ -1,5 +1,5 @@
 "use client";
-import { imageStats, lightingFromImageStats, type PhotoLighting } from "@yourspace/core";
+import { brightSpot, imageStats, lightingFromImageStats, type PhotoLighting } from "@yourspace/core";
 import { useEffect, useState } from "react";
 import { DEFAULT_LIGHTING } from "@/components/editor/RoomScene";
 import { readPixels } from "@/lib/image";
@@ -10,7 +10,9 @@ export function usePhotoLighting(url: string | null): PhotoLighting {
     if (!url) return;
     let cancelled = false;
     readPixels(url, 64)
-      .then(({ data, width, height }) => { if (!cancelled) setLighting(lightingFromImageStats(imageStats(data, width, height))); })
+      .then(({ data, width, height }) => {
+        if (!cancelled) setLighting({ ...lightingFromImageStats(imageStats(data, width, height)), keySpot: brightSpot(data, width, height) });
+      })
       .catch(() => {});
     return () => { cancelled = true; };
   }, [url]);

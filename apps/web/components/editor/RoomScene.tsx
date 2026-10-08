@@ -1,7 +1,7 @@
 "use client";
 import { ContactShadows, Line, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useLoader, useStore, useThree, type ThreeEvent } from "@react-three/fiber";
-import { cameraToThree, type CameraModel, type FurnitureModel, type PhotoLighting } from "@yourspace/core";
+import { cameraToThree, keyLightDir, type CameraModel, type FurnitureModel, type PhotoLighting } from "@yourspace/core";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { modelById } from "@/lib/catalog";
@@ -124,7 +124,10 @@ function OccluderQuad({ occluder, heightM }: { occluder: NonNullable<Occluder>; 
   );
 }
 
-function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture: THREE.Texture }) {
+/** Đèn chính mặc định khi ảnh không có nguồn sáng rõ: từ trên, sau máy, lệch phải (nhìn từ target [0, 0, −4]). */
+const DEFAULT_KEY_OFFSET: [number, number, number] = [2.5, 6, 7];
+
+function Lights({ lighting, envTexture, camera }: { lighting: PhotoLighting; envTexture: THREE.Texture; camera: CameraModel }) {
   // Lấy gl/scene qua store imperatively (không destructure từ useThree()): gán thuộc tính renderer/scene là
   // tương tác mệnh lệnh chuẩn của three.js/r3f, nhưng eslint-plugin-react-hooks coi giá trị trả về trực tiếp
   // từ một hook là bất biến — store.getState() không bị quy tắc đó theo dõi (cùng cách lib dùng useEditor.getState()).
@@ -149,6 +152,9 @@ function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture:
     };
   }, [store, envTexture]);
   const color = new THREE.Color(lighting.color.r, lighting.color.g, lighting.color.b);
+  // Có vùng sáng nổi bật (cửa sổ, đèn) → đèn chính chiếu từ hướng đó để bóng đổ đúng phía (như Kreativ).
+  const dir = lighting.keySpot ? keyLightDir(lighting.keySpot, camera) : null;
+  const off = dir ? [dir.x * 8, dir.y * 8, dir.z * 8] : DEFAULT_KEY_OFFSET;
   return (
     <>
       <hemisphereLight args={r3f([color, "#555555", lighting.ambientIntensity])} />
@@ -157,7 +163,7 @@ function Lights({ lighting, envTexture }: { lighting: PhotoLighting; envTexture:
         castShadow
         color={r3f(color)}
         intensity={lighting.keyIntensity}
-        position={[2.5, 6, 3]}
+        position={[off[0]!, off[1]!, off[2]! - 4]}
         target={r3f(target)}
         shadow-mapSize={[1024, 1024]}
         shadow-camera-left={-8}
@@ -274,7 +280,7 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
       <PerspectiveCamera makeDefault fov={cam.fovDeg} near={NEAR} far={FAR} position={cam.position} rotation={[cam.rotationXRad, 0, 0]} />
       <BackgroundQuad texture={background} />
       {props.occluder && <OccluderQuad occluder={props.occluder} heightM={props.camera.heightM} />}
-      <Lights lighting={props.lighting} envTexture={env} />
+      <Lights lighting={props.lighting} envTexture={env} camera={props.camera} />
       <mesh rotation-x={-Math.PI / 2} position={[0, 0.001, -5]} receiveShadow>
         <planeGeometry args={[40, 40]} />
         <shadowMaterial opacity={0.35} />
