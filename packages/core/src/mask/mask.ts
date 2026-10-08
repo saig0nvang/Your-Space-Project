@@ -99,8 +99,15 @@ export function prepareEraseMask(objects: readonly Mask[], previous: Mask | null
   return unionMasks(parts);
 }
 
+/**
+ * Ô vuông gửi LaMa quanh bbox: cạnh gấp đôi phần rộng nhất (nửa còn lại làm ngữ cảnh), tối thiểu `MIN_CROP_SIDE`.
+ * Benchmark 2026-10-08 (40 elip trên 5 ảnh mẫu, LaMa local): tối thiểu 512 → 256 giảm MAE 14,40 → 13,50, thắng 27/40 —
+ * ô nhỏ được LaMa (chạy ở 512²) xem ở độ phân giải cao hơn; 1,5× hay 3× đều kém 2×.
+ */
+const MIN_CROP_SIDE = 256;
+
 export function cropSquare(bbox: Rect, width: number, height: number): Rect {
-  const side = Math.min(Math.max(2 * Math.max(bbox.w, bbox.h), 512), Math.min(width, height));
+  const side = Math.min(Math.max(2 * Math.max(bbox.w, bbox.h), MIN_CROP_SIDE), Math.min(width, height));
   if (bbox.w > side || bbox.h > side) return { x: 0, y: 0, w: width, h: height };
   const cx = bbox.x + bbox.w / 2;
   const cy = bbox.y + bbox.h / 2;

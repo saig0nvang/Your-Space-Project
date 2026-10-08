@@ -44,9 +44,10 @@ test("prepareEraseMask: nới + kéo bóng cho món ở nửa dưới, gộp vù
   expect(m.data[0]).toBe(1);
 });
 
-test("cropSquare: ô 512 quanh bbox nhỏ, kẹp trong ảnh; bbox quá lớn → cả ảnh", () => {
-  expect(cropSquare({ x: 10, y: 10, w: 20, h: 20 }, 1600, 1200)).toEqual({ x: 0, y: 0, w: 512, h: 512 });
-  expect(cropSquare({ x: 700, y: 500, w: 100, h: 100 }, 1600, 1200)).toEqual({ x: 494, y: 294, w: 512, h: 512 });
+test("cropSquare: ô tối thiểu 256 quanh bbox nhỏ, gấp đôi bbox lớn, kẹp trong ảnh; bbox quá lớn → cả ảnh", () => {
+  expect(cropSquare({ x: 10, y: 10, w: 20, h: 20 }, 1600, 1200)).toEqual({ x: 0, y: 0, w: 256, h: 256 });
+  expect(cropSquare({ x: 700, y: 500, w: 100, h: 100 }, 1600, 1200)).toEqual({ x: 622, y: 422, w: 256, h: 256 });
+  expect(cropSquare({ x: 700, y: 500, w: 200, h: 100 }, 1600, 1200)).toEqual({ x: 600, y: 350, w: 400, h: 400 });
   expect(cropSquare({ x: 0, y: 0, w: 1500, h: 100 }, 1600, 1200)).toEqual({ x: 0, y: 0, w: 1600, h: 1200 });
 });
 

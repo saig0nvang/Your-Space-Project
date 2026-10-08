@@ -59,7 +59,8 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 - Hướng đèn chính cố định: từ trên, phía sau camera, lệch một bên. Không ước lượng hướng sáng trong demo.
 
 ### 2.5. Thao tác với món
-- Chọn món trong khay → chạm lên sàn để đặt (`placeOnFloor`). Chạm phía trên đường chân trời → chip "Chạm vào sàn, thấp hơn đường chân trời".
+- **Tự đặt (2026-10-08, theo drop-locations/poles-of-inaccessibility của IKEA Kreativ):** chọn món trong khay → món tự vào chỗ sàn trống (`findFreeFloorSpot`, `packages/core/src/scene/free-spot.ts`): lưới sàn nhìn từ trên xuống từ mask sàn của depth, tránh đồ đã bày; trong các chỗ đủ rộng cho món lấy chỗ gần tâm vùng sàn nhìn thấy (chỗ rộng nhất thường sát máy, đặt đó che cả phòng). Không chỗ nào đủ rộng → chỗ rộng nhất + chip "Sàn trống hơi chật · kéo để chỉnh".
+- Chưa có depth / không khớp được sàn → như cũ: chọn món → chạm lên sàn để đặt (`placeOnFloor`). Chạm phía trên đường chân trời → chip "Chạm vào sàn, thấp hơn đường chân trời".
 - Kéo món để di chuyển (raycast xuống mặt sàn y=0, tức F2: món luôn bám sàn).
 - Món đang chọn có thanh tác vụ (MASTER.md · Thanh tác vụ của món): **Mua** | Nhân bản · **Bỏ**, và thước **xoay trục Y** (hít vào 0°, ±45°, ±90° khi thả trong ±5°). Panel đáy hiện tên, giá, "rộng × sâu × cao cm".
 - **Cỡ từng món — đổi 2026-10-07 theo yêu cầu người dùng, lệch quyết định founder 2026-10-04 trong MASTER.md (cần founder xác nhận):** món đang chọn có thanh **Cỡ** 50–150% (mặc định 100% = kích thước thật); khi khác 100% panel ghi "Đang hiển thị …% — kích thước thật vẫn là số đo ở trên". F1 ở mức phòng vẫn giữ: nút **Chỉnh cỡ phòng** có thanh **Tầm mắt** (đường chân trời, hiện nét đứt trên ảnh khi mở) và **Độ cao máy** (0,8–2,0 m) — tầm mắt đặt sai là nguyên nhân hay gặp nhất khiến đồ to bất thường.
@@ -70,14 +71,15 @@ Trạng thái phiên (ảnh, camera, các món đã đặt, vùng đã xóa, l�
 
 ### 3.1. Chạm chọn (trong trình duyệt)
 - SlimSAM (`Xenova/slimsam-77-uniform`) qua transformers.js, trong Web Worker. Mã hóa ảnh **một lần** khi vào chế độ Xóa đồ (hiện tiến trình); mỗi lần chạm chỉ chạy decoder.
-- Chạm = thêm điểm dương. Công tắc **Thêm / Bớt**; ở chế độ Bớt chạm = điểm âm. Lấy mask **lớn nhất** trong 3 mask đầu ra (spike: ưu tiên mask lớn cứu thêm 11/65 món).
+- **Viền sẵn (2026-10-08, như Eraser của IKEA Kreativ):** khi người dùng chọn ảnh, web gọi `POST /api/ai/detect` ở nền (song song GeoCalib) — Grounding DINO tiny trong `services/calibrate` tìm sofa, ghế, bàn, giường, tủ, kệ, đèn, cây, thảm, TV, tranh theo chữ. Vào Xóa đồ: sau khi mã hóa ảnh, SlimSAM tách mask từng khung (decoder không nhận khung → thử 5 điểm trong khung, lấy mask khớp khung nhất, cắt theo khung); bỏ món khớp khung < 0,5, món đã xóa, khung trùng. Món còn lại có viền trắng + nhãn; chạm trong viền = chọn/bỏ cả món. Service tắt → chạm chọn tay như dưới.
+- Chạm ngoài viền = thêm điểm dương. Công tắc **Thêm / Bớt**; ở chế độ Bớt chạm = điểm âm. Lấy mask **lớn nhất** trong 3 mask đầu ra (spike: ưu tiên mask lớn cứu thêm 11/65 món).
 - Mask luôn hiện ra để xem trước (phủ màu bán trong suốt + viền). Chọn được nhiều món; danh sách món đã chọn có nút bỏ từng món.
 - Nút chính **Xóa** gửi một lượt cho mọi món đã chọn.
 
 ### 3.2. Lấp (LaMa tự host — D11)
 - Client: gộp mask của mọi món đã chọn **và mọi vùng đã xóa trước đó**, nới 1,2% cạnh dài ảnh, nới thêm 2,5% chiều cao ảnh xuống dưới với món có đáy ở nửa dưới ảnh. Hàm thuần `prepareEraseMask(masks, imageSize)` trong `packages/core`.
 - Luôn lấp từ **ảnh gốc** với mặt nạ gộp (PRD E5-US2), không lấp chồng lên ảnh đã lấp — tránh "bóng ma".
-- Ảnh gửi lên thu về cạnh dài ≤ 1024 px (`LAMA_MAX_SIDE`, `apps/web/lib/erase.ts`). Kết quả được dán lại chỉ trong vùng mask (viền mềm) lên ảnh làm việc.
+- Ô gửi đi: hình vuông cạnh gấp đôi bbox mask, tối thiểu 256 px (`cropSquare`; hạ từ 512 ngày 2026-10-08 — benchmark MAE 14,40 → 13,50). Ảnh gửi lên thu về cạnh dài ≤ 1024 px (`LAMA_MAX_SIDE`, `apps/web/lib/erase.ts`). Kết quả được dán lại chỉ trong vùng mask (viền mềm) lên ảnh làm việc.
 - Route `POST /api/ai/inpaint` (Next.js, `runtime = "nodejs"`, `serverExternalPackages: ["onnxruntime-node", "sharp"]`): nhận ảnh + mask PNG, chạy **LaMa ONNX tự host trên CPU của chính server app** (D11, amend D3 — không còn gọi Replicate hay bất kỳ nhà cung cấp thứ ba nào) qua `createLocalLama` (`apps/web/lib/server/lamaLocal.ts`, dùng `onnxruntime-node` + `sharp`). `packages/core/src/ai/gateway.ts` có `makeCachedCall<I, O>` dùng chung cho depth và inpaint (cache tuỳ chọn; route inpaint **không cache** — câu đồng thuận nói ảnh "được xóa ngay sau đó"), `InpaintService` trong `ai/types.ts`. Model `lama_fp32.onnx` (Carve/LaMa-ONNX, ~208 MB) tải bằng `pnpm --filter web fetch:lama`, đường dẫn `LAMA_MODEL_PATH` (mặc định `apps/web/.models/`, git-ignored) — model file chưa có thì route trả `503` kèm hướng dẫn tải, hiện nguyên văn cho người dùng (thông điệp vận hành).
 - Giới hạn trong bộ nhớ: 30 lượt / IP / giờ, trả lỗi có kiểu khi vượt. Suy luận chạy **tuần tự** (hàng đợi promise trong `lamaLocal.ts`) — một `InferenceSession` CPU dùng chung giữa các lượt, không chạy song song.
 - **Kiểm soát đầu vào** (theo audit bảo mật 2026-10-05; phần ngân sách/chi phí theo lượt của bản Replicate không còn áp dụng — tự host không tính tiền theo lượt):
