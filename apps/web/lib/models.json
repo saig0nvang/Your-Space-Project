@@ -133,5 +133,41 @@
       "depthM": 0.758
     },
     "credit": "\"Industrial Coffee Table\" — Ulan Cabanilla, Poly Haven (CC0)"
+  },
+  "sen-da-chau-nho": {
+    "file": "/models/sen-da-chau-nho.glb",
+    "dimsM": {
+      "widthM": 0.168,
+      "heightM": 0.267,
+      "depthM": 0.185
+    },
+    "credit": "\"Potted Plant 04\" — James Ray Cock, Poly Haven (CC0)"
+  },
+  "binh-gom-men": {
+    "file": "/models/binh-gom-men.glb",
+    "dimsM": {
+      "widthM": 0.204,
+      "heightM": 0.4,
+      "depthM": 0.204
+    },
+    "credit": "\"Ceramic Vase 01\" — James Ray Cock, Poly Haven (CC0)"
+  },
+  "binh-dong-co": {
+    "file": "/models/binh-dong-co.glb",
+    "dimsM": {
+      "widthM": 0.083,
+      "heightM": 0.2,
+      "depthM": 0.083
+    },
+    "credit": "\"Brass Vase 03\" — Rico Cilliers, Poly Haven (CC0)"
+  },
+  "den-ban-tay-gap": {
+    "file": "/models/den-ban-tay-gap.glb",
+    "dimsM": {
+      "widthM": 0.202,
+      "heightM": 0.893,
+      "depthM": 0.614
+    },
+    "credit": "\"Desk Lamp Arm 01\" — Yann Kervran, Kuutti Siitonen, Poly Haven (CC0)"
   }
 }

@@ -42,7 +42,7 @@ export const SUPPLIERS: Supplier[] = [
 ];
 
 export const CATEGORY_LABEL: Record<Category, string> = {
-  sofa: "Sofa", chair: "Ghế", table: "Bàn", shelf: "Tủ, kệ", lamp: "Đèn", plant: "Cây",
+  sofa: "Sofa", chair: "Ghế", table: "Bàn", shelf: "Tủ, kệ", lamp: "Đèn", plant: "Cây", decor: "Trang trí",
 };
 
 type Entry = Omit<FurnitureModel, "dimsM" | "glbUrl" | "baseYawRad"> & { baseYawRad?: number };
@@ -63,6 +63,11 @@ const ENTRIES: Entry[] = [
   { id: "ban-tra-cong-nghiep", name: "Bàn trà khung thép", styleId: "bauhaus", category: "table", supplierId: "sup-d", priceVND: 3_500_000, material: "Khung thép đen, mặt gỗ" },
   { id: "ke-thep-den", name: "Kệ khung thép", styleId: "bauhaus", category: "shelf", supplierId: "sup-d", priceVND: 3_900_000, material: "Khung thép đen, đợt gỗ, ngăn kéo" },
   { id: "cay-xanh-chau-cao", name: "Cây lá môn chậu gốm", styleId: "bauhaus", category: "plant", supplierId: "sup-e", priceVND: 790_000, material: "Cây thật, chậu gốm tròn" },
+  // Đồ nhỏ đặt lên mặt bàn/tủ (2026-10-08) — giá mẫu.
+  { id: "sen-da-chau-nho", name: "Sen đá chậu nhỏ", styleId: "japandi", category: "plant", supplierId: "sup-e", priceVND: 250_000, material: "Cây thật, chậu gốm nhỏ" },
+  { id: "binh-gom-men", name: "Bình gốm men", styleId: "japandi", category: "decor", supplierId: "sup-b", priceVND: 450_000, material: "Gốm men" },
+  { id: "binh-dong-co", name: "Bình đồng cổ", styleId: "mid-century", category: "decor", supplierId: "sup-b", priceVND: 690_000, material: "Đồng thau" },
+  { id: "den-ban-tay-gap", name: "Đèn bàn tay gập", styleId: "bauhaus", category: "lamp", supplierId: "sup-b", priceVND: 1_200_000, material: "Kim loại sơn, khớp gập" },
 ];
 
 export const MODELS: FurnitureModel[] = ENTRIES.flatMap((e) => {

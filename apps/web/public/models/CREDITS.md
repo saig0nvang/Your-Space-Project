@@ -18,6 +18,10 @@ Texture đã được nén lại sang WebP, giới hạn tối đa 1024×1024px 
 - `ghe-banh-khung-thep.glb` — "Modern Arm Chair 01" — Vibrant Nordic, Poly Haven (CC0)
 - `ke-thep-den.glb` — "Steel Frame Shelves 03" — Ulan Cabanilla, Poly Haven (CC0)
 - `ban-tra-cong-nghiep.glb` — "Industrial Coffee Table" — Ulan Cabanilla, Poly Haven (CC0)
+- `sen-da-chau-nho.glb` — "Potted Plant 04" — James Ray Cock, Poly Haven (CC0)
+- `binh-gom-men.glb` — "Ceramic Vase 01" — James Ray Cock, Poly Haven (CC0)
+- `binh-dong-co.glb` — "Brass Vase 03" — Rico Cilliers, Poly Haven (CC0)
+- `den-ban-tay-gap.glb` — "Desk Lamp Arm 01" — Yann Kervran, Kuutti Siitonen, Poly Haven (CC0)
 
 ## Ghi chú kích thước
 

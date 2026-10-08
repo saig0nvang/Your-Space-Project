@@ -45,11 +45,11 @@ const footprintOf = (i: PlacedItem): Footprint | null => {
   return m ? { x: i.x, z: i.z, yaw: i.rotationYRad + m.baseYawRad, w: m.dimsM.widthM * i.scale, d: m.dimsM.depthM * i.scale } : null;
 };
 const heightOf = (i: PlacedItem) => (modelById(i.productId)?.dimsM.heightM ?? 0) * i.scale;
-/** Mặt đỡ: bàn, tủ/kệ. Đặt lên được: cây cảnh, đèn nhỏ (≤ 90 cm) — như mặt "stackable" của Kreativ. */
+/** Mặt đỡ: bàn, tủ/kệ. Đặt lên được: cây cảnh, đèn nhỏ, đồ trang trí (≤ 90 cm) — như mặt "stackable" của Kreativ. */
 const SUPPORT_CATEGORIES = new Set(["table", "shelf"]);
 const canStack = (i: PlacedItem) => {
   const m = modelById(i.productId);
-  return !!m && (m.category === "plant" || m.category === "lamp") && m.dimsM.heightM * i.scale <= 0.9;
+  return !!m && (m.category === "plant" || m.category === "lamp" || m.category === "decor") && m.dimsM.heightM * i.scale <= 0.9;
 };
 const supportOf = (o: PlacedItem): Support | null => {
   const m = modelById(o.productId), f = footprintOf(o);

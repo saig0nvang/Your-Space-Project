@@ -62,3 +62,13 @@ test("ngoài mặt bàn hoặc món không đặt-lên-được → ở sàn, kh
   expect(items()[2]!.y ?? 0).toBe(0);
   expect(separation(fp(items()[2]!), fp(items()[0]!))).toBeNull();
 });
+
+test("đồ trang trí nhỏ lên mặt tủ thấp (mặt sâu 52 cm): bình gốm, sen đá", () => {
+  s().placeItem("tu-go-thap", 0, -3); // mặt cao 0,68 m
+  s().placeItem("binh-gom-men", 0.6, -3);
+  s().placeItem("sen-da-chau-nho", -0.6, -3);
+  const [cab, vase, succ] = items();
+  expect(vase).toMatchObject({ onUid: cab!.uid });
+  expect(succ).toMatchObject({ onUid: cab!.uid });
+  expect(vase!.y).toBeCloseTo(0.68, 2);
+});

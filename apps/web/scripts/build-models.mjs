@@ -33,6 +33,10 @@ const SOURCES = [
   { id: "ghe-banh-khung-thep", polyhaven: "modern_arm_chair_01" },
   { id: "ke-thep-den", polyhaven: "steel_frame_shelves_03" },
   { id: "ban-tra-cong-nghiep", polyhaven: "industrial_coffee_table" },
+  { id: "sen-da-chau-nho", polyhaven: "potted_plant_04" },
+  { id: "binh-gom-men", polyhaven: "ceramic_vase_01" },
+  { id: "binh-dong-co", polyhaven: "brass_vase_03" },
+  { id: "den-ban-tay-gap", polyhaven: "desk_lamp_arm_01" },
 ];
 
 const exists = (p) => access(p).then(() => true, () => false);

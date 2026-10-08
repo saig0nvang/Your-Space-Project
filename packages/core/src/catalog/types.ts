@@ -1,7 +1,7 @@
 import type { FurnitureDims } from "../types";
 
 export type StyleId = "japandi" | "mid-century" | "bauhaus";
-export type Category = "sofa" | "chair" | "table" | "shelf" | "lamp" | "plant";
+export type Category = "sofa" | "chair" | "table" | "shelf" | "lamp" | "plant" | "decor";
 
 export type Style = {
   id: StyleId;
