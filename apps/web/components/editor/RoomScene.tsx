@@ -232,6 +232,9 @@ function Furniture({
       }}
     >
       <primitive object={object} />
+      {/* Bóng tiếp xúc RIÊNG mỗi món, vừa chân đế: một ContactShadows chung 20 m × 512 px chỉ ~25 px/m — chậu cây 40 cm
+          còn ~10 px bóng, làm mờ xong gần như mất, món trông như bay. Nằm trong group nên xoay/lật/cỡ theo món. */}
+      <ContactShadows position={[0, 0.004, 0]} scale={[w * 1.6, d * 1.6]} far={model.dimsM.heightM} blur={1.8} opacity={0.65} resolution={256} />
       {selected && <Line points={outline} color="white" lineWidth={2} />}
     </group>
   );
@@ -285,7 +288,6 @@ function Scene(props: Omit<Parameters<typeof RoomScene>[0], "aspect">) {
         <planeGeometry args={[40, 40]} />
         <shadowMaterial opacity={0.35} />
       </mesh>
-      <ContactShadows position={[0, 0.005, -5]} scale={20} far={1.5} blur={2.5} opacity={0.5} resolution={512} />
       {props.wallGuide && (
         // Vạch chân tường khi món hít tường (MASTER.md): lõi onImage 3 trên viền scrim 35% 7; cảnh 3D nên món che vạch.
         <>
