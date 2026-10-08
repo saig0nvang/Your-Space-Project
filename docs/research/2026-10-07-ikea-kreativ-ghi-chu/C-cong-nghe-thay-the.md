@@ -176,6 +176,11 @@ OSOR, PredErase, TurboClear, EffectErase — các paper 2026 về object-and-eff
 
 **Tránh:** MAT (NC research-only), tự host FLUX.1-dev/Fill-dev thương mại (vi phạm license), OmniEraser (license không rõ + khả năng dính NC của FLUX), Clipdrop cần biết đã đổi chủ sang Jasper.
 
+**Cập nhật 2026-10-08 (đã kiểm):**
+- **ObjectClear: KHÔNG dùng thương mại** — file LICENSE là S-Lab License 1.0, chỉ cho "non-commercial purpose" (github.com/zjx0101/ObjectClear).
+- Tự host, dùng thương mại được: **Qwen-Image-Edit / -2509 (Apache-2.0, 20B)**, HiDream-E1 (MIT, 17B), Step1X-Edit (Apache-2.0), SDXL Inpainting (OpenRAIL++), LaMa + refiner (Apache-2.0, `geomagical/lama-with-refiner`), MI-GAN (MIT, nhẹ, ngang LaMa). Đều cần GPU trừ LaMa/MI-GAN.
+- **Benchmark xóa vật cỡ sofa** (20 vùng trên 5 ảnh mẫu, LPIPS thấp = tốt; script + kết quả ở `~/.cache/yourspace-refiner-bench` trên máy dev): LaMa @512 rồi phóng (đang chạy) 0,329 / 4 s CPU; LaMa ở độ phân giải gốc 0,332 / 8 s — không đáng đổi (kém ở vùng cắt > 850 px); LaMa + refiner chỉ tinh chỉnh khi vùng cắt > ~724 px: vùng 894 px LPIPS 0,388 → 0,329 (vẽ lại được vân ván sàn), nhưng **~8 phút/lần trên CPU** → chỉ khả thi trên GPU.
+
 ---
 
 ## 5. Relighting/compositing
