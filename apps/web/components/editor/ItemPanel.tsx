@@ -3,16 +3,13 @@ import { MODELS, modelById } from "@/lib/catalog";
 import { formatDimsCm, formatVND } from "@/lib/format";
 import { ITEM_SCALE_RANGE, useEditor } from "@/lib/store";
 
-const SNAPS = [-180, -135, -90, -45, 0, 45, 90, 135, 180];
-const snap = (deg: number) => SNAPS.find((a) => Math.abs(a - deg) <= 5) ?? deg;
 
-/** Khay đáy khi chọn món: thông tin, Đổi với, Xoay, Cỡ — tác vụ (Mua/Lật/Nhân bản/Bỏ) ở thanh nổi trên món (ItemOverlay). */
+/** Khay đáy khi chọn món: thông tin, Đổi với, Cỡ — tác vụ và thước xoay nổi trên ảnh (ItemOverlay, RotationRuler). */
 export function ItemPanel() {
-  const { history, selectedUid, select, rotateItem, scaleItem, beginGesture, endGesture, swapItem } = useEditor();
+  const { history, selectedUid, select, scaleItem, beginGesture, endGesture, swapItem } = useEditor();
   const item = history?.present.items.find((i) => i.uid === selectedUid);
   const model = item ? modelById(item.productId) : undefined;
   if (!item || !model) return null;
-  const deg = Math.round((item.rotationYRad * 180) / Math.PI);
   // "Đổi với" (MASTER.md · Panel món, như swappables của Kreativ): cùng loại, cùng phong cách đứng trước.
   const swaps = MODELS.filter((m) => m.category === model.category && m.id !== model.id)
     .sort((a, b) => Number(b.styleId === model.styleId) - Number(a.styleId === model.styleId));
@@ -43,16 +40,6 @@ export function ItemPanel() {
           </ul>
         </div>
       )}
-      <label className="flex items-center gap-3 text-[13px] font-semibold">
-        <span className="w-12">Xoay</span>
-        <input type="range" min={-180} max={180} step={1} value={deg} className="flex-1 accent-foreground h-11"
-          onPointerDown={beginGesture}
-          onPointerUp={(e) => { rotateItem(item.uid, (snap(Number(e.currentTarget.value)) * Math.PI) / 180); endGesture(); }}
-          onKeyUp={(e) => { rotateItem(item.uid, (snap(Number(e.currentTarget.value)) * Math.PI) / 180); endGesture(); }}
-          onKeyDown={(e) => { if (!e.repeat) beginGesture(); }}
-          onChange={(e) => rotateItem(item.uid, (Number(e.target.value) * Math.PI) / 180)} />
-        <span className="w-12 text-right tabular">{deg}°</span>
-      </label>
       <label className="flex items-center gap-3 text-[13px] font-semibold">
         <span className="w-12">Cỡ</span>
         <input type="range" min={ITEM_SCALE_RANGE.min} max={ITEM_SCALE_RANGE.max} step={0.01} value={item.scale}

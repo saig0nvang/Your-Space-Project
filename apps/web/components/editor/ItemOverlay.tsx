@@ -4,6 +4,7 @@ import { worldToNdc, type CameraModel } from "@yourspace/core";
 import { useLayoutEffect, useRef, useState } from "react";
 import { modelById } from "@/lib/catalog";
 import { useEditor, type PlacedItem } from "@/lib/store";
+import { RotationRuler } from "./RotationRuler";
 
 type P = { x: number; y: number };
 const TICK = 9;
@@ -53,6 +54,7 @@ export function ItemOverlay({ item, camera, dragging, onBuy }: { item: PlacedIte
           <button type="button" className={`${btn} text-destructive-on-accent`} onClick={() => removeItem(item.uid)}><Trash size={20} />Bỏ</button>
         </div>
       )}
+      {size && model && !dragging && <RotationRuler item={item} name={model.name} height={Math.min(260, size.h - 32)} />}
       {lines && size && (
         <>
           <svg aria-hidden width={size.w} height={size.h} className="absolute inset-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
