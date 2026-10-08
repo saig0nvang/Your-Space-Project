@@ -1,10 +1,10 @@
 "use client";
 import {
-  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, snapToWall, wallGuide, yawFacingAway,
-  type FloorEdge, type Wall,
+  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, separateFromOthers, snapToWall,
+  wallGuide, yawFacingAway, type FloorEdge, type Footprint, type Wall,
 } from "@yourspace/core";
 import { modelById } from "./catalog";
-import { cameraOf, setItemConstraint, useEditor } from "./store";
+import { cameraOf, setItemConstraint, useEditor, type PlacedItem } from "./store";
 
 /** Cùng ngưỡng khớp sàn với lượt che khuất (useSceneDepth). */
 const MIN_FLOOR_FIT = 0.3;
@@ -39,16 +39,25 @@ export function currentWalls(): Wall[] {
   return room()?.walls.map((wl) => scaleWall(wl, heightM)) ?? [];
 }
 
-// Mọi thay đổi món (đặt, kéo, xoay, đổi cỡ, nhân bản) giữ chân món trên sàn thấy được — chạm lên tường dưới tầm mắt,
-// hay xoay/phóng món dài ra sau tường, không còn ra món "treo tường".
+/** Chân đế món trên sàn (mét, theo cỡ hiển thị); null nếu không có model. */
+const footprintOf = (i: PlacedItem): Footprint | null => {
+  const m = modelById(i.productId);
+  return m ? { x: i.x, z: i.z, yaw: i.rotationYRad + m.baseYawRad, w: m.dimsM.widthM * i.scale, d: m.dimsM.depthM * i.scale } : null;
+};
+
+// Mọi thay đổi món (đặt, kéo, xoay, đổi cỡ, nhân bản, đổi món), theo thứ tự:
+// 1. không chồng lên món đã bày khác (như Kreativ kiểm va chạm khi kéo) — chạy cả khi chưa có depth;
+// 2. chân món trên sàn thấy được — chạm lên tường dưới tầm mắt, hay xoay/phóng món dài ra sau tường, không còn ra món
+//    "treo tường". Bị kéo về có thể lấn lại món khác; sàn thắng vì treo tường sai rõ hơn chạm nhẹ món bên cạnh.
 setItemConstraint((i) => {
-  const { photo, setup } = useEditor.getState();
+  const { photo, setup, history } = useEditor.getState();
+  const f = footprintOf(i);
+  if (!f) return i;
+  const others = (history?.present.items ?? []).filter((o) => o.uid !== i.uid).flatMap((o) => footprintOf(o) ?? []);
+  const p = separateFromOthers(f, others);
   const edge = room()?.edge;
-  const model = modelById(i.productId);
-  if (!edge || !photo || !setup || !model) return i;
-  const cam = cameraOf(setup, photo.width / photo.height);
-  const d = model.dimsM;
-  return keepOnVisibleFloor(edge, cam, i.x, i.z, i.rotationYRad + model.baseYawRad, d.widthM * i.scale, d.depthM * i.scale);
+  if (!edge || !photo || !setup) return p;
+  return keepOnVisibleFloor(edge, cameraOf(setup, photo.width / photo.height), p.x, p.z, f.yaw, f.w, f.d);
 });
 
 /** Góc xoay khi đặt món tại (x, z): quay lưng vào tường gần nếu có, không thì 0 (nhìn về máy). */
