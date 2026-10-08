@@ -1,5 +1,8 @@
 "use client";
-import { estimateWalls, fitDepthToFloor, nearestWall, scaleWall, snapToWall, yawFacingAway, type Wall } from "@yourspace/core";
+import {
+  estimateWalls, fitDepthToFloor, floorEdge, keepOnVisibleFloor, nearestWall, scaleWall, snapToWall, yawFacingAway,
+  type FloorEdge, type Wall,
+} from "@yourspace/core";
 import { modelById } from "./catalog";
 import { cameraOf, useEditor } from "./store";
 
@@ -10,22 +13,39 @@ const FACE_WALL_WITHIN_M = 1.5;
 /** Kéo lưng món tới cách tường ≤ khoảng này (m) thì hít vào tường. */
 const SNAP_M = 0.25;
 
-let cache: { key: unknown[]; walls: Wall[] } | null = null;
+let cache: { key: unknown[]; walls: Wall[]; edge: FloorEdge | null } | null = null;
 
 /**
- * Tường của ảnh đang thấy, đơn vị mét theo chiều cao máy hiện tại. Ước lượng ở chiều cao giả định 1 m (bất biến như
- * occluder — xem useSceneDepth) rồi nhân heightM; nhớ kết quả theo depth + chân trời + FOV để kéo món không tính lại.
+ * Tường + mép sàn của ảnh đang thấy. Ước lượng ở chiều cao máy giả định 1 m (bất biến như occluder — xem
+ * useSceneDepth); nhớ theo depth + chân trời + FOV để kéo món không tính lại. null khi chưa có depth/không khớp sàn.
  */
-export function currentWalls(): Wall[] {
+function room(): { walls: Wall[]; edge: FloorEdge | null } | null {
   const { photo, setup, depth, history } = useEditor.getState();
-  if (!photo || !setup || !history || !depth.disparity || depth.forUrl !== history.present.workingUrl) return [];
+  if (!photo || !setup || !history || !depth.disparity || depth.forUrl !== history.present.workingUrl) return null;
   const key = [depth.disparity, setup.horizonNdcY, setup.fovYRad, photo.width, photo.height];
   if (!cache || cache.key.some((v, i) => v !== key[i])) {
     const cam1 = cameraOf({ ...setup, heightM: 1 }, photo.width / photo.height);
     const fit = fitDepthToFloor(depth.disparity, cam1);
-    cache = { key, walls: fit.confidence < MIN_FLOOR_FIT ? [] : estimateWalls(depth.disparity, fit, cam1) };
+    cache = fit.confidence < MIN_FLOOR_FIT
+      ? { key, walls: [], edge: null }
+      : { key, walls: estimateWalls(depth.disparity, fit, cam1), edge: floorEdge(depth.disparity, fit, cam1) };
   }
-  return cache.walls.map((wl) => scaleWall(wl, setup.heightM));
+  return cache;
+}
+
+/** Tường của ảnh đang thấy, đơn vị mét theo chiều cao máy hiện tại (ước lượng ở 1 m rồi nhân heightM). */
+export function currentWalls(): Wall[] {
+  const heightM = useEditor.getState().setup?.heightM ?? 1;
+  return room()?.walls.map((wl) => scaleWall(wl, heightM)) ?? [];
+}
+
+/** Chân món (x, z) không được ra sau mép sàn thấy được — chạm lên tường dưới tầm mắt không còn đặt món "treo tường". */
+export function onVisibleFloor(productId: string, scale: number, x: number, z: number): { x: number; z: number } {
+  const { photo, setup } = useEditor.getState();
+  const edge = room()?.edge;
+  if (!edge || !photo || !setup) return { x, z };
+  const halfDepth = ((modelById(productId)?.dimsM.depthM ?? 0) * scale) / 2;
+  return keepOnVisibleFloor(edge, cameraOf(setup, photo.width / photo.height), x, z, halfDepth);
 }
 
 /** Góc xoay khi đặt món tại (x, z): quay lưng vào tường gần nếu có, không thì 0 (nhìn về máy). */

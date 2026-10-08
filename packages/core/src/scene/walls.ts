@@ -1,5 +1,5 @@
 import type { CameraModel } from "../types";
-import { floorMaskFromDepth, floorTopByColumn } from "./floor-rectify";
+import { floorMaskFromDepth, floorPointToNdc, floorTopByColumn } from "./floor-rectify";
 import { floorViewZ, viewZFromDisparity, type DisparityMap, type FloorFit } from "./occlusion";
 import { pointOnHorizontalPlane } from "./placement";
 import { pixelRayDir } from "./ray";
@@ -39,14 +39,43 @@ function fitLine(pts: readonly P[]): { nx: number; nz: number; d: number } {
   return { nx, nz, d };
 }
 
+/** Mép sàn trên ảnh: `top[i]` = hàng trên cùng của vùng sàn ở cột i (= `rows` nếu cột không thấy sàn). */
+export type FloorEdge = { top: Float32Array; rows: number };
+
+/** Mép sàn từ depth đã khớp sàn — dung sai chặt EDGE_FLOOR_TOL để sàn không bò lên chân tường. Không phụ thuộc heightM. */
+export function floorEdge(disp: DisparityMap, fit: FloorFit, cam: CameraModel): FloorEdge {
+  const floor = floorMaskFromDepth(disp, fit, cam, EDGE_FLOOR_TOL);
+  const { width: w, height: h } = floor;
+  return { top: floorTopByColumn(floor, { width: w, height: h, data: new Uint8Array(w * h) }), rows: h };
+}
+
+/**
+ * Giữ món đứng trên sàn THẤY ĐƯỢC: chân món (x, z) chiếu lên ảnh mà nằm trên mép sàn của cột đó (tức ra sau tường/đồ
+ * — trên ảnh trông như treo trên tường) thì kéo về theo hướng nhìn, để mép sau món (`halfDepthM`) vừa chạm mép sàn.
+ * Đo trực tiếp trên ảnh nên chắc hơn tường ước lượng (lệch ~5–15%). Cột không thấy sàn thì để nguyên.
+ */
+export function keepOnVisibleFloor(edge: FloorEdge, cam: CameraModel, x: number, z: number, halfDepthM: number): { x: number; z: number } {
+  const ndc = floorPointToNdc(x, z, cam);
+  if (!ndc) return { x, z };
+  const w = edge.top.length;
+  const i = Math.min(w - 1, Math.max(0, Math.floor(((ndc.x + 1) / 2) * w)));
+  const row = edge.top[i]!;
+  if (row >= edge.rows) return { x, z };
+  const e = pointOnHorizontalPlane({ x: ndc.x, y: 1 - (row / edge.rows) * 2 }, cam, 0);
+  if (!e) return { x, z };
+  const r = Math.hypot(x, z);
+  const limit = Math.max(Math.hypot(e.x, e.z) - halfDepthM, 0.3 * cam.heightM);
+  if (r <= limit) return { x, z };
+  return { x: (x * limit) / r, z: (z * limit) / r };
+}
+
 /**
  * Điểm chân tường đo trên mặt sàn: mỗi cột ảnh lấy hàng trên cùng của vùng sàn (floorTopByColumn), chiếu xuống sàn
  * — chính xác hơn depth (chỉ dùng hình học camera), nhưng cột bị đồ che cho ra chân đồ (gần máy hơn tường).
  */
 function floorEdgePoints(disp: DisparityMap, fit: FloorFit, cam: CameraModel): P[] {
-  const floor = floorMaskFromDepth(disp, fit, cam, EDGE_FLOOR_TOL);
-  const { width: w, height: h } = floor;
-  const top = floorTopByColumn(floor, { width: w, height: h, data: new Uint8Array(w * h) });
+  const { top, rows: h } = floorEdge(disp, fit, cam);
+  const w = top.length;
   const out: P[] = [];
   for (let i = 0; i < w; i++) {
     if (top[i]! >= h) continue;
