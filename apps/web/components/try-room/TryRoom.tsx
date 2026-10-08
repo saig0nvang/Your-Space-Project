@@ -160,7 +160,11 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
           <Button variant="text" className="self-center" onClick={start}>Bày lại từ đầu</Button>
         </>
       ) : (
-        <Button full onClick={start}>Bắt đầu bày</Button>
+        // Chờ GeoCalib (3–7 s): bấm sớm thì trình sửa chạy với tầm mắt giữa ảnh + FOV 60° mặc định, kết quả về sau bị bỏ —
+        // ảnh góc rộng (vd ảnh mẫu 2) khi đó đặt đồ xa ~20 m, trông như treo tường. Service tắt/lỗi → status về idle ngay.
+        <Button full onClick={start} disabled={auto.status === "pending"}>
+          {auto.status === "pending" ? "Đang tự đoán tầm mắt…" : "Bắt đầu bày"}
+        </Button>
       )}
     </main>
   );
