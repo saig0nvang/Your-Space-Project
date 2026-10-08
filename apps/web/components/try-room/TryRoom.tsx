@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { Button } from "@/components/ui/Button";
 import { calibrate } from "@/lib/ai/calibrateClient";
+import { detectFurniture } from "@/lib/ai/detectClient";
 import { SAMPLE_ROOMS } from "@/lib/catalog";
 import { preparePhoto } from "@/lib/image";
 import { useEditor } from "@/lib/store";
@@ -45,6 +46,7 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
       const prepared = await preparePhoto(blob);
       setPhoto(prepared);
       void autoHorizon(prepared.url);
+      void autoDetect(prepared.url);
     } catch {
       setError("Không mở được ảnh này. Thử một ảnh JPEG hoặc PNG khác.");
     } finally {
@@ -63,6 +65,12 @@ export function TryRoom({ initialStyle }: { initialStyle: StyleId | null }) {
       fovYRad: g.vfovUncertainty <= MAX_TRUSTED_VFOV_UNCERTAINTY_RAD ? g.vfovRad : null,
       rollDeg: (g.rollRad * 180) / Math.PI,
     });
+  }
+
+  /** Dò đồ ở nền (~10 s) như Kreativ tính sẵn lúc quét — tới lúc mở Xóa đồ thường đã xong. */
+  async function autoDetect(url: string) {
+    const objects = await detectFurniture(await (await fetch(url)).blob());
+    if (objects && useEditor.getState().photo?.url === url) useEditor.setState({ detections: { forUrl: url, objects } });
   }
 
   function dragHorizon(ndcY: number) {

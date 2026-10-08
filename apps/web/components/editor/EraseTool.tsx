@@ -1,12 +1,35 @@
 "use client";
-import { prepareEraseMask, type Mask } from "@yourspace/core";
+import { maskArea, prepareEraseMask, type Mask } from "@yourspace/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { decodePoints, encodeImage, onSamProgress, warmupSam, type SamPoint } from "@/lib/ai/samClient";
+import type { Detection } from "@/lib/ai/detectClient";
+import { decodeBox, decodePoints, encodeImage, onSamProgress, warmupSam, type SamPoint } from "@/lib/ai/samClient";
 import { eraseWithLama } from "@/lib/erase";
 import { cameraOf, useEditor } from "@/lib/store";
 
-export type EraseObject = { points: SamPoint[]; mask: Mask | null };
+/** `label`: món máy dò viền sẵn (chọn cả món bằng một chạm, không có điểm chạm). */
+export type EraseObject = { points: SamPoint[]; mask: Mask | null; label?: string };
+/** Món máy dò thấy, đã tách mask trên ảnh đang sửa — viền sẵn chờ chạm. */
+export type AutoObject = { label: string; box: Detection["box"]; mask: Mask };
+
+/** Mask khớp khung dò kém hơn mức này (vật bị che, khung lệch) thì không viền — người dùng chạm chọn tay. */
+const MIN_BOX_IOU = 0.5;
+
+/** Tách mask cho từng khung dò (điểm cao trước); bỏ món đã xóa và khung trùng món đã nhận. */
+async function outlineDetections(detections: Detection[], erased: Mask | null, cancelled: () => boolean): Promise<AutoObject[]> {
+  const out: AutoObject[] = [];
+  for (const d of [...detections].sort((a, b) => b.score - a.score)) {
+    if (cancelled()) break;
+    const { mask, iou } = await decodeBox(d.box);
+    if (iou < MIN_BOX_IOU) continue;
+    const area = maskArea(mask);
+    const overlap = (m: Mask) => { let n = 0; for (let k = 0; k < m.data.length; k++) if (m.data[k] && mask.data[k]) n++; return n / area; };
+    if (erased && overlap(erased) > 0.5) continue;
+    if (out.some((o) => overlap(o.mask) > 0.7)) continue;
+    out.push({ label: d.label, box: d.box, mask });
+  }
+  return out;
+}
 
 const ERROR_TEXT: Record<string, string> = {
   BudgetExceeded: "Hết lượt xóa thử trong giờ này",
@@ -17,10 +40,13 @@ const ERROR_TEXT: Record<string, string> = {
 export function useEraseSession(active: boolean) {
   // Selector hẹp: không render lại khi kéo món (history.present.items đổi liên tục).
   const workingUrl = useEditor((s) => s.history?.present.workingUrl ?? null);
+  const detections = useEditor((s) => s.detections);
   const { applyErase, notify } = useEditor.getState();
-  const [status, setStatus] = useState<"loading" | "encoding" | "ready" | "erasing">("loading");
+  const [status, setStatus] = useState<"loading" | "encoding" | "detecting" | "ready" | "erasing">("loading");
   const [progress, setProgress] = useState<number | null>(null);
   const [objects, setObjects] = useState<EraseObject[]>([]);
+  const [auto, setAuto] = useState<AutoObject[]>([]);
+  const objectsFor = useRef<string | null>(null); // lựa chọn thuộc ảnh nào — kết quả dò tới muộn không xóa lựa chọn
   const [mode, setMode] = useState<"add" | "remove">("add");
   const [wasActive, setWasActive] = useState(active);
   const decoding = useRef(false); // chặn chạm chồng lên khi SAM còn đang giải mã điểm trước
@@ -43,16 +69,35 @@ export function useEraseSession(active: boolean) {
       if (cancelled) return;
       setProgress(null);
       setStatus("encoding");
-      await encodeImage(workingUrl); // chọn trên đúng ảnh người dùng đang thấy
-      if (!cancelled) { setObjects([]); setStatus("ready"); }
+      await encodeImage(workingUrl); // chọn trên đúng ảnh người dùng đang thấy (worker bỏ qua nếu đã mã hoá)
+      if (cancelled) return;
+      if (objectsFor.current !== workingUrl) { objectsFor.current = workingUrl; setObjects([]); }
+      if (detections) {
+        setStatus("detecting");
+        const found = await outlineDetections(detections.objects, useEditor.getState().history?.present.eraseMask ?? null, () => cancelled);
+        if (cancelled) return;
+        setAuto(found);
+      }
+      setStatus("ready");
     })().catch(() => { if (!cancelled) notify("Không tải được công cụ chọn đồ · thử tải lại trang"); });
     return () => { cancelled = true; };
-  }, [active, workingUrl, notify]);
+  }, [active, workingUrl, detections, notify]);
 
   const addPoint = useCallback(async (p: { x: number; y: number }) => {
     if (status !== "ready" || decoding.current) return; // bỏ chạm khi chưa sẵn sàng hoặc đang giải mã điểm trước
     const positive = mode === "add";
-    const list = objects.length === 0 ? [{ points: [], mask: null }] : objects;
+    // Chạm trong viền món đã dò → chọn/bỏ cả món (món nhỏ nhất chứa điểm chạm, vd đèn trước sofa).
+    const hit = positive ? auto.filter((a) => {
+      const { width: w, height: h, data } = a.mask;
+      return data[Math.min(h - 1, Math.floor(p.y * h)) * w + Math.min(w - 1, Math.floor(p.x * w))];
+    }).sort((a, b) => maskArea(a.mask) - maskArea(b.mask))[0] : undefined;
+    if (hit) {
+      const at = objects.findIndex((o) => o.mask === hit.mask);
+      setObjects(at >= 0 ? objects.filter((_, k) => k !== at) : [...objects.filter((o) => o.mask), { points: [], mask: hit.mask, label: hit.label }]);
+      return;
+    }
+    const last = objects[objects.length - 1];
+    const list = !last || last.label ? [...objects, { points: [], mask: null }] : objects;
     const idx = list.length - 1;
     const current = list[idx]!;
     if (!positive && current.points.length === 0) return; // điểm Bớt cần một món đang chọn
@@ -64,7 +109,7 @@ export function useEraseSession(active: boolean) {
     } finally {
       decoding.current = false;
     }
-  }, [status, mode, objects]);
+  }, [status, mode, objects, auto]);
 
   const nextObject = () => setObjects((o) => (o.length && o[o.length - 1]!.mask ? [...o, { points: [], mask: null }] : o));
   const removeObject = (i: number) => setObjects((o) => o.filter((_, k) => k !== i));
@@ -97,22 +142,26 @@ export function useEraseSession(active: boolean) {
     }
   }, [objects, applyErase, notify]);
 
-  return { status, progress, objects, mode, setMode, addPoint, nextObject, removeObject, erase };
+  return { status, progress, objects, auto, mode, setMode, addPoint, nextObject, removeObject, erase };
 }
 
 export function EraseTool({ session, onHoldOriginal }: { session: ReturnType<typeof useEraseSession>; onHoldOriginal: (hold: boolean) => void }) {
-  const { status, progress, objects, mode, setMode, nextObject, removeObject, erase } = session;
+  const { status, progress, objects, auto, mode, setMode, nextObject, removeObject, erase } = session;
   const selected = objects.filter((o) => o.mask).length;
-  if (status === "loading" || status === "encoding") {
+  if (status === "loading" || status === "encoding" || status === "detecting") {
     return (
       <p className="text-[15px] text-muted-foreground" role="status">
-        {status === "loading" ? `Đang tải công cụ chọn đồ${progress !== null ? ` ${Math.round(progress * 100)}%` : "…"}` : "Đang chuẩn bị ảnh để chạm chọn…"}
+        {status === "loading" ? `Đang tải công cụ chọn đồ${progress !== null ? ` ${Math.round(progress * 100)}%` : "…"}`
+          : status === "encoding" ? "Đang chuẩn bị ảnh để chạm chọn…" : "Đang viền các món đồ trong ảnh…"}
       </p>
     );
   }
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-[15px] leading-5">Chạm vào món đồ cũ muốn xóa. Vùng trắng là vùng sẽ xóa — chạm thêm để sửa.</p>
+      <p className="text-[15px] leading-5">
+        {auto.length ? `Đã viền sẵn ${auto.length} món — chạm vào món muốn xóa. Món chưa có viền: chạm vào nó để chọn tay.`
+          : "Chạm vào món đồ cũ muốn xóa. Vùng trắng là vùng sẽ xóa — chạm thêm để sửa."}
+      </p>
       <div className="flex items-center gap-2 flex-wrap">
         <div className="inline-flex bg-muted rounded-pill p-1">
           {(["add", "remove"] as const).map((m) => (
@@ -132,7 +181,7 @@ export function EraseTool({ session, onHoldOriginal }: { session: ReturnType<typ
       {objects.length > 0 && (
         <ul className="flex gap-2 flex-wrap">
           {objects.map((o, i) => o.mask && (
-            <li key={i}><button type="button" onClick={() => removeObject(i)} className="min-h-[44px] px-3 rounded-pill bg-muted text-[13px] font-semibold">Món {i + 1} ×</button></li>
+            <li key={i}><button type="button" onClick={() => removeObject(i)} className="min-h-[44px] px-3 rounded-pill bg-muted text-[13px] font-semibold">{o.label ?? `Món ${i + 1}`} ×</button></li>
           ))}
         </ul>
       )}

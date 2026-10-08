@@ -5,6 +5,7 @@ import models from "@/lib/models.json";
 const AI = [
   { name: "GeoCalib — tự đoán tầm mắt, góc nhìn", by: "ETH Zürich (cvg/GeoCalib)", license: "Mã nguồn Apache-2.0 · trọng số CC BY 4.0", url: "https://github.com/cvg/GeoCalib" },
   { name: "Depth Anything V2 Small — chiều sâu ảnh", by: "Depth Anything (onnx-community)", license: "Apache-2.0", url: "https://huggingface.co/onnx-community/depth-anything-v2-small" },
+  { name: "Grounding DINO tiny — nhận diện đồ trong ảnh", by: "IDEA Research", license: "Apache-2.0", url: "https://huggingface.co/IDEA-Research/grounding-dino-tiny" },
   { name: "SlimSAM — chạm chọn đồ", by: "Xenova/slimsam-77-uniform", license: "Apache-2.0", url: "https://huggingface.co/Xenova/slimsam-77-uniform" },
   { name: "LaMa — xóa đồ", by: "Samsung AI (Carve/LaMa-ONNX)", license: "Apache-2.0", url: "https://huggingface.co/Carve/LaMa-ONNX" },
 ];

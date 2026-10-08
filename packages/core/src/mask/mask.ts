@@ -70,6 +70,14 @@ export function maskBBox(m: Mask): Rect | null {
   return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
 }
 
+/** Giao trên hợp của hai hình chữ nhật (0 nếu rời nhau). */
+export function rectIoU(a: Rect, b: Rect): number {
+  const iw = Math.max(0, Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x));
+  const ih = Math.max(0, Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y));
+  const inter = iw * ih;
+  return inter ? inter / (a.w * a.h + b.w * b.h - inter) : 0;
+}
+
 /**
  * Mask gửi đi lấp (quy tắc của spike): nới 1,2% cạnh dài; món có đáy ở nửa dưới ảnh kéo thêm
  * 2,5% chiều cao xuống để ăn bóng tiếp xúc; gộp với vùng đã xóa trước (luôn lấp lại từ ảnh gốc).

@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import {
-  cleanObjectMask, cropSquare, dilateMask, emptyMask, extendDown, maskArea, maskBBox, prepareEraseMask, unionMasks, type Mask,
+  cleanObjectMask, cropSquare, dilateMask, emptyMask, extendDown, maskArea, maskBBox, prepareEraseMask, rectIoU, unionMasks, type Mask,
 } from "./mask";
 
 const withPixels = (w: number, h: number, pts: Array<[number, number]>): Mask => {
@@ -67,4 +67,9 @@ test("cleanObjectMask: bỏ mảng rời không chứa điểm chạm, lấp l�
 test("cleanObjectMask: điểm chạm trượt khỏi mask → giữ mảng lớn nhất", () => {
   const m = withPixels(6, 3, [[0, 0], [1, 0], [2, 0], [5, 2]]);
   expect(maskArea(cleanObjectMask(m, [{ x: 4, y: 1 }]))).toBe(3);
+});
+
+test("rectIoU", () => {
+  expect(rectIoU({ x: 0, y: 0, w: 2, h: 2 }, { x: 1, y: 0, w: 2, h: 2 })).toBeCloseTo(2 / 6);
+  expect(rectIoU({ x: 0, y: 0, w: 1, h: 1 }, { x: 5, y: 5, w: 1, h: 1 })).toBe(0);
 });

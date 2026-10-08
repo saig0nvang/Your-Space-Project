@@ -4,6 +4,7 @@ import {
   type CameraModel, type DisparityMap, type History, type Mask, type StyleId,
 } from "@yourspace/core";
 import { create } from "zustand";
+import type { Detection } from "./ai/detectClient";
 import { newId } from "./id";
 import type { PreparedPhoto } from "./image";
 
@@ -33,6 +34,8 @@ type State = {
   showHorizon: boolean;
   /** Đo chiều cao máy bằng vật thẳng đứng đã biết chiều cao: chạm chân rồi đỉnh (vd cửa đi 2,1 m). */
   measure: { objectHeightM: number; bottom: { x: number; y: number } | null } | null;
+  /** Đồ nội thất máy dò thấy trên ảnh GỐC (`forUrl` = photo.url) — Xóa đồ viền sẵn để chạm chọn. */
+  detections: { forUrl: string; objects: Detection[] } | null;
   setStyle: (id: StyleId) => void;
   setPhoto: (p: PreparedPhoto) => void;
   /** Bỏ ảnh đang sửa cùng mọi thứ gắn với nó (đồ đã bày, lịch sử, depth, lựa chọn). */
@@ -83,9 +86,10 @@ export const useEditor = create<State>()((set, get) => {
     notice: null,
     showHorizon: false,
     measure: null,
+    detections: null,
     setStyle: (styleId) => set({ styleId }),
-    setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
-    clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH }),
+    setPhoto: (photo) => set({ photo, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH, detections: null }),
+    clearPhoto: () => set({ photo: null, setup: null, history: null, selectedUid: null, armedProductId: null, depth: IDLE_DEPTH, detections: null }),
     startEditing: (setup) => {
       const photo = get().photo;
       if (!photo) return;

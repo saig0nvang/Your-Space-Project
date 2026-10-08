@@ -50,7 +50,7 @@ export default function EditorPage() {
       <div className="relative flex justify-center bg-black">
         <EditorStage mode={mode} occluder={occluder} lighting={lighting} showOriginal={holdOriginal}
           onErasePoint={(p) => void erase.addPoint(p)}>
-          {mode === "erase" && erase.status === "ready" && <MaskOverlay objects={erase.objects} activeIndex={erase.objects.length - 1} />}
+          {mode === "erase" && erase.status === "ready" && <MaskOverlay objects={erase.objects} activeIndex={erase.objects.length - 1} auto={erase.auto} />}
         </EditorStage>
         <div className="absolute top-3 inset-x-0 flex flex-col items-center gap-2 pointer-events-none">
           {status === "running" && <Chip tone="light">{progress !== null ? `Đang tải mô hình chiều sâu ${Math.round(progress * 100)}%` : "Đang tính chiều sâu…"}</Chip>}

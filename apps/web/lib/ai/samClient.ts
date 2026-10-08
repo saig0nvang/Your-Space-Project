@@ -18,3 +18,4 @@ export const warmupSam = (): Promise<void> =>
 export const onSamProgress = (fn: (p: ModelProgress) => void) => rpc.onProgress(fn);
 export const encodeImage = (url: string) => rpc.call<{ width: number; height: number }>("encode", { url });
 export const decodePoints = (points: SamPoint[]) => rpc.call<Mask>("decode", { points });
+export const decodeBox = (box: [number, number, number, number]) => rpc.call<{ mask: Mask; iou: number }>("decodeBox", { box });
