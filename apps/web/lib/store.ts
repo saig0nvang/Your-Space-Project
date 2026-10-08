@@ -8,8 +8,11 @@ import type { Detection } from "./ai/detectClient";
 import { newId } from "./id";
 import type { PreparedPhoto } from "./image";
 
-/** `scale`: cỡ hiển thị do người dùng chỉnh (1 = kích thước thật) — người dùng quyết 2026-10-07, lệch MASTER.md 2026-10-04. */
-export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number; scale: number };
+/**
+ * `scale`: cỡ hiển thị do người dùng chỉnh (1 = kích thước thật) — người dùng quyết 2026-10-07, lệch MASTER.md 2026-10-04.
+ * `flipped`: lật gương theo chiều rộng (nút Lật trên thanh tác vụ, MASTER.md).
+ */
+export type PlacedItem = { uid: string; productId: string; x: number; z: number; rotationYRad: number; scale: number; flipped?: boolean };
 
 export const ITEM_SCALE_RANGE = { min: 0.5, max: 1.5 };
 /** Phần nằm trong lịch sử hoàn tác. `workingUrl` = ảnh sau các lần xóa; `eraseMask` = mọi vùng đã xóa (lấp lại từ ảnh gốc). */
@@ -56,6 +59,7 @@ type State = {
   scaleItem: (uid: string, scale: number) => void;
   endGesture: () => void;
   duplicateItem: (uid: string) => void;
+  flipItem: (uid: string) => void;
   /** Đổi món tại chỗ (giữ vị trí, góc; cỡ về 100% vì món mới có kích thước thật riêng) — một bước hoàn tác. */
   swapItem: (uid: string, productId: string) => void;
   removeItem: (uid: string) => void;
@@ -148,6 +152,7 @@ export const useEditor = create<State>()((set, get) => {
       commitItems((items) => [...items, copy]);
       set({ selectedUid: copy.uid });
     },
+    flipItem: (uid) => commitItems((items) => items.map((i) => (i.uid === uid ? { ...i, flipped: !i.flipped } : i))),
     swapItem: (uid, productId) => commitItems((items) => items.map((i) => (i.uid === uid ? fitted({ ...i, productId, scale: 1 }) : i))),
     removeItem: (uid) => {
       commitItems((items) => items.filter((i) => i.uid !== uid));

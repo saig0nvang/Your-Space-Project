@@ -1,5 +1,4 @@
 "use client";
-import { Copy, ShoppingBag, Trash } from "@phosphor-icons/react";
 import { MODELS, modelById } from "@/lib/catalog";
 import { formatDimsCm, formatVND } from "@/lib/format";
 import { ITEM_SCALE_RANGE, useEditor } from "@/lib/store";
@@ -7,8 +6,9 @@ import { ITEM_SCALE_RANGE, useEditor } from "@/lib/store";
 const SNAPS = [-180, -135, -90, -45, 0, 45, 90, 135, 180];
 const snap = (deg: number) => SNAPS.find((a) => Math.abs(a - deg) <= 5) ?? deg;
 
-export function ItemPanel({ onBuy }: { onBuy: (productIds: string[]) => void }) {
-  const { history, selectedUid, select, rotateItem, scaleItem, beginGesture, endGesture, duplicateItem, removeItem, swapItem } = useEditor();
+/** Khay đáy khi chọn món: thông tin, Đổi với, Xoay, Cỡ — tác vụ (Mua/Lật/Nhân bản/Bỏ) ở thanh nổi trên món (ItemOverlay). */
+export function ItemPanel() {
+  const { history, selectedUid, select, rotateItem, scaleItem, beginGesture, endGesture, swapItem } = useEditor();
   const item = history?.present.items.find((i) => i.uid === selectedUid);
   const model = item ? modelById(item.productId) : undefined;
   if (!item || !model) return null;
@@ -65,18 +65,6 @@ export function ItemPanel({ onBuy }: { onBuy: (productIds: string[]) => void }) 
       {item.scale !== 1 && (
         <p className="text-[12px] text-muted-foreground">Đang hiển thị {Math.round(item.scale * 100)}% — kích thước thật vẫn là số đo ở trên.</p>
       )}
-      <div className="inline-flex self-start items-stretch bg-accent text-on-accent rounded-pill px-2 shadow-[0_10px_20px_rgba(0,0,0,0.1)]">
-        <button type="button" className="w-[58px] h-[52px] flex flex-col items-center justify-center text-[11px] font-semibold" onClick={() => onBuy([model.id])}>
-          <ShoppingBag size={20} />Mua
-        </button>
-        <span className="w-px my-3 bg-on-accent/25" aria-hidden />
-        <button type="button" className="w-[58px] h-[52px] flex flex-col items-center justify-center text-[11px] font-semibold" onClick={() => duplicateItem(item.uid)}>
-          <Copy size={20} />Nhân bản
-        </button>
-        <button type="button" className="w-[58px] h-[52px] flex flex-col items-center justify-center text-[11px] font-semibold text-destructive-on-accent" onClick={() => removeItem(item.uid)}>
-          <Trash size={20} />Bỏ
-        </button>
-      </div>
     </div>
   );
 }

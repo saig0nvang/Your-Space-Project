@@ -1,11 +1,11 @@
 "use client";
 import { cameraHeightFromVerticalObject, placeOnFloor, pointOnHorizontalPlane, type Calibration, type CameraModel, type PhotoLighting } from "@yourspace/core";
-import { useRef, type PointerEvent, type ReactNode } from "react";
+import { useRef, useState, type PointerEvent, type ReactNode } from "react";
 import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
 import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
 import { dragAgainstWalls, placementYaw } from "@/lib/walls";
-import { MeasureOverlay } from "./MeasureOverlay";
+import { ItemOverlay } from "./ItemOverlay";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -23,6 +23,7 @@ export function EditorStage({
   lighting,
   showOriginal,
   onErasePoint,
+  onBuy,
   children,
 }: {
   mode: "place" | "erase";
@@ -30,6 +31,7 @@ export function EditorStage({
   lighting: PhotoLighting;
   showOriginal: boolean;
   onErasePoint: (p: { x: number; y: number }) => void;
+  onBuy: (productIds: string[]) => void;
   children?: ReactNode;
 }) {
   const { photo, setup, items, workingUrl, selectedUid, armedProductId, showHorizon, measure, wallGuide } = useEditor(
@@ -49,6 +51,7 @@ export function EditorStage({
   const boxRef = useRef<HTMLDivElement>(null);
   const hitItem = useRef(false);
   const drag = useRef<{ uid: string; planeY: number; dx: number; dz: number } | null>(null);
+  const [dragging, setDragging] = useState(false); // ẩn thanh tác vụ khi kéo (MASTER.md)
   if (!photo || !setup || !items || !workingUrl) return null;
   const aspect = photo.width / photo.height;
   const camera = cameraOf(setup, aspect);
@@ -71,6 +74,7 @@ export function EditorStage({
     const p = pointOnHorizontalPlane(pointer, camera, planeY);
     if (!p) return;
     drag.current = { uid, planeY, dx: item.x - p.x, dz: item.z - p.z };
+    setDragging(true);
     s().select(uid);
     s().beginGesture();
   }
@@ -136,6 +140,7 @@ export function EditorStage({
   function onPointerUp() {
     if (drag.current) {
       drag.current = null;
+      setDragging(false);
       useEditor.setState({ wallGuide: null });
       s().endGesture();
     }
@@ -164,7 +169,7 @@ export function EditorStage({
       />
       {mode === "place" && selectedUid && (() => {
         const item = items.find((i) => i.uid === selectedUid);
-        return item ? <MeasureOverlay item={item} camera={camera} /> : null;
+        return item ? <ItemOverlay item={item} camera={camera} dragging={dragging} onBuy={onBuy} /> : null;
       })()}
       {measure?.bottom && (
         <span aria-hidden className="absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-accent pointer-events-none"

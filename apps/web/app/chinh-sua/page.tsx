@@ -49,7 +49,7 @@ export default function EditorPage() {
       <TopBar mode={mode} onModeChange={setMode} historyLocked={erase.status === "erasing"} />
       <div className="relative flex justify-center bg-black">
         <EditorStage mode={mode} occluder={occluder} lighting={lighting} showOriginal={holdOriginal}
-          onErasePoint={(p) => void erase.addPoint(p)}>
+          onErasePoint={(p) => void erase.addPoint(p)} onBuy={setBuyIds}>
           {mode === "erase" && erase.status === "ready" && <MaskOverlay objects={erase.objects} activeIndex={erase.objects.length - 1} auto={erase.auto} />}
         </EditorStage>
         <div className="absolute top-3 inset-x-0 flex flex-col items-center gap-2 pointer-events-none">
@@ -58,7 +58,7 @@ export default function EditorPage() {
         </div>
       </div>
       <section className="w-full max-w-xl mx-auto px-4 py-4 flex-1">
-        {mode === "erase" ? <EraseTool session={erase} onHoldOriginal={setHoldOriginal} /> : selectedUid ? <ItemPanel onBuy={setBuyIds} /> : <Tray />}
+        {mode === "erase" ? <EraseTool session={erase} onHoldOriginal={setHoldOriginal} /> : selectedUid ? <ItemPanel /> : <Tray />}
       </section>
       {mode === "place" && <EstimateBar onOpen={openAll} />}
       <BuySheet productIds={buyIds} onClose={() => setBuyIds(null)} />

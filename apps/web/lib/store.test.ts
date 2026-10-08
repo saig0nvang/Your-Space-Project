@@ -54,3 +54,13 @@ test("swapItem: đổi món tại chỗ (giữ vị trí, góc; cỡ về 1), m�
   expect(s().history!.present.items[0]!.productId).toBe("p1");
   setItemConstraint((i) => i);
 });
+
+test("flipItem: lật/bỏ lật, mỗi lần một bước hoàn tác", () => {
+  const uid = s().history!.present.items[0]!.uid;
+  s().flipItem(uid);
+  expect(s().history!.present.items[0]!.flipped).toBe(true);
+  s().flipItem(uid);
+  expect(s().history!.present.items[0]!.flipped).toBe(false);
+  s().undo();
+  expect(s().history!.present.items[0]!.flipped).toBe(true);
+});
