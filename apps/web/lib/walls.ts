@@ -44,10 +44,11 @@ export function currentWalls(): Wall[] {
 setItemConstraint((i) => {
   const { photo, setup } = useEditor.getState();
   const edge = room()?.edge;
-  const d = modelById(i.productId)?.dimsM;
-  if (!edge || !photo || !setup || !d) return i;
+  const model = modelById(i.productId);
+  if (!edge || !photo || !setup || !model) return i;
   const cam = cameraOf(setup, photo.width / photo.height);
-  return keepOnVisibleFloor(edge, cam, i.x, i.z, i.rotationYRad, d.widthM * i.scale, d.depthM * i.scale);
+  const d = model.dimsM;
+  return keepOnVisibleFloor(edge, cam, i.x, i.z, i.rotationYRad + model.baseYawRad, d.widthM * i.scale, d.depthM * i.scale);
 });
 
 /** Góc xoay khi đặt món tại (x, z): quay lưng vào tường gần nếu có, không thì 0 (nhìn về máy). */

@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import type { Mask } from "../mask/mask";
 import type { CameraModel } from "../types";
-import { floorGridFor, floorMaskFromDepth, floorPartOfMask, floorPointToNdc, floorTopByColumn, sampleFromFloorGrid, warpToFloorGrid } from "./floor-rectify";
+import { floorGridFor, floorMaskFromDepth, floorPartOfMask, floorPointToNdc, floorTopByColumn, sampleFromFloorGrid, warpToFloorGrid, worldToNdc } from "./floor-rectify";
 import { floorViewZ } from "./occlusion";
 import { pointOnHorizontalPlane } from "./placement";
 
@@ -102,4 +102,11 @@ test("floorPartOfMask: chỉ giữ pixel mask dưới chân tường; mask sàn 
   expect(part.data[30 * W + 40]).toBe(1);
   expect(part.data[49 * W + 40]).toBe(1);
   expect(part.data[55 * W + 40]).toBe(0); // ngoài mask
+});
+
+test("worldToNdc là nghịch đảo của pointOnHorizontalPlane ở mặt y bất kỳ", () => {
+  const p = pointOnHorizontalPlane({ x: 0.3, y: -0.2 }, cam, 0.7)!;
+  const back = worldToNdc(p.x, 0.7, p.z, cam)!;
+  expect(back.x).toBeCloseTo(0.3, 6);
+  expect(back.y).toBeCloseTo(-0.2, 6);
 });

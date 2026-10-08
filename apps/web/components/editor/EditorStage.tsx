@@ -5,6 +5,7 @@ import { modelById } from "@/lib/catalog";
 import { useShallow } from "zustand/react/shallow";
 import { cameraOf, useEditor, type PlacedItem } from "@/lib/store";
 import { dragAgainstWalls, placementYaw } from "@/lib/walls";
+import { MeasureOverlay } from "./MeasureOverlay";
 import { RoomScene } from "./RoomScene";
 
 export const floorCalib = (camera: CameraModel): Calibration => ({
@@ -156,6 +157,10 @@ export function EditorStage({
         lighting={lighting}
         onItemPointerDown={onItemPointerDown}
       />
+      {mode === "place" && selectedUid && (() => {
+        const item = items.find((i) => i.uid === selectedUid);
+        return item ? <MeasureOverlay item={item} camera={camera} /> : null;
+      })()}
       {measure?.bottom && (
         <span aria-hidden className="absolute size-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-accent pointer-events-none"
           style={{ left: `${((measure.bottom.x + 1) / 2) * 100}%`, top: `${((1 - measure.bottom.y) / 2) * 100}%` }} />

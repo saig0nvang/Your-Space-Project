@@ -18,10 +18,13 @@ export type FloorGrid = { x0: number; zFar: number; cell: number; size: number }
 const MAX_FLOOR_DIST_H = 8;
 
 /** NDC của điểm sàn (X, 0, Z) — nghịch đảo của pointOnHorizontalPlane ở y = 0. null nếu điểm ở sau máy. */
-export function floorPointToNdc(X: number, Z: number, cam: CameraModel): { x: number; y: number } | null {
+export const floorPointToNdc = (X: number, Z: number, cam: CameraModel) => worldToNdc(X, 0, Z, cam);
+
+/** NDC của điểm thế giới (X, Y, Z) — nghịch đảo của pointOnHorizontalPlane ở mặt y = Y. null nếu điểm ở sau máy. */
+export function worldToNdc(X: number, Y: number, Z: number, cam: CameraModel): { x: number; y: number } | null {
   const c = Math.cos(-cam.pitchRad);
   const s = Math.sin(-cam.pitchRad);
-  const wy = -cam.heightM;
+  const wy = Y - cam.heightM;
   const ly = wy * c + Z * s; // xoay ngược phép xoay của worldRay
   const lz = -wy * s + Z * c;
   if (lz > -1e-6) return null;
